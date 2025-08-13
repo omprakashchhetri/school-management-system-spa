@@ -1,14 +1,13 @@
 jQuery(document).ready(function(){
     var storage = window.localStorage;
-    jQuery(function () {
-        var token = storage.getItem('authToken');
-        var tokenCookie = Cookies.get("authToken");
+    // jQuery(function () {
+    //     var token = storage.getItem('authToken');
     
-        if (token || tokenCookie) {
-            // Redirect to post-login.html if token exists
-            window.location.href = 'post-login.html';
-        }
-    });
+    //     if (token) {
+    //         // Redirect to post-login.html if token exists
+    //         window.location.href = 'post-login.html';
+    //     }
+    // });    
     
     var baseUrl = jQuery('#baseUrl').val();
 

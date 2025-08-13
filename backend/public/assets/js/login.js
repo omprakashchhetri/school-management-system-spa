@@ -1,4 +1,6 @@
 jQuery(document).ready(function () {
+  var baseUrl = jQuery('#baseUrl').val();
+  var storage = window.localStorage;
   function updateRoleUI() {
     let selected = $('input[name="type"]:checked').val();
     console.log(selected);
@@ -18,20 +20,29 @@ jQuery(document).ready(function () {
     e.preventDefault();
 
     $.ajax({
-      url: "api/login",
+      url: baseUrl + "api/login",
       type: "POST",
       data: {
-        email: jQuery("#email").val(),
-        password: jQuery("#password").val(),
-        type: jQuery("input[name='type']:checked").val(),
+          email: $("#email").val(),
+          password: $("#password").val(),
+          type: $("input[name='type']:checked").val(),
       },
       dataType: "json",
       success: function (response) {
-        jQuery("#response").text(JSON.stringify(response));
+          if (response.token) {
+              // Store JWT in localStorage
+              storage.setItem('authToken', response.token);
+              Cookies.set("authToken",response.token);
+              console.log(response.token);
+              window.location.href="post-login.html";
+          }
+  
+          // $("#response").text(JSON.stringify(response));
       },
       error: function (xhr) {
-        jQuery("#response").text("Error: " + xhr.responseText);
+          $("#response").text("Error: " + xhr.responseText);
       },
     });
+  
   });
 });
