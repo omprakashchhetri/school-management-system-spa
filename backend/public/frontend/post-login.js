@@ -1,7 +1,5 @@
 jQuery(document).ready(function(){
     var storage = window.localStorage;
     var token = storage.getItem('authToken');
-    var tokenCookie = Cookies.get("authToken");
     console.log(token);
-    console.log(tokenCookie);
 })

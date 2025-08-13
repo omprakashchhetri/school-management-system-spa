@@ -18,9 +18,9 @@ class AuthController extends BaseController
                 'email' => $request->request->getPost('email'),
                 'password' => $request->request->getPost('password'),
             ];
-
+            
             $studentLoginAttempt = $studentsController->studentLogin($studentDetails);
-
+            
             return $this->response->setJSON($studentLoginAttempt);
         } else {
             $employeesController = new employeesController();
