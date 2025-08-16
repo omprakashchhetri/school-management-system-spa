@@ -13,4 +13,14 @@ $routes->group('api', ['namespace' => 'App\\Controllers\\Api'], function ($route
 
 $routes->get('/', 'Web\DashboardController::dashboard');
 $routes->post('login', 'Web\DashboardController::login'); //test endpoint for login, replace with actual login page
+$routes->get('login', 'Web\DashboardController::login'); //test endpoint for login, replace with actual login page
+$routes->get('test', 'Web\DashboardController::test'); //test endpoint for login, replace with actual login page
+$routes->group('post-login', function($routes) {
+    // Match exactly /post-login
+    $routes->get('/', 'Web\PostLoginController::index');
+
+    // Match /post-login/anything
+    $routes->get('(:any)', 'Web\PostLoginController::index');
+});
+
 // $routes->post('/api/login', 'Api\AuthController::index');

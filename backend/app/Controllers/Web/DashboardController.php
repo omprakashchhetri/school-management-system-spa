@@ -19,4 +19,9 @@ class DashboardController extends BaseController
     {
         return view('pages/login');
     }
+
+    public function test(): string
+    {
+        return "Test";
+    }
 }
