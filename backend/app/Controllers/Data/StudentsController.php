@@ -33,4 +33,8 @@ class StudentsController extends BaseController
             ]);
         }
     }
+
+    public function getStudentById($studentId) {
+        
+    }
 }
