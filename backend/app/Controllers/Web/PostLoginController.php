@@ -7,6 +7,6 @@ use App\Controllers\BaseController;
 class PostLoginController extends BaseController
 {
     public function index() {
-        return view('templates/post-login');
+        return view('portal/post-login');
     }
 }

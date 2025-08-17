@@ -14,7 +14,7 @@ class DashboardController extends BaseController
         ;
     }
 
-    public function list(): string
+    public function student_list(): string
     {
         return view('templates/header')
             .  view('templates/sidebar')
@@ -28,6 +28,13 @@ class DashboardController extends BaseController
     {
         return view('pages/login');
     }
+
+    
+    public function pre_login(): string
+    {
+        return view('portal/pre-login');
+    }
+
 
     public function test(): string
     {
