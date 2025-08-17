@@ -24,3 +24,4 @@ $routes->group('post-login', function($routes) {
 });
 
 // $routes->post('/api/login', 'Api\AuthController::index');
+$routes->get('list', 'Web\DashboardController::list'); //test endpoint for List page
