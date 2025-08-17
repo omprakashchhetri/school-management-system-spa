@@ -24,7 +24,7 @@ $routes->group('post-login', function($routes) {
 });
 
 $routes->group('admin', function($routes){
-    $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
+    $routes->get('role-list', 'Web\AdminModulePagesAdminModuleController::roleManagement');
 });
 
 // $routes->post('/api/login', 'Api\AuthController::index');
