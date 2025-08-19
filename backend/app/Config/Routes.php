@@ -25,5 +25,10 @@ $routes->group('post-login', function($routes) {
 });
 $routes->get('student-list', 'Web\DashboardController::student_list');
 
+$routes->group('admin', function($routes){
+    $routes->get('role-list', 'Web\AdminModulePagesAdminModuleController::roleManagement');
+});
+
+// $routes->post('/api/login', 'Api\AuthController::index');
 // $routes->post('/api/login', 'Api\AuthController::index');
 // $routes->get('list', 'Web\DashboardController::list'); //test endpoint for List page
