@@ -11,4 +11,10 @@ class AdminModuleController extends BaseController
         $roles = $adminRoleManagement->getListOfRoles();
         return view('pages/admin-module-pages/role-list', ['roles' => $roles]);
     }
+
+    public function roleToolManagement($roleId) {
+        $adminRoleManagement = new AdminRoleManagementController();
+        $roleToolManagement = $adminRoleManagement->roleToolManagementDetails($roleId);
+        return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+    }
 }

@@ -20,18 +20,22 @@ class SubjectAllocationsController extends BaseController
      */
     public function getAll(): array
     {
-        return $this->subjectAllocationsModel->where('deleted_at', null)->findAll();
+        return $this->subjectAllocationsModel
+            ->where('deleted_at', null)
+            ->findAll();
     }
 
     /**
-     * Get one subject allocation by ID.
+     * Get one subject allocation by ID (from route param).
      *
      * @param int $id
      * @return array
      */
     public function getOne(int $id): array
     {
-        $allocation = $this->subjectAllocationsModel->where('deleted_at', null)->find($id);
+        $allocation = $this->subjectAllocationsModel
+            ->where('deleted_at', null)
+            ->find($id);
 
         if (!$allocation) {
             return ['error' => 'Subject allocation not found'];
@@ -41,7 +45,7 @@ class SubjectAllocationsController extends BaseController
     }
 
     /**
-     * Add a new subject allocation.
+     * Add a new subject allocation (POST).
      *
      * @return array
      */
@@ -57,14 +61,20 @@ class SubjectAllocationsController extends BaseController
     }
 
     /**
-     * Edit/Update subject allocation by ID.
+     * Edit/Update subject allocation by ID (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function edit(int $id): array
+    public function edit(): array
     {
-        $data = $this->request->getRawInput();
+        $id   = $this->request->getPost('id');
+        $data = $this->request->getPost();
+
+        if (!$id) {
+            return ['error' => 'Subject allocation ID is required'];
+        }
+
+        unset($data['id']); // avoid overwriting ID
 
         if ($this->subjectAllocationsModel->update($id, $data)) {
             return ['message' => 'Subject allocation updated successfully'];
@@ -74,20 +84,27 @@ class SubjectAllocationsController extends BaseController
     }
 
     /**
-     * Delete subject allocation (soft delete by setting deleted_at).
+     * Delete subject allocation (soft delete by setting deleted_at) (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function delete(int $id): array
+    public function delete(): array
     {
+        $id = $this->request->getPost('id');
+
+        if (!$id) {
+            return ['error' => 'Subject allocation ID is required'];
+        }
+
         $allocation = $this->subjectAllocationsModel->find($id);
 
         if (!$allocation) {
             return ['error' => 'Subject allocation not found'];
         }
 
-        $this->subjectAllocationsModel->update($id, ['deleted_at' => date('Y-m-d H:i:s')]);
+        $this->subjectAllocationsModel->update($id, [
+            'deleted_at' => date('Y-m-d H:i:s')
+        ]);
 
         return ['message' => 'Subject allocation deleted successfully'];
     }

@@ -20,18 +20,22 @@ class SectionsController extends BaseController
      */
     public function getAll(): array
     {
-        return $this->sectionsModel->where('deleted_at', null)->findAll();
+        return $this->sectionsModel
+            ->where('deleted_at', null)
+            ->findAll();
     }
 
     /**
-     * Get one section by ID.
+     * Get one section by ID (from route param).
      *
      * @param int $id
      * @return array
      */
     public function getOne(int $id): array
     {
-        $section = $this->sectionsModel->where('deleted_at', null)->find($id);
+        $section = $this->sectionsModel
+            ->where('deleted_at', null)
+            ->find($id);
 
         if (!$section) {
             return ['error' => 'Section not found'];
@@ -41,7 +45,7 @@ class SectionsController extends BaseController
     }
 
     /**
-     * Add new section.
+     * Add new section (POST).
      *
      * @return array
      */
@@ -57,14 +61,20 @@ class SectionsController extends BaseController
     }
 
     /**
-     * Edit/Update section by ID.
+     * Edit/Update section by ID (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function edit(int $id): array
+    public function edit(): array
     {
-        $data = $this->request->getRawInput();
+        $id   = $this->request->getPost('id');
+        $data = $this->request->getPost();
+
+        if (!$id) {
+            return ['error' => 'Section ID is required'];
+        }
+
+        unset($data['id']); // prevent accidental overwrite
 
         if ($this->sectionsModel->update($id, $data)) {
             return ['message' => 'Section updated successfully'];
@@ -74,20 +84,27 @@ class SectionsController extends BaseController
     }
 
     /**
-     * Delete section (soft delete by setting deleted_at).
+     * Delete section (soft delete by setting deleted_at) (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function delete(int $id): array
+    public function delete(): array
     {
+        $id = $this->request->getPost('id');
+
+        if (!$id) {
+            return ['error' => 'Section ID is required'];
+        }
+
         $section = $this->sectionsModel->find($id);
 
         if (!$section) {
             return ['error' => 'Section not found'];
         }
 
-        $this->sectionsModel->update($id, ['deleted_at' => date('Y-m-d H:i:s')]);
+        $this->sectionsModel->update($id, [
+            'deleted_at' => date('Y-m-d H:i:s')
+        ]);
 
         return ['message' => 'Section deleted successfully'];
     }
