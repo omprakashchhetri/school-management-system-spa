@@ -34,7 +34,7 @@
                             <input type="radio" class="btn-check" name="type" id="role-teacher" value="employee"
                                 autocomplete="off">
                             <label class="role-toggle border border-primary px-4 btn btn-outline-primary"
-                                for="role-teacher">Teacher</label>
+                                for="role-teacher">Employee</label>
                         </div>
                     </div>
                 </div>

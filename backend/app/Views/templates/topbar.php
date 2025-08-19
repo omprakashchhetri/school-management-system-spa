@@ -277,12 +277,12 @@
                                         </a>
                                     </li>
                                     <li class="pt-8 border-top border-gray-100">
-                                        <a href="sign-in.html"
-                                            class="py-12 text-15 px-20 hover-bg-danger-50 text-gray-300 hover-text-danger-600 rounded-8 flex-align gap-8 fw-medium text-15">
+                                        <button id="logoutBtn"
+                                            class="logout_btn py-12 text-15 px-20 hover-bg-danger-50 text-gray-300 hover-text-danger-600 rounded-8 flex-align gap-8 fw-medium text-15">
                                             <span class="text-2xl text-danger-600 d-flex"><i
                                                     class="ph ph-sign-out"></i></span>
                                             <span class="text">Log Out</span>
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>
