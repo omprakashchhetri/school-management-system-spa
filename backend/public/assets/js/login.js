@@ -1,5 +1,5 @@
 jQuery(document).ready(function () {
-  var baseUrl = jQuery('#baseUrl').val();
+  var baseUrl = jQuery("#baseUrl").val();
   var storage = window.localStorage;
   function updateRoleUI() {
     let selected = $('input[name="type"]:checked').val();
@@ -18,31 +18,36 @@ jQuery(document).ready(function () {
   updateRoleUI();
   jQuery("#loginForm").on("submit", function (e) {
     e.preventDefault();
-
+    var type = $("input[name='type']:checked").val();
     $.ajax({
       url: baseUrl + "api/login",
       type: "POST",
       data: {
-          email: $("#email").val(),
-          password: $("#password").val(),
-          type: $("input[name='type']:checked").val(),
+        email: $("#email").val(),
+        password: $("#password").val(),
+        type: type,
       },
       dataType: "json",
       success: function (response) {
-          if (response.token) {
-              // Store JWT in localStorage
-              storage.setItem('authToken', response.token);
-              Cookies.set("authToken",response.token);
-              console.log(response.token);
-              window.location.href="post-login.html";
+        if (response.token) {
+          // Store JWT in localStorage
+          storage.setItem("authToken", response.token);
+          Cookies.set("authToken", response.token);
+          storage.setItem("loginType", type);
+          Cookies.set("loginType", type);
+          console.log(response.token);
+          if (type.trim() === "student") {
+            window.location.href = baseUrl + "post-login-student/";
+          } else if (type.trim() === "employee") {
+            window.location.href = baseUrl + "post-login-employee/";
           }
-  
-          // $("#response").text(JSON.stringify(response));
+        }
+
+        // $("#response").text(JSON.stringify(response));
       },
       error: function (xhr) {
-          $("#response").text("Error: " + xhr.responseText);
+        $("#response").text("Error: " + xhr.responseText);
       },
     });
-  
   });
 });

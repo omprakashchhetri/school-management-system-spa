@@ -34,7 +34,7 @@
                             <input type="radio" class="btn-check" name="type" id="role-teacher" value="employee"
                                 autocomplete="off">
                             <label class="role-toggle border border-primary px-4 btn btn-outline-primary"
-                                for="role-teacher">Teacher</label>
+                                for="role-teacher">Employee</label>
                         </div>
                     </div>
                 </div>
@@ -61,8 +61,7 @@
                 </div>
                 <div class="mb-32 flex-between flex-wrap gap-8">
                     <div class="form-check mb-0 flex-shrink-0">
-                        <input class="form-check-input flex-shrink-0 rounded-4" type="checkbox" value=""
-                            id="remember">
+                        <input class="form-check-input flex-shrink-0 rounded-4" type="checkbox" value="" id="remember">
                         <label class="form-check-label text-15 flex-grow-1" for="remember">Remember Me </label>
                     </div>
                     <a href="forgot-password.html"
@@ -107,7 +106,6 @@
 <script src="http://localhost:8080/assets/js/jquery-jvectormap-2.0.5.min.js"></script>
 <!-- jvectormap world Js -->
 <script src="http://localhost:8080/assets/js/jquery-jvectormap-world-mill-en.js"></script>
-
 <!-- main js -->
 <script src="http://localhost:8080/assets/js/main.js"></script>
 <script src="http://localhost:8080/assets/js/login.js"></script>

@@ -11,17 +11,27 @@ $routes->group('api', ['namespace' => 'App\\Controllers\\Api'], function ($route
 });
 
 
-$routes->get('/', 'Web\DashboardController::dashboard');
+$routes->post('/', 'Web\DashboardController::dashboard');
 $routes->post('login', 'Web\DashboardController::login'); //test endpoint for login, replace with actual login page
-$routes->get('login', 'Web\DashboardController::login'); //test endpoint for login, replace with actual login page
-$routes->get('test', 'Web\DashboardController::test'); //test endpoint for login, replace with actual login page
-$routes->group('post-login', function($routes) {
+$routes->get('pre-login', 'Web\DashboardController::pre_login');
+
+$routes->group('post-login-employee', function($routes) {
     // Match exactly /post-login
-    $routes->get('/', 'Web\PostLoginController::index');
+    $routes->get('/', 'Web\PostLoginController::employee_post_login');
+    
+    // Match /post-login/anything
+    $routes->get('(:any)', 'Web\PostLoginController::employee_post_login');
+});
+
+// STUDENT
+$routes->group('post-login-student', function($routes) {
+    // Match exactly /post-login
+    $routes->get('/', 'Web\PostLoginController::student_post_login');
 
     // Match /post-login/anything
-    $routes->get('(:any)', 'Web\PostLoginController::index');
+    $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
 });
+$routes->post('student-list', 'Web\DashboardController::student_list');
 
 $routes->group('admin', function($routes){
     $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
@@ -30,3 +40,5 @@ $routes->group('admin', function($routes){
 });
 
 // $routes->post('/api/login', 'Api\AuthController::index');
+// $routes->post('/api/login', 'Api\AuthController::index');
+// $routes->get('list', 'Web\DashboardController::list'); //test endpoint for List page

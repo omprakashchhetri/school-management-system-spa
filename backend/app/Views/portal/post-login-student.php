@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>jQuery SPA Router</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+    <style>
+    a,
+    .nav_js {
+        cursor: pointer;
+    }
+    </style>
+</head>
+
+<body>
+    <nav style="z-index: 9999;">
+        <a class="nav_js" href="/">Home</a>
+        <a class="nav_js" href="login">Login</a>
+        <a class="nav_js" href="test">Test</a>
+        <a class="nav_js" href="student-list">Test</a>
+        <span class="nav_js" data-route="contact">Contact</span>
+    </nav>
+
+    <div id="app">Loading...</div>
+
+    <script>
+    const baseUrl = '<?=base_url()?>';
+    const baseUrlOfApp = window.location.href.split("post-login-student/")[0] + "post-login-student/";
+    const restOfBaseUrl = window.location.href.split("post-login-student/")[1];
+    // Core SPA Navigation Function
+    function navigateTo(route, push = true) {
+        var storage = window.localStorage;
+        var token = storage.getItem("authToken");
+        var tokenCookie = Cookies.get("authToken");
+        var authToken = token || tokenCookie;
+
+        $.ajax({
+            url: baseUrl + route,
+            method: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + authToken
+            },
+            success: function(data) {
+                $("#app").html(data);
+
+                // Update browser history if needed
+                if (push) {
+                    let newUrl = baseUrlOfApp + route;
+                    if (route === "") newUrl = baseUrlOfApp + "/";
+                    history.pushState({
+                        route: route
+                    }, "", newUrl);
+                }
+                jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
+                    // alert("User inactive for 1 minute!");
+                    // You can also redirect or logout user here
+                    // window.location.href = "/logout";
+                    // authToken cookie delete
+                    Cookies.remove('authToken');
+                    alert('Tst');
+                    // authToken localStorage से delete
+                    localStorage.removeItem('authToken');
+                    window.location.href = baseUrl + "pre-login";
+                });
+            },
+            error: function() {
+                $("#app").html("<h2>Page not found</h2>");
+            }
+        });
+    }
+
+    // Click handler for links and .nav_js
+    $(document).on("click", "a.nav_js, .nav_js", function(e) {
+        e.preventDefault();
+        let route = $(this).attr("href") || $(this).data("route");
+        if (route) {
+            if (route == "/") {
+                route = "";
+            }
+            navigateTo(route);
+        }
+    });
+
+    // Handle browser back/forward buttons
+    window.onpopstate = function(event) {
+        if (event.state && event.state.route) {
+            navigateTo(event.state.route, false); // don't push again
+        }
+    };
+
+    // Initial load (load from URL bar's last segment)
+    $(document).ready(function() {
+        var storage = window.localStorage;
+        jQuery(function() {
+            var token = storage.getItem("authToken");
+            var tokenCookie = Cookies.get("authToken");
+
+            if (!token && !tokenCookie) {
+                // Redirect to post-login.html if token exists
+                window.location.href = baseUrl + "pre-login/";
+            }
+        });
+        let path = "";
+        if (restOfBaseUrl != "") {
+            path = restOfBaseUrl;
+        } else {
+            path = "";
+        }
+
+
+        function logout() {
+            // alert("User inactive for 1 minute!");
+            // You can also redirect or logout user here
+            // window.location.href = "/logout";
+            // authToken cookie delete
+            Cookies.remove('authToken');
+            // authToken localStorage से delete
+            localStorage.removeItem('authToken');
+            window.location.href = baseUrl + "pre-login";
+        }
+        jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", logout);
+        navigateTo(path, false);
+        let inactivityTime = function() {
+            let timeout;
+            let inactivityLimit = 10000000; // 1 minute (set your own limit)
+
+            function resetTimer() {
+                clearTimeout(timeout);
+                timeout = setTimeout(logout, inactivityLimit);
+            }
+
+
+
+            // Reset timer on these events
+            window.onload = resetTimer;
+            document.onmousemove = resetTimer;
+            document.onkeypress = resetTimer;
+            document.onscroll = resetTimer;
+            document.onclick = resetTimer;
+            document.ontouchstart = resetTimer; // for mobile
+        };
+        inactivityTime();
+    });
+    </script>
+</body>
+
+</html>
