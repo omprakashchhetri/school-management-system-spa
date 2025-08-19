@@ -34,7 +34,9 @@ $routes->group('post-login-student', function($routes) {
 $routes->post('student-list', 'Web\DashboardController::student_list');
 
 $routes->group('admin', function($routes){
-    $routes->get('role-list', 'Web\AdminModulePagesAdminModuleController::roleManagement');
+    $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
+    $routes->get('role-tool-management/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');
+    
 });
 
 // $routes->post('/api/login', 'Api\AuthController::index');

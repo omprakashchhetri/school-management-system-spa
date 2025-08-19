@@ -20,18 +20,22 @@ class SubjectsController extends BaseController
      */
     public function getAll(): array
     {
-        return $this->subjectsModel->where('deleted_at', null)->findAll();
+        return $this->subjectsModel
+            ->where('deleted_at', null)
+            ->findAll();
     }
 
     /**
-     * Get one subject by ID.
+     * Get one subject by ID (from route param).
      *
      * @param int $id
      * @return array
      */
     public function getOne(int $id): array
     {
-        $subject = $this->subjectsModel->where('deleted_at', null)->find($id);
+        $subject = $this->subjectsModel
+            ->where('deleted_at', null)
+            ->find($id);
 
         if (!$subject) {
             return ['error' => 'Subject not found'];
@@ -41,7 +45,7 @@ class SubjectsController extends BaseController
     }
 
     /**
-     * Add a new subject.
+     * Add a new subject (POST).
      *
      * @return array
      */
@@ -57,14 +61,20 @@ class SubjectsController extends BaseController
     }
 
     /**
-     * Edit/Update subject by ID.
+     * Edit/Update subject by ID (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function edit(int $id): array
+    public function edit(): array
     {
-        $data = $this->request->getRawInput();
+        $id   = $this->request->getPost('id');
+        $data = $this->request->getPost();
+
+        if (!$id) {
+            return ['error' => 'Subject ID is required'];
+        }
+
+        unset($data['id']); // avoid overwriting ID
 
         if ($this->subjectsModel->update($id, $data)) {
             return ['message' => 'Subject updated successfully'];
@@ -74,20 +84,27 @@ class SubjectsController extends BaseController
     }
 
     /**
-     * Delete subject (soft delete by setting deleted_at).
+     * Delete subject (soft delete by setting deleted_at) (POST).
      *
-     * @param int $id
      * @return array
      */
-    public function delete(int $id): array
+    public function delete(): array
     {
+        $id = $this->request->getPost('id');
+
+        if (!$id) {
+            return ['error' => 'Subject ID is required'];
+        }
+
         $subject = $this->subjectsModel->find($id);
 
         if (!$subject) {
             return ['error' => 'Subject not found'];
         }
 
-        $this->subjectsModel->update($id, ['deleted_at' => date('Y-m-d H:i:s')]);
+        $this->subjectsModel->update($id, [
+            'deleted_at' => date('Y-m-d H:i:s')
+        ]);
 
         return ['message' => 'Subject deleted successfully'];
     }
