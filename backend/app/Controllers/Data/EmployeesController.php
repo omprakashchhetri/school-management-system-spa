@@ -14,23 +14,40 @@ class EmployeesController extends BaseController
     public function employeeLogin($employeeDetailsFromRequest) {
         $email = $employeeDetailsFromRequest['email'];
         $password = $employeeDetailsFromRequest['password'];
-        $employeeDetails = $this->employeesModel->groupStart()->where('email1', $email)->orWhere('contact_number1', $email)->groupEnd()->where('password', $password)->first();
-        if(!$employeeDetails){
-            $response = [
-                'status' => 0,
-                'message' => 'Account Not Found',
-            ];
-            return json_encode($response);
-        } else {
-
-            $jwt = new JwtHandler();
-            $token = $jwt->generateToken([
-                'id' => $employeeDetails['id'],
-            ]);
+    
+        // Find employee by email OR contact number AND password
+        $employeeDetails = $this->employeesModel
+            ->groupStart()
+                ->where('email1', $email)
+                ->orWhere('contact_number1', $email)
+            ->groupEnd()
+            ->where('password', $password) // ⚠️ should be hashed in production
+            ->first();
+    
+        if (!$employeeDetails) {
             return json_encode([
-                'status' => 1,
-                'token' => $token,
+                'status'  => 0,
+                'message' => 'Account Not Found',
             ]);
         }
+    
+        // Generate JWT
+        $jwt = new JwtHandler();
+        $token = $jwt->generateToken([
+            'id'        => $employeeDetails['id'],
+            'loginType' => 'employee',
+        ]);
+    
+        // Store token in DB
+        $this->employeesModel->update(
+            $employeeDetails['id'],
+            ['issued_jwt_token' => $token]
+        );
+    
+        return json_encode([
+            'status' => 1,
+            'token'  => $token,
+        ]);
     }
+    
 }

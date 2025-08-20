@@ -14,25 +14,42 @@ class StudentsController extends BaseController
     public function studentLogin($studentDetailsFromRequest) {
         $studentEmail = $studentDetailsFromRequest['email'];
         $studentPassword = $studentDetailsFromRequest['password'];
-        $studentDetails = $this->studentsModel->groupStart()->where('student_email', $studentEmail)->orWhere('student_contact_no', $studentEmail)->groupEnd()->where('password', $studentPassword)->first();
-        if(!$studentDetails){
-            $response = [
-                'status' => 0,
-                'message' => 'Account Not Found',
-            ];
-            return json_encode($response);
-        } else {
-
-            $jwt = new JwtHandler();
-            $token = $jwt->generateToken([
-                'id' => $studentDetails['id'],
-            ]);
+    
+        // find student by email OR contact number AND password
+        $studentDetails = $this->studentsModel
+            ->groupStart()
+                ->where('student_email', $studentEmail)
+                ->orWhere('student_contact_no', $studentEmail)
+            ->groupEnd()
+            ->where('password', $studentPassword) // ⚠️ ideally hash this
+            ->first();
+    
+        if (!$studentDetails) {
             return json_encode([
-                'status' => 1,
-                'token' => $token,
+                'status'  => 0,
+                'message' => 'Account Not Found',
             ]);
         }
+    
+        // Generate JWT
+        $jwt = new JwtHandler();
+        $token = $jwt->generateToken([
+            'id'        => $studentDetails['id'],
+            'loginType' => 'student',
+        ]);
+    
+        // Store token in DB (issued_jwt_token field)
+        $this->studentsModel->update(
+            $studentDetails['id'],
+            ['issued_jwt_token' => $token]
+        );
+    
+        return json_encode([
+            'status' => 1,
+            'token'  => $token,
+        ]);
     }
+    
 
     public function getStudentById($studentId) {
         

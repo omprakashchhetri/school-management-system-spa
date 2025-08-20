@@ -78,19 +78,19 @@
                 }
                 $('.preloader').hide();
                 jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
-                    // alert("User inactive for 1 minute!");
+                                        // alert("User inactive for 1 minute!");
                     // You can also redirect or logout user here
                     // window.location.href = "/logout";
                     // authToken cookie delete
                     Cookies.remove('authToken');
-                    alert('Tst');
-                    // authToken localStorage से delete
                     localStorage.removeItem('authToken');
                     window.location.href = baseUrl + "pre-login";
                 });
             },
             error: function() {
-                $("#app").html("<h2>Page not found</h2>");
+                Cookies.remove('authToken');
+                localStorage.removeItem('authToken');
+                window.location.href = baseUrl + "pre-login";
             }
         });
     }

@@ -60,7 +60,6 @@
         var token = storage.getItem("authToken");
         var tokenCookie = Cookies.get("authToken");
         var authToken = token || tokenCookie;
-
         $.ajax({
             url: baseUrl + route,
             method: "POST",
@@ -86,14 +85,14 @@
                     // window.location.href = "/logout";
                     // authToken cookie delete
                     Cookies.remove('authToken');
-                    alert('Tst');
-                    // authToken localStorage से delete
                     localStorage.removeItem('authToken');
                     window.location.href = baseUrl + "pre-login";
                 });
             },
             error: function() {
-                $("#app").html("<h2>Page not found</h2>");
+                Cookies.remove('authToken');
+                localStorage.removeItem('authToken');
+                window.location.href = baseUrl + "pre-login";
             }
         });
     }

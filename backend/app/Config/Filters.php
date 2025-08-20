@@ -34,6 +34,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'jwt'           => \App\Filters\JWTAuthFilter::class,
     ];
 
     /**
@@ -72,14 +73,14 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-            'cors',
+            'forcehttps', // Force Global Secure Requests
+            'pagecache',  // Web Page Caching
+            'jwt'
         ],
         'after' => [
-            // 'honeypot',
-            // 'secureheaders',
+            'pagecache',   // Web Page Caching
+            'performance', // Performance Metrics
+            'toolbar',     // Debug Toolbar
         ],
     ];
 
