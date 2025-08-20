@@ -31,10 +31,10 @@
                             <a href="/" class="nav_js sidebar-submenu__link">Admin Dashboard</a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="#" class="sidebar-submenu__link"> Dashboard Two </a>
+                            <a href="student-dashboard" class="nav_js sidebar-submenu__link"> Student Dashboard </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="#" class="sidebar-submenu__link"> Dashboard Three </a>
+                            <a href="student-dashboard-2" class="nav_js sidebar-submenu__link">Student Dashboard 2 </a>
                         </li>
                     </ul>
                     <!-- Submenu End -->
