@@ -32,6 +32,8 @@ $routes->group('post-login-student', function($routes) {
     $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
 });
 $routes->post('student-list', 'Web\DashboardController::student_list');
+$routes->post('employee-list', 'Web\DashboardController::employee_list');
+$routes->post('subject-list', 'Web\DashboardController::subject_list');
 
 $routes->group('admin', function($routes){
     $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');

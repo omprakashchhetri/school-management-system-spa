@@ -8,22 +8,15 @@ class DashboardController extends BaseController
 {
     public function dashboard(): string
     {
-        return view('templates/sidebar')
-            .  view('templates/topbar')
-            .  view('pages/dashboard')
-        ;
-    }
-
-    public function student_list(): string
-    {
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/list-page')
+            .  view('pages/dashboard')
             .  view('templates/footer')
         ;
     }
 
+    
     public function login(): string
     {
         return view('pages/login');
@@ -35,7 +28,38 @@ class DashboardController extends BaseController
         return view('portal/pre-login');
     }
 
+    
+    public function student_list(): string
+    {
+        return view('templates/header')
+            .  view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/student-list')
+            .  view('templates/footer')
+        ;
+    }
 
+    public function employee_list(): string
+    {
+        return view('templates/header')
+            .  view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/employee-list')
+            .  view('templates/footer')
+        ;
+    }
+    
+    public function subject_list(): string
+    {
+        return view('templates/header')
+            .  view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/subject-list')
+            .  view('templates/footer')
+        ;
+    }
+    
+    
     public function test(): string
     {
         return "Test";

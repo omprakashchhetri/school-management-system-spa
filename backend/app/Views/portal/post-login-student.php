@@ -14,16 +14,42 @@
 </head>
 
 <body>
-    <nav style="z-index: 9999;">
+    <nav style="z-index: 9999; display:none;">
         <a class="nav_js" href="/">Home</a>
         <a class="nav_js" href="login">Login</a>
         <a class="nav_js" href="test">Test</a>
-        <a class="nav_js" href="student-list">Test</a>
+        <a class="nav_js" href="student-list">Student List</a>
+        <a class="nav_js" href="employee-list">Employee List</a>
+        <a class="nav_js" href="subject-list">Subject List</a>
         <span class="nav_js" data-route="contact">Contact</span>
+        <button onclick="logout()">Logout</button>
     </nav>
 
     <div id="app">Loading...</div>
-
+    <!-- Bootstrap Bundle Js -->
+    <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
+    <!-- Phosphor Js -->
+    <script src="<?=base_url()?>assets/js/phosphor-icon.js"></script>
+    <!-- file upload -->
+    <script src="<?=base_url()?>assets/js/file-upload.js"></script>
+    <!-- file upload -->
+    <script src="<?=base_url()?>assets/js/plyr.js"></script>
+    <!-- dataTables -->
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <!-- full calendar -->
+    <script src="<?=base_url()?>assets/js/full-calendar.js"></script>
+    <!-- jQuery UI -->
+    <script src="<?=base_url()?>assets/js/jquery-ui.js"></script>
+    <!-- jQuery UI -->
+    <script src="<?=base_url()?>assets/js/editor-quill.js"></script>
+    <!-- apex charts -->
+    <script src="<?=base_url()?>assets/js/apexcharts.min.js"></script>
+    <!-- jvectormap Js -->
+    <script src="<?=base_url()?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
+    <!-- jvectormap world Js -->
+    <script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- main js -->
+    <script src="<?=base_url()?>assets/js/main.js"></script>
     <script>
     const baseUrl = '<?=base_url()?>';
     const baseUrlOfApp = window.location.href.split("post-login-student/")[0] + "post-login-student/";
@@ -52,6 +78,8 @@
                         route: route
                     }, "", newUrl);
                 }
+                $('.preloader').hide();
+
                 jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
                     // alert("User inactive for 1 minute!");
                     // You can also redirect or logout user here
@@ -74,6 +102,7 @@
     $(document).on("click", "a.nav_js, .nav_js", function(e) {
         e.preventDefault();
         let route = $(this).attr("href") || $(this).data("route");
+        $('.preloader').show();
         if (route) {
             if (route == "/") {
                 route = "";
@@ -108,17 +137,6 @@
             path = "";
         }
 
-
-        function logout() {
-            // alert("User inactive for 1 minute!");
-            // You can also redirect or logout user here
-            // window.location.href = "/logout";
-            // authToken cookie delete
-            Cookies.remove('authToken');
-            // authToken localStorage से delete
-            localStorage.removeItem('authToken');
-            window.location.href = baseUrl + "pre-login";
-        }
         jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", logout);
         navigateTo(path, false);
         let inactivityTime = function() {
@@ -142,6 +160,17 @@
         };
         inactivityTime();
     });
+
+    function logout() {
+        // alert("User inactive for 1 minute!");
+        // You can also redirect or logout user here
+        // window.location.href = "/logout";
+        // authToken cookie delete
+        Cookies.remove('authToken');
+        // authToken localStorage से delete
+        localStorage.removeItem('authToken');
+        window.location.href = baseUrl + "pre-login";
+    }
     </script>
 </body>
 

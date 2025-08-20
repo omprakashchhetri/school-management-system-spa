@@ -28,13 +28,13 @@
                     <!-- Submenu start -->
                     <ul class="sidebar-submenu">
                         <li class="sidebar-submenu__item">
-                            <a href="index.html" class="sidebar-submenu__link"> Dashboard One </a>
+                            <a href="/" class="nav_js sidebar-submenu__link">Admin Dashboard</a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="index-2.html" class="sidebar-submenu__link"> Dashboard Two </a>
+                            <a href="#" class="sidebar-submenu__link"> Dashboard Two </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="index-3.html" class="sidebar-submenu__link"> Dashboard Three </a>
+                            <a href="#" class="sidebar-submenu__link"> Dashboard Three </a>
                         </li>
                     </ul>
                     <!-- Submenu End -->
@@ -47,33 +47,33 @@
                     <!-- Submenu start -->
                     <ul class="sidebar-submenu">
                         <li class="sidebar-submenu__item">
-                            <a href="student-courses.html" class="sidebar-submenu__link"> Student Courses </a>
+                            <a href="#" class="sidebar-submenu__link"> Student Courses </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="mentor-courses.html" class="sidebar-submenu__link"> Teachers Courses </a>
+                            <a href="#" class="sidebar-submenu__link"> Teachers Courses </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="create-course.html" class="sidebar-submenu__link"> Create Course </a>
+                            <a href="#" class="sidebar-submenu__link"> Create Course </a>
                         </li>
                     </ul>
                     <!-- Submenu End -->
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="students.html" class="sidebar-menu__link">
+                    <a href="student-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
                         <span class="text">Students</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="assignment.html" class="sidebar-menu__link">
+                    <a href="subject-list" class="sidebar-menu__link">
                         <span class="icon"><i class="ph ph-clipboard-text"></i></span>
-                        <span class="text">Assignments</span>
+                        <span class="text">Subject List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="mentors.html" class="sidebar-menu__link">
+                    <a href="employee-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users"></i></span>
-                        <span class="text">Mentors</span>
+                        <span class="text">Employee</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
