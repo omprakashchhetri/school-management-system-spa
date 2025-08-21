@@ -14,34 +14,47 @@ class SubjectAllocationsController extends BaseController
     }
 
     /**
-     * Get all subject allocations (not deleted).
+     * Get all subject allocations with class, section, teacher, and subject details (not deleted).
      *
      * @return array
      */
     public function getAll(): array
     {
         return $this->subjectAllocationsModel
-            ->where('deleted_at', null)
+            ->select('sa.id, c.class_name, s.section_label, CONCAT(t.firstname, " ", t.lastname) as teacher_name, sub.subject_name, sa.created_at, sa.updated_at')
+            ->from('subject_allocations sa')
+            ->join('classes c', 'c.id = sa.class')
+            ->join('sections s', 's.id = sa.section')
+            ->join('employees t', 't.id = sa.teacher')
+            ->join('subjects sub', 'sub.id = sa.subject')
+            ->where('sa.deleted_at', null)
             ->findAll();
     }
 
     /**
-     * Get one subject allocation by ID (from route param).
+     * Get one subject allocation by ID with class, section, teacher, and subject details.
      *
      * @param int $id
      * @return array
      */
     public function getOne(int $id): array
     {
-        $allocation = $this->subjectAllocationsModel
-            ->where('deleted_at', null)
-            ->find($id);
+        $record = $this->subjectAllocationsModel
+            ->select('sa.id, c.class_name, s.section_label, CONCAT(t.firstname, " ", t.lastname) as teacher_name, sub.subject_name, sa.created_at, sa.updated_at')
+            ->from('subject_allocations sa')
+            ->join('classes c', 'c.id = sa.class')
+            ->join('sections s', 's.id = sa.section')
+            ->join('employees t', 't.id = sa.teacher')
+            ->join('subjects sub', 'sub.id = sa.subject')
+            ->where('sa.deleted_at', null)
+            ->where('sa.id', $id)
+            ->first();
 
-        if (!$allocation) {
+        if (!$record) {
             return ['error' => 'Subject allocation not found'];
         }
 
-        return $allocation;
+        return $record;
     }
 
     /**

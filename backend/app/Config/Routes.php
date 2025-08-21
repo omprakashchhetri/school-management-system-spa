@@ -12,7 +12,7 @@ $routes->group('api', ['namespace' => 'App\\Controllers\\Api'], function ($route
 
 
 $routes->post('/', 'Web\DashboardController::dashboard');
-$routes->post('login', 'Web\DashboardController::login'); //test endpoint for login, replace with actual login page
+$routes->post('login', 'Web\DashboardController::login');
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 
 $routes->group('post-login-employee', function($routes) {
