@@ -28,6 +28,7 @@ jQuery(document).ready(function () {
       type: "POST",
       success: function (reshtml) {
         jQuery("#app").html(reshtml);
+        jQuery(".preloader").hide();
       },
     });
   }
