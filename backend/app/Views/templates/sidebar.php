@@ -15,161 +15,69 @@
         class="sidebar__logo text-center p-20 position-sticky inset-block-start-0 bg-white w-100 z-1 pb-10">
         <img src="<?=base_url()?>assets/images/logo/logo.png" alt="Logo">
     </a>
-
     <div class="sidebar-menu-wrapper overflow-y-auto scroll-sm">
         <div class="p-20 pt-10">
             <ul class="sidebar-menu">
-                <li class="sidebar-menu__item has-dropdown">
-                    <a href="javascript:void(0)" class="sidebar-menu__link">
+                <li class="sidebar-menu__item">
+                    <a href="/" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-squares-four"></i></span>
-                        <span class="text">Dashboard</span>
-                        <span class="link-badge">3</span>
+                        <span class="text">Admin Dashboard</span>
                     </a>
-                    <!-- Submenu start -->
-                    <ul class="sidebar-submenu">
-                        <li class="sidebar-submenu__item">
-                            <a href="/" class="nav_js sidebar-submenu__link">Admin Dashboard</a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="student-dashboard" class="nav_js sidebar-submenu__link"> Student Dashboard </a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="student-dashboard-2" class="nav_js sidebar-submenu__link">Student Dashboard 2 </a>
-                        </li>
-                    </ul>
-                    <!-- Submenu End -->
                 </li>
-                <li class="sidebar-menu__item has-dropdown">
+                <li class="sidebar-menu__item">
                     <a href="javascript:void(0)" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-graduation-cap"></i></span>
-                        <span class="text">Courses</span>
-                    </a>
-                    <!-- Submenu start -->
-                    <ul class="sidebar-submenu">
-                        <li class="sidebar-submenu__item">
-                            <a href="#" class="sidebar-submenu__link"> Student Courses </a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="#" class="sidebar-submenu__link"> Teachers Courses </a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="#" class="sidebar-submenu__link"> Create Course </a>
-                        </li>
-                    </ul>
-                    <!-- Submenu End -->
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="student-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
-                        <span class="text">Students</span>
+                        <span class="text">Role Management</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="subject-list" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-clipboard-text"></i></span>
-                        <span class="text">Subject List</span>
+                    <a href="class-list" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-bullets"></i></span>
+                        <span class="text">Class List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
                     <a href="employee-list" class="nav_js sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-users"></i></span>
-                        <span class="text">Employee</span>
+                        <span class="icon"><i class="ph ph-user-list"></i></span>
+                        <span class="text">Employee List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="resources.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-bookmarks"></i></span>
-                        <span class="text">Resources</span>
+                    <a href="class-teacher-list" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-chalkboard-teacher"></i></span>
+                        <span class="text">Class Teacher List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="message.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-chats-teardrop"></i></span>
-                        <span class="text">Messages</span>
+                    <a href="section-list" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-checks"></i></span>
+                        <span class="text">Section List</span>
                     </a>
                 </li>
-                <li class="sidebar-menu__item">
-                    <a href="analytics.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-chart-bar"></i></span>
-                        <span class="text">Analytics</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="event.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-calendar-dots"></i></span>
-                        <span class="text">Events</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="library.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-books"></i></span>
-                        <span class="text">Library</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="pricing-plan.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-coins"></i></span>
-                        <span class="text">Pricing</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu__item">
-                    <span
-                        class="text-gray-300 text-sm px-20 pt-20 fw-semibold border-top border-gray-100 d-block text-uppercase">Settings</span>
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="setting.html" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-gear"></i></span>
-                        <span class="text">Account Settings</span>
-                    </a>
-                </li>
-
                 <li class="sidebar-menu__item has-dropdown">
-                    <a href="javascript:void(0)" class="sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-shield-check"></i></span>
-                        <span class="text">Authetication</span>
+                    <a href="javascript:void()" class=" sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-graduation-cap"></i></span>
+                        <span class="text">Subject Management</span>
                     </a>
                     <!-- Submenu start -->
                     <ul class="sidebar-submenu">
                         <li class="sidebar-submenu__item">
-                            <a href="sign-in.html" class="sidebar-submenu__link">Sign In</a>
+                            <a href="subject-list" class="nav_js sidebar-submenu__link"> Subject List </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="sign-up.html" class="sidebar-submenu__link">Sign Up</a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="forgot-password.html" class="sidebar-submenu__link">Forgot Password</a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="reset-password.html" class="sidebar-submenu__link">Reset Password</a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="verify-email.html" class="sidebar-submenu__link">Verify Email</a>
-                        </li>
-                        <li class="sidebar-submenu__item">
-                            <a href="two-step-verification.html" class="sidebar-submenu__link">Two Step
-                                Verification</a>
+                            <a href="subject-allocation" class="nav_js sidebar-submenu__link"> Subject Allocation </a>
                         </li>
                     </ul>
                     <!-- Submenu End -->
                 </li>
-
+                <li class="sidebar-menu__item">
+                    <a href="payment-gateways" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-checks"></i></span>
+                        <span class="text">Payment Gateway</span>
+                    </a>
+                </li>
             </ul>
         </div>
-        <div class="p-20 pt-80">
-            <div class="bg-main-50 p-20 pt-0 rounded-16 text-center mt-74">
-                <span
-                    class="border border-5 bg-white mx-auto border-primary-50 w-114 h-114 rounded-circle flex-center text-success-600 text-2xl translate-n74">
-                    <img src="<?=base_url()?>assets/images/icons/certificate.png" alt="" class="centerised-img">
-                </span>
-                <div class="mt-n74">
-                    <h5 class="mb-4 mt-22">Get Pro Certificate</h5>
-                    <p class="">Explore 400+ courses with lifetime members</p>
-                    <a href="pricing-plan.html" class="btn btn-main mt-16 rounded-pill">Get Access</a>
-                </div>
-            </div>
-        </div>
     </div>
-
 </aside>
 <!-- ============================ Sidebar End  ============================ -->

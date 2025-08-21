@@ -39,9 +39,14 @@ $routes->post('student-dashboard-2', 'Web\DashboardController::student_dashboard
 
 $routes->group('admin', function($routes){
     $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
-    $routes->get('role-tool-management/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');
-    
+    $routes->get('role-tool-management/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
 });
+$routes->post('class-list','Web\AdminModulePages\AdminModuleController::getClassList');
+$routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::getClassTeacherList');
+$routes->post('subject-list','Web\AdminModulePages\AdminModuleController::getSubjectList');
+$routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::allocateSubject');
+$routes->post('section-list','Web\AdminModulePages\AdminModuleController::getSectionList');
+$routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::getPaymentGateways');
 
 // $routes->post('/api/login', 'Api\AuthController::index');
 // $routes->post('/api/login', 'Api\AuthController::index');

@@ -24,6 +24,7 @@
     </nav>
 
     <div id="app">Loading...</div>
+
     <!-- Bootstrap Bundle Js -->
     <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
     <!-- Phosphor Js -->

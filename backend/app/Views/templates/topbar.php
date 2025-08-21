@@ -7,6 +7,89 @@
                         class="ph ph-list"></i></button>
                 <!-- Toggle Button End -->
 
+                <!-- Module Dropdown Start -->
+                <div class="dropdown">
+                    <button
+                        class="text-gray-500 w-40 h-40 bg-main-50 hover-bg-main-100 transition-2 rounded-circle text-xl flex-center"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ph ph-layout"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu--md border-0 bg-transparent p-0">
+                        <div class="card border border-gray-100 rounded-12 box-shadow-custom w-350">
+                            <div class="card-body">
+                                <div class="max-h-270 overflow-y-auto scroll-sm pe-8">
+                                    <div class="row g-3">
+
+                                        <!-- Student Management -->
+                                        <div class="col-12">
+                                            <a href="#student"
+                                                class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-student text-3xl text-primary"></i></span>
+                                                <span class="fw-medium text-13">Student Management</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Teacher Management -->
+                                        <div class="col-12">
+                                            <a href="#teacher"
+                                                class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-chalkboard-teacher text-3xl text-success"></i></span>
+                                                <span class="fw-medium text-13">Teacher Management</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Attendance -->
+                                        <div class="col-12">
+                                            <a href="#attendance"
+                                                class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-calendar-check text-3xl text-warning"></i></span>
+                                                <span class="fw-medium text-13">Attendance</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Exams -->
+                                        <div class="col-12">
+                                            <a href="#exams"
+                                                class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-notebook text-3xl text-danger"></i></span>
+                                                <span class="fw-medium text-13">Exams</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Fees Management -->
+                                        <div class="col-12">
+                                            <a href="#fees"
+                                                class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-wallet text-3xl text-info"></i></span>
+                                                <span class="fw-medium text-13">Fees Management</span>
+                                            </a>
+                                        </div>
+
+                                        <!-- Library -->
+                                        <div class="col-12">
+                                            <a href="#library"
+                                                class="d-flex align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
+                                                <span class="px-10 py-7 rounded-circle bg-light"><i
+                                                        class="ph ph-books text-3xl text-purple"></i></span>
+                                                <span class="fw-medium text-13">Library</span>
+                                            </a>
+                                        </div>
+
+                                    </div><!-- row end -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Module Dropdown End -->
+
+
                 <form action="index.html#" class="w-350 d-sm-block d-none">
                     <div class="position-relative">
                         <button type="submit" class="input-icon text-xl d-flex text-gray-100 pointer-event-none"><i
