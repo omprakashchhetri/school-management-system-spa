@@ -16,8 +16,6 @@
 <body>
     <nav style="z-index: 9999; display:none;">
         <a class="nav_js" href="/">Home</a>
-        <a class="nav_js" href="login">Login</a>
-        <a class="nav_js" href="test">Test</a>
         <a class="nav_js" href="student-list">Student List</a>
         <a class="nav_js" href="employee-list">Employee List</a>
         <a class="nav_js" href="subject-list">Subject List</a>
