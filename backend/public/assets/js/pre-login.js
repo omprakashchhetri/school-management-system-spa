@@ -15,7 +15,7 @@ jQuery(document).ready(function () {
         loginTypeStorage === "employee" ||
         loginTypeCookies === "employee"
       ) {
-        window.location.href = baseUrl + "post-login-employee/";
+        // window.location.href = baseUrl + "post-login-employee/";
       }
     }
   });

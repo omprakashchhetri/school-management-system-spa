@@ -61,6 +61,7 @@
 <body>
     <input type="hidden" id="baseUrl" value="<?=base_url()?>">
     <div id="app"></div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
     <script src="<?=base_url('assets/js/pre-login.js')?>"></script>
 </body>
