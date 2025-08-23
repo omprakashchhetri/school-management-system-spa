@@ -11,7 +11,7 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/dashboard')
+            .  view('pages/admin-module-pages/dashboard')
             .  view('templates/footer')
         ;
     }
@@ -21,7 +21,7 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/student-dashboard')
+            .  view('pages/student-module-pages/student-dashboard')
             .  view('templates/footer')
         ;
     }
@@ -31,7 +31,7 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/student-dashboard-ref')
+            .  view('pages/student-module-pages/student-dashboard-ref')
             .  view('templates/footer')
         ;
     }
@@ -53,7 +53,7 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/student-list')
+            .  view('pages/admin-module-pages/student-list')
             .  view('templates/footer')
         ;
     }
