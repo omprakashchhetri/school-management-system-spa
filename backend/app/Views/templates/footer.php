@@ -28,7 +28,7 @@
    <script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
 
    <!-- main js -->
-   <script src="<?=base_url()?>assets/js/main.js"></script>
+   <script id="mainJsScript" src="<?=base_url()?>assets/js/main.js"></script>
 
 
    </body>
