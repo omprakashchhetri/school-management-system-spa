@@ -30,9 +30,6 @@
    <!-- main js -->
    <script src="<?=base_url()?>assets/js/main.js"></script>
 
-
-
-
    <script>
 function createChart(chartId, chartColor) {
 

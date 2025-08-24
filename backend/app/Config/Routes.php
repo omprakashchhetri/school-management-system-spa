@@ -26,8 +26,8 @@ $routes->group('post-login-student', function($routes) {
 // For Employee type
 $routes->group('post-login-employee', function($routes) {
     // Match exactly /post-login
-    $routes->get('', 'Web\DashboardController::dashboard');
-    $routes->post('', 'Web\DashboardController::dashboard');
+    $routes->get('/', 'Web\DashboardController::dashboard');
+    $routes->post('/', 'Web\DashboardController::dashboard');
     
     // Match /post-login/anything
     $routes->get('(:any)', 'Web\PostLoginController::employee_post_login');

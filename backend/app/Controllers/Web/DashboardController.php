@@ -28,31 +28,25 @@ class DashboardController extends BaseController
     
     public function student_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/student-list')
-            .  view('templates/footer')
         ;
     }
 
     public function employee_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/employee-list')
-            .  view('templates/footer')
         ;
     }
     
     public function subject_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/subject-list')
-            .  view('templates/footer')
         ;
     }
 }
