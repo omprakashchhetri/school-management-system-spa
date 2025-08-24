@@ -1,7 +1,6 @@
 <!-- Page Main Wrapper -->
 <div id="app"></div>
 
-
 <script>
 // Global variables to track active plugins and instances
 let activePlugins = {};
@@ -170,105 +169,6 @@ function navigateTo(route, push = true) {
 
             // Re-bind global event listeners
             bindGlobalEventListeners();
-            // Array of all scripts to load after AJAX
-            const scriptsToLoad = [{
-                    id: 'bootstrapBundle',
-                    src: baseUrlOfApp + 'assets/js/boostrap.bundle.min.js',
-                    required: true
-                },
-                {
-                    id: 'phosphorIcon',
-                    src: baseUrlOfApp + 'assets/js/phosphor-icon.js',
-                    required: false
-                },
-                {
-                    id: 'fileUpload',
-                    src: baseUrlOfApp + 'assets/js/file-upload.js',
-                    required: false
-                },
-                {
-                    id: 'plyr',
-                    src: baseUrlOfApp + 'assets/js/plyr.js',
-                    required: false
-                },
-                {
-                    id: 'dataTables',
-                    src: 'https://cdn.datatables.net/2.0.8/js/dataTables.min.js',
-                    required: false
-                },
-                {
-                    id: 'fullCalendar',
-                    src: baseUrlOfApp + 'assets/js/full-calendar.js',
-                    required: false
-                },
-                {
-                    id: 'jqueryUI',
-                    src: baseUrlOfApp + 'assets/js/jquery-ui.js',
-                    required: false
-                },
-                {
-                    id: 'editorQuill',
-                    src: baseUrlOfApp + 'assets/js/editor-quill.js',
-                    required: false
-                },
-                {
-                    id: 'jvectormap',
-                    src: baseUrlOfApp + 'assets/js/jquery-jvectormap-2.0.5.min.js',
-                    required: false
-                },
-                {
-                    id: 'jvectormapWorld',
-                    src: baseUrlOfApp + 'assets/js/jquery-jvectormap-world-mill-en.js',
-                    required: false
-                },
-                {
-                    id: 'mainJsScript',
-                    src: baseUrlOfApp + 'assets/js/main.js',
-                    required: true
-                }
-            ];
-
-            // Function to remove all existing scripts
-            function removeAllScripts() {
-                scriptsToLoad.forEach(script => {
-                    const existingScript = document.getElementById(script.id);
-                    if (existingScript) {
-                        existingScript.remove();
-                        console.log(`Removed script: ${script.id}`);
-                    }
-                });
-            }
-
-            // Function to load a single script with promise
-            function loadScript(scriptConfig) {
-                return new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.id = scriptConfig.id;
-                    script.src = scriptConfig.src + '?v=' + Date.now();
-
-                    script.onload = function() {
-                        console.log(`✅ Loaded: ${scriptConfig.id}`);
-                        resolve(scriptConfig);
-                    };
-
-                    script.onerror = function() {
-                        console.error(`❌ Failed to load: ${scriptConfig.id}`);
-                        if (scriptConfig.required) {
-                            reject(new Error(`Required script failed: ${scriptConfig.id}`));
-                        } else {
-                            console.warn(
-                                `⚠️ Optional script failed, continuing: ${scriptConfig.id}`);
-                            resolve(scriptConfig);
-                        }
-                    };
-
-                    document.head.appendChild(script);
-                });
-            }
-            // Reload main.js after content is loaded
-            // setTimeout(function() {
-            //     reloadMainJS();
-            // }, 300);
 
             // Update browser history
             if (push) {
@@ -904,14 +804,6 @@ function downloadJSON(data) {
     a.click();
     document.body.removeChild(a);
 }
-
-function logout() {
-    cleanupAllPlugins(); // Clean up before logout
-    Cookies.remove('authToken');
-    localStorage.removeItem('authToken');
-    window.location.href = baseUrl + "pre-login";
-}
-
 // =========================== INITIALIZATION ===========================
 // Base URL Configuration - REQUIRED
 const baseUrl = "<?=base_url()?>";
@@ -949,6 +841,13 @@ $(document).ready(function() {
         window.addEventListener(event, resetInactivityTimer);
     });
 });
+
+function logout() {
+    cleanupAllPlugins(); // Clean up before logout
+    Cookies.remove('authToken');
+    localStorage.removeItem('authToken');
+    window.location.href = baseUrl + "pre-login";
+}
 
 // Handle browser back/forward
 window.onpopstate = function(event) {
