@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 $routes->post('login', 'Web\DashboardController::login');
 
-// For studfent type
+// For student type
 $routes->group('post-login-student', function($routes) {
     
     $routes->get('', 'Web\StudentModulePages\StudentModuleController::dashboard');
@@ -36,16 +36,16 @@ $routes->group('post-login-employee', function($routes) {
     $routes->post('employee-list', 'Web\DashboardController::employee_list');
     $routes->post('subject-list', 'Web\DashboardController::subject_list');
 
-    $routes->post('class-list','Web\AdminModulePages\AdminModuleController::getClassList');
-    $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::getClassTeacherList');
-    $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::getSubjectList');
-    $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::allocateSubject');
-    $routes->post('section-list','Web\AdminModulePages\AdminModuleController::getSectionList');
-    $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::getPaymentGateways');
+    $routes->post('class-list','Web\AdminModulePages\AdminModuleController::class_list');
+    $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
+    $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::subject_list');
+    $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_association');
+    $routes->post('section-list','Web\AdminModulePages\AdminModuleController::subject_list');
+    $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::payment_gateways');
 
     $routes->group('admin', function($routes){
-        $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
-        $routes->get('role-tool-management/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
+        $routes->post('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
+        $routes->post('role-details/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
     });
 });
 

@@ -31,6 +31,17 @@
     <link rel="stylesheet" href="<?=base_url()?>assets/css/jquery-jvectormap-2.0.5.css">
     <!-- Main css -->
     <link rel="stylesheet" href="<?=base_url()?>assets/css/main.css">
+    <!-- Jquery js -->
+    <script src="<?=base_url()?>assets/js/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap Bundle Js -->
+    <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+    <style>
+    a,
+    .nav_js {
+        cursor: pointer;
+    }
+    </style>
 </head>
 
 <body>

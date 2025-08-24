@@ -10,11 +10,9 @@ class AdminModuleController extends BaseController
         // $adminRoleManagement = new AdminRoleManagementController();
         // $roles = $adminRoleManagement->getListOfRoles();
         // return view('pages/admin-module-pages/role-list', ['roles' => $roles]);
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/role-list')
-            .  view('templates/footer')
         ;
     }
 
@@ -22,72 +20,58 @@ class AdminModuleController extends BaseController
         // $adminRoleManagement = new AdminRoleManagementController();
         // $roleToolManagement = $adminRoleManagement->roleToolManagementDetails($roleId);
         // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/role-tool-management')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/role-tool-management')            
         ;
     }
 
     
     public function class_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/class-list')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/class-list')            
         ;
     }
 
     public function class_teacher_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/class-teacher-list')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/class-teacher-list')            
         ;
     }
     
     public function subject_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-list')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/subject-list')            
         ;
     }
 
     public function subject_allocation(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-allocation')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/subject-allocation')            
         ;
     }
 
     public function section_list(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/section-list')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/section-list')            
         ;
     }
 
     public function payment_gateways(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-allocation')
-            .  view('templates/footer')
+            .  view('pages/admin-module-pages/subject-allocation')            
         ;
     }
 

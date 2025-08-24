@@ -6,10 +6,6 @@
    </div>
    </div>
 
-   <!-- Jquery js -->
-   <script src="<?=base_url()?>assets/js/jquery-3.7.1.min.js"></script>
-   <!-- Bootstrap Bundle Js -->
-   <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
    <!-- Phosphor Js -->
    <script src="<?=base_url()?>assets/js/phosphor-icon.js"></script>
    <!-- file upload -->

@@ -13,6 +13,8 @@ class PostLoginController extends BaseController
         return view('portal/post-login-student');
     }
     public function employee_post_login() {
-        return view('portal/post-login-employee');
+        return view('templates/header')
+            .   view('portal/post-login-employee')
+            .   view('templates/footer');
     }
 }
