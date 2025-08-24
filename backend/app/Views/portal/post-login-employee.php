@@ -60,7 +60,7 @@
         var authToken = token || tokenCookie;
 
         $.ajax({
-            url: baseUrl + route,
+            url: baseUrlOfApp + route,
             method: "POST",
             headers: {
                 'Authorization': 'Bearer ' + authToken
@@ -78,7 +78,7 @@
                 }
                 $('.preloader').hide();
                 jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
-                                        // alert("User inactive for 1 minute!");
+                    // alert("User inactive for 1 minute!");
                     // You can also redirect or logout user here
                     // window.location.href = "/logout";
                     // authToken cookie delete
@@ -88,9 +88,9 @@
                 });
             },
             error: function() {
-                Cookies.remove('authToken');
-                localStorage.removeItem('authToken');
-                window.location.href = baseUrl + "pre-login";
+                // Cookies.remove('authToken');
+                // localStorage.removeItem('authToken');
+                // window.location.href = baseUrl + "pre-login";
             }
         });
     }

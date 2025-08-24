@@ -11,11 +11,8 @@ jQuery(document).ready(function () {
       if (loginTypeStorage === "student" || loginTypeCookies === "student") {
         // Redirect to post-login.html if token exists
         window.location.href = baseUrl + "post-login-student/";
-      } else if (
-        loginTypeStorage === "employee" ||
-        loginTypeCookies === "employee"
-      ) {
-        // window.location.href = baseUrl + "post-login-employee/";
+      } else if (loginTypeStorage === "employee" || loginTypeCookies === "employee") {
+        window.location.href = baseUrl + "post-login-employee/";
       }
     }
   });
