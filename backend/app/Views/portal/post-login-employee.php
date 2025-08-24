@@ -18,7 +18,7 @@
 <!-- jQuery UI -->
 <script src="<?=base_url()?>assets/js/editor-quill.js"></script>
 <!-- apex charts -->
-<script src="<?=base_url()?>assets/js/apexcharts.min.js"></script>
+<!-- <script src="<?=base_url()?>assets/js/apexcharts.min.js"></script> -->
 <!-- jvectormap Js -->
 <script src="<?=base_url()?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
 <!-- jvectormap world Js -->
@@ -66,9 +66,9 @@ function navigateTo(route, push = true) {
             });
         },
         error: function() {
-            // Cookies.remove('authToken');
-            // localStorage.removeItem('authToken');
-            // window.location.href = baseUrl + "pre-login";
+            Cookies.remove('authToken');
+            localStorage.removeItem('authToken');
+            window.location.href = baseUrl + "pre-login";
         }
     });
 }
