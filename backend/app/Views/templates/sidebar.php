@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="javascript:void(0)" class="sidebar-menu__link">
+                    <a href="admin/role-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
                         <span class="text">Role Management</span>
                     </a>

@@ -66,8 +66,9 @@
                 'Authorization': 'Bearer ' + authToken
             },
             success: function(data) {
+                // console.log(data);
                 $("#app").html(data);
-
+                // return;
                 // Update browser history if needed
                 if (push) {
                     let newUrl = baseUrlOfApp + route;
@@ -78,7 +79,7 @@
                 }
                 $('.preloader').hide();
                 jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
-                                        // alert("User inactive for 1 minute!");
+                    // alert("User inactive for 1 minute!");
                     // You can also redirect or logout user here
                     // window.location.href = "/logout";
                     // authToken cookie delete

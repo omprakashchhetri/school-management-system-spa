@@ -1,4 +1,4 @@
-   <div class="dashboard-footer">
+   <div class="dashboard-footer py-8">
        <div class="flex-between flex-wrap gap-16">
            <p class="text-gray-300 text-13 fw-normal"> &copy; Copyright Echocrew 2024, All Right Reserverd
            </p>

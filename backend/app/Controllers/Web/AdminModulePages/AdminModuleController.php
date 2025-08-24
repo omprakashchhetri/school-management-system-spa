@@ -7,15 +7,27 @@ use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 class AdminModuleController extends BaseController
 {
     public function roleManagement() {
-        $adminRoleManagement = new AdminRoleManagementController();
-        $roles = $adminRoleManagement->getListOfRoles();
-        return view('pages/admin-module-pages/role-list', ['roles' => $roles]);
+        // $adminRoleManagement = new AdminRoleManagementController();
+        // $roles = $adminRoleManagement->getListOfRoles();
+        // return view('pages/admin-module-pages/role-list', ['roles' => $roles]);
+        return view('templates/header')
+            .  view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/admin-module-pages/role-list')
+            .  view('templates/footer')
+        ;
     }
 
     public function roleToolManagement($roleId) {
-        $adminRoleManagement = new AdminRoleManagementController();
-        $roleToolManagement = $adminRoleManagement->roleToolManagementDetails($roleId);
-        return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+        // $adminRoleManagement = new AdminRoleManagementController();
+        // $roleToolManagement = $adminRoleManagement->roleToolManagementDetails($roleId);
+        // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+        return view('templates/header')
+            .  view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/admin-module-pages/role-tool-management')
+            .  view('templates/footer')
+        ;
     }
 
     

@@ -38,8 +38,8 @@ $routes->post('student-dashboard', 'Web\DashboardController::student_dashboard')
 $routes->post('student-dashboard-2', 'Web\DashboardController::student_dashboard_test');
 
 $routes->group('admin', function($routes){
-    $routes->get('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
-    $routes->get('role-tool-management/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
+    $routes->post('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
+    $routes->post('role-details/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
 });
 $routes->post('class-list','Web\AdminModulePages\AdminModuleController::getClassList');
 $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::getClassTeacherList');
