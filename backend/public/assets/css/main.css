@@ -9998,3 +9998,36 @@ button:focus {
   justify-content: center;
   align-items: center;
 }
+.dt-layout-row {
+  padding-inline: 18px;
+  padding-top: 18px;
+}
+div.dt-container .dt-paging .dt-paging-button {
+  font-size: 15px;
+}
+.dt-container .dt-paging .dt-paging-button {
+  height: 30px;
+  width: 30px;
+}
+.dt-container {
+  padding-bottom: 10px;
+}
+div.dt-container .dt-input {
+  border: 1px solid #b3b3b3;
+  padding: 5px;
+  background-color: #fff;
+  color: inherit;
+  border-radius: 7px;
+  margin-inline: 5px;
+}
+div.dt-container .dt-search input {
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: transparent;
+  color: inherit;
+  margin-left: 5px;
+}
+.dt-column-order {
+  display: none;
+}

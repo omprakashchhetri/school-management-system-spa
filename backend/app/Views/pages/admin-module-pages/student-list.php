@@ -489,33 +489,5 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer flex-between flex-wrap">
-            <span class="text-gray-900">Showing 1 to 10 of 12 entries</span>
-            <ul class="pagination flex-align flex-wrap">
-                <li class="page-item active">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium" href="assignment.html#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium" href="assignment.html#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium" href="assignment.html#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium"
-                        href="assignment.html#">...</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium" href="assignment.html#">8</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium" href="assignment.html#">9</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium"
-                        href="assignment.html#">10</a>
-                </li>
-            </ul>
-        </div>
     </div>
 </div>

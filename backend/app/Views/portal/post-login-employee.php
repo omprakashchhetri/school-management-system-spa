@@ -1,30 +1,6 @@
 <!-- Page Main Wrapper -->
 <div id="app"></div>
 
-<!-- Bootstrap Bundle Js -->
-<script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
-<!-- Phosphor Js -->
-<script src="<?=base_url()?>assets/js/phosphor-icon.js"></script>
-<!-- file upload -->
-<script src="<?=base_url()?>assets/js/file-upload.js"></script>
-<!-- file upload -->
-<script src="<?=base_url()?>assets/js/plyr.js"></script>
-<!-- dataTables -->
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
-<!-- full calendar -->
-<script src="<?=base_url()?>assets/js/full-calendar.js"></script>
-<!-- jQuery UI -->
-<script src="<?=base_url()?>assets/js/jquery-ui.js"></script>
-<!-- jQuery UI -->
-<script src="<?=base_url()?>assets/js/editor-quill.js"></script>
-<!-- apex charts -->
-<!-- <script src="<?=base_url()?>assets/js/apexcharts.min.js"></script> -->
-<!-- jvectormap Js -->
-<script src="<?=base_url()?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
-<!-- jvectormap world Js -->
-<script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
-<!-- main js -->
-<script src="<?=base_url()?>assets/js/main.js"></script>
 
 <script>
 // Global variables to track active plugins and instances
@@ -152,6 +128,20 @@ const customConfigs = {
     }
 };
 
+// Simple function to reload main.js
+function reloadMainJS() {
+    // Remove existing script
+    $('#mainJsScript').remove();
+
+    // Add new script with cache buster
+    $('<script>')
+        .attr('id', 'mainJsScript')
+        .attr('src', baseUrl + 'assets/js/main.js?v=' + Date.now())
+        .appendTo('head');
+
+    console.log('main.js reloaded');
+}
+
 // Enhanced navigateTo function
 function navigateTo(route, push = true) {
     var storage = window.localStorage;
@@ -180,6 +170,105 @@ function navigateTo(route, push = true) {
 
             // Re-bind global event listeners
             bindGlobalEventListeners();
+            // Array of all scripts to load after AJAX
+            const scriptsToLoad = [{
+                    id: 'bootstrapBundle',
+                    src: baseUrlOfApp + 'assets/js/boostrap.bundle.min.js',
+                    required: true
+                },
+                {
+                    id: 'phosphorIcon',
+                    src: baseUrlOfApp + 'assets/js/phosphor-icon.js',
+                    required: false
+                },
+                {
+                    id: 'fileUpload',
+                    src: baseUrlOfApp + 'assets/js/file-upload.js',
+                    required: false
+                },
+                {
+                    id: 'plyr',
+                    src: baseUrlOfApp + 'assets/js/plyr.js',
+                    required: false
+                },
+                {
+                    id: 'dataTables',
+                    src: 'https://cdn.datatables.net/2.0.8/js/dataTables.min.js',
+                    required: false
+                },
+                {
+                    id: 'fullCalendar',
+                    src: baseUrlOfApp + 'assets/js/full-calendar.js',
+                    required: false
+                },
+                {
+                    id: 'jqueryUI',
+                    src: baseUrlOfApp + 'assets/js/jquery-ui.js',
+                    required: false
+                },
+                {
+                    id: 'editorQuill',
+                    src: baseUrlOfApp + 'assets/js/editor-quill.js',
+                    required: false
+                },
+                {
+                    id: 'jvectormap',
+                    src: baseUrlOfApp + 'assets/js/jquery-jvectormap-2.0.5.min.js',
+                    required: false
+                },
+                {
+                    id: 'jvectormapWorld',
+                    src: baseUrlOfApp + 'assets/js/jquery-jvectormap-world-mill-en.js',
+                    required: false
+                },
+                {
+                    id: 'mainJsScript',
+                    src: baseUrlOfApp + 'assets/js/main.js',
+                    required: true
+                }
+            ];
+
+            // Function to remove all existing scripts
+            function removeAllScripts() {
+                scriptsToLoad.forEach(script => {
+                    const existingScript = document.getElementById(script.id);
+                    if (existingScript) {
+                        existingScript.remove();
+                        console.log(`Removed script: ${script.id}`);
+                    }
+                });
+            }
+
+            // Function to load a single script with promise
+            function loadScript(scriptConfig) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.id = scriptConfig.id;
+                    script.src = scriptConfig.src + '?v=' + Date.now();
+
+                    script.onload = function() {
+                        console.log(`✅ Loaded: ${scriptConfig.id}`);
+                        resolve(scriptConfig);
+                    };
+
+                    script.onerror = function() {
+                        console.error(`❌ Failed to load: ${scriptConfig.id}`);
+                        if (scriptConfig.required) {
+                            reject(new Error(`Required script failed: ${scriptConfig.id}`));
+                        } else {
+                            console.warn(
+                                `⚠️ Optional script failed, continuing: ${scriptConfig.id}`);
+                            resolve(scriptConfig);
+                        }
+                    };
+
+                    document.head.appendChild(script);
+                });
+            }
+            // Reload main.js after content is loaded
+            // setTimeout(function() {
+            //     reloadMainJS();
+            // }, 300);
 
             // Update browser history
             if (push) {
