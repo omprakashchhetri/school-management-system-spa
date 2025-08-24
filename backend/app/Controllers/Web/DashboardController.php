@@ -15,26 +15,6 @@ class DashboardController extends BaseController
             .  view('templates/footer')
         ;
     }
-
-    public function student_dashboard(): string
-    {
-        return view('templates/header')
-            .  view('templates/sidebar')
-            .  view('templates/topbar')
-            .  view('pages/student-module-pages/student-dashboard')
-            .  view('templates/footer')
-        ;
-    }
-
-    public function student_dashboard_test(): string
-    {
-        return view('templates/header')
-            .  view('templates/sidebar')
-            .  view('templates/topbar')
-            .  view('pages/student-module-pages/student-dashboard-ref')
-            .  view('templates/footer')
-        ;
-    }
     
     public function login(): string
     {
