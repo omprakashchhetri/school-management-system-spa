@@ -55,7 +55,7 @@
                     </a>
                 </li>
                 <li class="sidebar-menu__item has-dropdown">
-                    <a href="javascript:void()" class=" sidebar-menu__link">
+                    <a href="javascript:void(0)" class=" sidebar-menu__link">
                         <span class="icon"><i class="ph ph-graduation-cap"></i></span>
                         <span class="text">Subject Management</span>
                     </a>
