@@ -50,7 +50,7 @@
     <!-- main js -->
     <script src="<?=base_url()?>assets/js/main.js"></script>
     <script>
-    const baseUrl = '<?=base_url()?>';
+    const baseUrl = "<?=base_url()?>";
     const baseUrlOfApp = window.location.href.split("post-login-student/")[0] + "post-login-student/";
     const restOfBaseUrl = window.location.href.split("post-login-student/")[1];
     // Core SPA Navigation Function
@@ -60,7 +60,7 @@
         var tokenCookie = Cookies.get("authToken");
         var authToken = token || tokenCookie;
         $.ajax({
-            url: baseUrl + route,
+            url: baseUrlOfApp + route,
             method: "POST",
             headers: {
                 'Authorization': 'Bearer ' + authToken
@@ -132,9 +132,9 @@
         if (restOfBaseUrl != "") {
             path = restOfBaseUrl;
         } else {
-            path = "";
+            path = ""; // 👈 default route
         }
-
+        // console.log(path);
         jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", logout);
         navigateTo(path, false);
         let inactivityTime = function() {

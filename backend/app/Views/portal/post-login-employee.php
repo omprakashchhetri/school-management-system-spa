@@ -60,7 +60,7 @@
         var authToken = token || tokenCookie;
 
         $.ajax({
-            url: baseUrl + route,
+            url: baseUrlOfApp + route,
             method: "POST",
             headers: {
                 'Authorization': 'Bearer ' + authToken
