@@ -63,7 +63,7 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/employee-list')
+            .  view('pages/admin-module-pages/employee-list')
             .  view('templates/footer')
         ;
     }
@@ -73,14 +73,8 @@ class DashboardController extends BaseController
         return view('templates/header')
             .  view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/subject-list')
+            .  view('pages/admin-module-pages/subject-list')
             .  view('templates/footer')
         ;
-    }
-    
-    
-    public function test(): string
-    {
-        return "Test";
     }
 }
