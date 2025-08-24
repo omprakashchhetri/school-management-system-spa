@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="<?=base_url()?>assets/css/jquery-jvectormap-2.0.5.css">
     <!-- Main css -->
     <link rel="stylesheet" href="<?=base_url()?>assets/css/main.css">
+    <!-- Loader css -->
+    <link rel="stylesheet" href="<?=base_url()?>assets/css/loader.css">
     <!-- Jquery js -->
     <script src="<?=base_url()?>assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->

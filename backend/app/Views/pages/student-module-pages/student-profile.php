@@ -9,7 +9,7 @@
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
                 </li>
                 <li>
-                    <span class="text-main-600 fw-normal text-15">Setting</span>
+                    <span class="text-main-600 fw-normal text-15">Profile</span>
                 </li>
             </ul>
         </div>
@@ -25,7 +25,7 @@
                         <input type="file" id="coverImageUpload" accept=".png, .jpg, .jpeg" />
                         <div class="avatar-preview">
                             <div id="coverImagePreview" style="
-                    background-image: url('assets/images/thumbs/setting-cover-img.png');
+                    background-image: url('<?=base_url()?>assets/images/thumbs/setting-cover-img.png');
                 "></div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                 <div class="setting-profile px-24">
                     <div class="flex-between">
                         <div class="d-flex align-items-end flex-wrap mb-32 gap-24">
-                            <img src="assets/images/thumbs/setting-profile-img.jpg" alt=""
+                            <img src="<?=base_url()?>assets/images/thumbs/setting-profile-img.jpg" alt=""
                                 class="w-120 h-120 rounded-circle border border-white" />
                             <div>
                                 <h4 class="mb-8">Mohid Khan</h4>
