@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="<?=base_url()?>assets/css/jquery-jvectormap-2.0.5.css">
     <!-- Main css -->
     <link rel="stylesheet" href="<?=base_url()?>assets/css/main.css">
+    <!-- Loader css -->
+    <link rel="stylesheet" href="<?=base_url()?>assets/css/loader.css">
     <style>
     .max-w-100 {
         max-width: 100px;
@@ -60,6 +62,13 @@
 
 <body>
     <input type="hidden" id="baseUrl" value="<?=base_url()?>">
+    
+    <!--==================== Preloader Start ====================-->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+    <!--==================== Preloader End ====================-->
+
     <div id="app"></div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>

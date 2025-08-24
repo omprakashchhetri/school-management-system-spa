@@ -1,5 +1,5 @@
 <!-- Page Main Wrapper -->
-<div id="app">Loading...</div>
+<div id="app"></div>
 
 <!-- Bootstrap Bundle Js -->
 <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
@@ -25,6 +25,7 @@
 <script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
 <!-- main js -->
 <script src="<?=base_url()?>assets/js/main.js"></script>
+
 <script>
 const baseUrl = '<?=base_url()?>';
 const baseUrlOfApp = window.location.href.split("post-login-employee/")[0] + "post-login-employee/";

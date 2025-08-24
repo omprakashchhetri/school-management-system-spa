@@ -1,29 +1,5 @@
-<!DOCTYPE html>
-<html>
 
-<head>
-    <title>jQuery SPA Router</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
-    <style>
-    a,
-    .nav_js {
-        cursor: pointer;
-    }
-    </style>
-</head>
-
-<body>
-    <nav style="z-index: 9999; display:none;">
-        <a class="nav_js" href="/">Home</a>
-        <a class="nav_js" href="student-list">Student List</a>
-        <a class="nav_js" href="employee-list">Employee List</a>
-        <a class="nav_js" href="subject-list">Subject List</a>
-        <span class="nav_js" data-route="contact">Contact</span>
-        <button onclick="logout()">Logout</button>
-    </nav>
-
-    <div id="app">Loading...</div>
+    <div id="app"></div>
 
     <!-- Bootstrap Bundle Js -->
     <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
@@ -170,6 +146,3 @@
         window.location.href = baseUrl + "pre-login";
     }
     </script>
-</body>
-
-</html>
