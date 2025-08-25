@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,7 +48,7 @@
 </head>
 
 <body>
-
+    <input type="hidden" id="globalBaseUrl" value="<?=base_url()?>">
     <!--==================== Preloader Start ====================-->
     <div class="preloader">
         <div class="loader"></div>
