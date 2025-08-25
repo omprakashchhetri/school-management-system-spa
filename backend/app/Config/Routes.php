@@ -50,6 +50,9 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('role-details/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
         $routes->get('dashboard', 'Web\DashboardController::dashboard');
         $routes->post('dashboard', 'Web\DashboardController::dashboard');
+        $routes->post('delete-role', 'Web\AdminModulePages\AdminModuleController::deleteRole');
+        $routes->post('add-role', 'Web\AdminModulePages\AdminModuleController::addRole');
+        $routes->post('edit-role', 'Web\AdminModulePages\AdminModuleController::editRole');
     });
 });
 
