@@ -56,11 +56,11 @@
                                      id="selectAll" />
                              </div>
                          </th>
-                         <th class="h6 text-gray-300">Students</th>
-                         <th class="h6 text-gray-300">Class</th>
+                         <th class="h6 text-gray-300">Sl No.</th>
+                         <th class="h6 text-gray-300">Class Name</th>
                          <th class="h6 text-gray-300">DOB</th>
-                         <th class="h6 text-gray-300">Section</th>
-                         <th class="h6 text-gray-300">Status</th>
+                         <th class="h6 text-gray-300">Created On</th>
+                         <th class="h6 text-gray-300">Created By</th>
                          <th class="h6 text-gray-300">Actions</th>
                      </tr>
                  </thead>

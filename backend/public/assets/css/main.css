@@ -1894,6 +1894,9 @@ button:focus {
   margin: var(--size-190) !important;
 }
 
+.mx-auto {
+  margin-inline: auto !important;
+}
 .mx-2 {
   margin-inline: var(--size-2) !important;
 }
@@ -4417,6 +4420,16 @@ button:focus {
   font-family: var(--body-font);
 }
 
+/* Text Align */
+.text-center {
+  text-align: center;
+}
+.text-end {
+  text-align: right;
+}
+.text-start {
+  text-align: left;
+}
 /* Bg Image Css */
 .bg-img {
   background-size: cover !important;
@@ -4468,6 +4481,9 @@ button:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.flex-column {
+  flex-direction: column;
 }
 
 @media (min-width: 424px) {

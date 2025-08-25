@@ -6,6 +6,10 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+$routes->set404Override(function() {
+    echo view('pages/page_not_found'); // custom 404 Page
+});
+
 $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
 $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
 // Login screen
