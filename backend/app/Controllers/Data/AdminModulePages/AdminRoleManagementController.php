@@ -9,41 +9,69 @@ class AdminRoleManagementController extends BaseController
     protected $paginationLimit, $roleModel, $rolePermissionsModel, $toolsModel;
     public function __construct(){
         $this->paginationLimit = getenv('PAGINATION_LIMIT');
-        $this->roleModel = model('roleModel');
+        $this->roleModel = model('RolesModel');
         $this->rolePermissionsModel = model('RolePermissionsModel');
         $this->toolsModel = model('ToolsModel');
     }
 
-    public function getListOfRoles($offset=0) {
-        $listOfRoles = $this->roleModel->where('deleted_at', null)->findAll($this->paginationLimit, $offset);
+    public function getListOfRoles($sortOption = "DESC") {
+        $listOfRoles = $this->roleModel
+            ->where('deleted_at', null)
+            ->orderBy('created_at', $sortOption) // or replace 'id' with the correct column to sort by
+            ->findAll();
+    
         return $listOfRoles;
     }
-
+    
     /**
      * Get one role by ID.
      *
      * @param int $id
      * @return array
      */
-    public function getOne(int $id): array
+    public function getOne(int $roleId): ?array
     {
-        $role = $this->roleModel->where('deleted_at', null)->find($id);
+        // Get one role row
+        $role = $this->roleModel
+            ->where('deleted_at', null)
+            ->find($roleId);
 
         if (!$role) {
-            return ['error' => 'role not found'];
+            return null; // role not found
         }
+
+        // Get the role-tool relations for this role
+        $roleToolDetails = $this->rolePermissionsModel
+            ->where('deleted_at', null)
+            ->where('role_id', $roleId)
+            ->findAll();
+
+        if (!empty($roleToolDetails)) {
+            $toolIds = array_column($roleToolDetails, 'tool_id');
+            $toolDetails = $this->toolsModel->whereIn('id', $toolIds)->findAll();
+            $toolIdToDetailsMap = array_column($toolDetails, null, 'id');
+
+            // attach tool details to relations
+            foreach ($roleToolDetails as &$rel) {
+                $toolId = $rel['tool_id'];
+                $rel['tool_details'] = $toolIdToDetailsMap[$toolId] ?? null;
+            }
+        }
+
+        // attach relations to role
+        $role['tools'] = $roleToolDetails;
 
         return $role;
     }
+
 
     /**
      * Add new role.
      *
      * @return array
      */
-    public function add(): array
+    public function add($data = []): array
     {
-        $data = $this->request->getPost();
 
         $roleId = $this->roleModel->insert($data); // this gives inserted role_id
 
@@ -76,16 +104,55 @@ class AdminRoleManagementController extends BaseController
      * @param int $id
      * @return array
      */
-    public function edit(int $id): array
-    {
-        $data = $this->request->getRawInput();
+    public function edit($data): array {
+        $roleId = $data['id'];
+        unset($data['id']);
+    
+        // Extract tool permissions if present
+        $toolPermissions = $data['toolPermission'] ?? [];
+        unset($data['toolPermission']);
 
-        if ($this->roleModel->update($id, $data)) {
+        $roleDataToUpdate = [
+            'role_name' => $data['roleName'],
+        ];
+    
+        // Update role info
+        $updated = $this->roleModel->update($roleId, $roleDataToUpdate);
+    
+        if ($updated) {
+            // Update role permissions
+            if (!empty($toolPermissions)) {
+                foreach ($toolPermissions as $toolId => $permissions) {
+                    // Check if a record already exists for this role-tool
+                    $existing = $this->rolePermissionsModel
+                        ->where('role_id', $roleId)
+                        ->where('id', $toolId)
+                        ->first();
+    
+                    $payload = [
+                        'can_view'   => $permissions['can_view'] ?? 0,
+                        'can_edit'   => $permissions['can_edit'] ?? 0,
+                        'can_delete' => $permissions['can_delete'] ?? 0,
+                    ];
+    
+                    if ($existing) {
+                        // Update existing permission row
+                        $this->rolePermissionsModel->update($existing['id'], $payload);
+                    } else {
+                        // Insert new permission row if not exist
+                        $payload['role_id'] = $roleId;
+                        $payload['tool_id'] = $toolId;
+                        $this->rolePermissionsModel->insert($payload);
+                    }
+                }
+            }
+    
             return ['message' => 'role updated successfully'];
         }
-
+    
         return ['error' => 'Failed to update role'];
     }
+    
 
     /**
      * Delete role (soft delete by setting deleted_at).
