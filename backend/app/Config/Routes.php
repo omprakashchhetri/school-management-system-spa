@@ -42,7 +42,7 @@ $routes->group('post-login-employee', function($routes) {
     $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
     $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::subject_list');
     $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_association');
-    $routes->post('section-list','Web\AdminModulePages\AdminModuleController::subject_list');
+    $routes->post('section-list','Web\AdminModulePages\AdminModuleController::section_list');
     $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::payment_gateways');
 
     $routes->group('admin', function($routes){
@@ -53,9 +53,14 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('delete-role', 'Web\AdminModulePages\AdminModuleController::deleteRole');
         $routes->post('add-role', 'Web\AdminModulePages\AdminModuleController::addRole');
         $routes->post('edit-role', 'Web\AdminModulePages\AdminModuleController::editRole');
+
         $routes->post('add-class', 'Web\AdminModulePages\AdminModuleController::addClass');
         $routes->post('edit-class', 'Web\AdminModulePages\AdminModuleController::editClass');
         $routes->post('delete-class', 'Web\AdminModulePages\AdminModuleController::deleteClass');
+
+        $routes->post('add-section', 'Web\AdminModulePages\AdminModuleController::addSection');
+        $routes->post('edit-section', 'Web\AdminModulePages\AdminModuleController::editSection');
+        $routes->post('delete-section', 'Web\AdminModulePages\AdminModuleController::deleteSection');
     });
 });
 

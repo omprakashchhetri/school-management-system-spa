@@ -79,27 +79,27 @@
 </section>
 
 <!-- Bootstrap Bundle Js -->
-<script src="http://localhost:8080/assets/js/boostrap.bundle.min.js"></script>
+<script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
 <!-- Phosphor Js -->
-<script src="http://localhost:8080/assets/js/phosphor-icon.js"></script>
+<script src="<?=base_url()?>assets/js/phosphor-icon.js"></script>
 <!-- file upload -->
-<script src="http://localhost:8080/assets/js/file-upload.js"></script>
+<script src="<?=base_url()?>assets/js/file-upload.js"></script>
 <!-- file upload -->
-<script src="http://localhost:8080/assets/js/plyr.js"></script>
+<script src="<?=base_url()?>assets/js/plyr.js"></script>
 <!-- dataTables -->
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 <!-- full calendar -->
-<script src="http://localhost:8080/assets/js/full-calendar.js"></script>
+<script src="<?=base_url()?>assets/js/full-calendar.js"></script>
 <!-- jQuery UI -->
-<script src="http://localhost:8080/assets/js/jquery-ui.js"></script>
+<script src="<?=base_url()?>assets/js/jquery-ui.js"></script>
 <!-- jQuery UI -->
-<script src="http://localhost:8080/assets/js/editor-quill.js"></script>
+<script src="<?=base_url()?>assets/js/editor-quill.js"></script>
 <!-- apex charts -->
-<script src="http://localhost:8080/assets/js/apexcharts.min.js"></script>
+<script src="<?=base_url()?>assets/js/apexcharts.min.js"></script>
 <!-- jvectormap Js -->
-<script src="http://localhost:8080/assets/js/jquery-jvectormap-2.0.5.min.js"></script>
+<script src="<?=base_url()?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
 <!-- jvectormap world Js -->
-<script src="http://localhost:8080/assets/js/jquery-jvectormap-world-mill-en.js"></script>
+<script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
 <!-- main js -->
-<script src="http://localhost:8080/assets/js/main.js"></script>
-<script src="http://localhost:8080/assets/js/login.js"></script>
+<script src="<?=base_url()?>assets/js/main.js"></script>
+<script src="<?=base_url()?>assets/js/login.js"></script>

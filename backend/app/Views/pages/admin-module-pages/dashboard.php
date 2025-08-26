@@ -6,8 +6,23 @@
                 <div class="col-xxl-3 col-sm-6">
                     <div class="card">
                         <div class="card-body">
+                            <h4 class="mb-2">18k+</h4>
+                            <span class="text-gray-600">Total Student</span>
+                            <div class="flex-between gap-8 mt-16">
+                                <span
+                                    class="flex-shrink-0 w-48 h-48 flex-center rounded-circle bg-warning-600 text-white text-2xl"><i
+                                        class="ph-fill ph-users-three"></i></span>
+                                <div id="community-support" class="remove-tooltip-title rounded-tooltip-value">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
                             <h4 class="mb-2">155+</h4>
-                            <span class="text-gray-600">Completed Courses</span>
+                            <span class="text-gray-600">Total Teachers</span>
                             <div class="flex-between gap-8 mt-16">
                                 <span
                                     class="flex-shrink-0 w-48 h-48 flex-center rounded-circle bg-main-600 text-white text-2xl"><i
@@ -22,7 +37,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="mb-2">39+</h4>
-                            <span class="text-gray-600">Earned Certificate</span>
+                            <span class="text-gray-600">Total Classes</span>
                             <div class="flex-between gap-8 mt-16">
                                 <span
                                     class="flex-shrink-0 w-48 h-48 flex-center rounded-circle bg-main-two-600 text-white text-2xl"><i
@@ -37,32 +52,18 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="mb-2">25+</h4>
-                            <span class="text-gray-600">Course in Progress</span>
+                            <span class="text-gray-600">Total Dues</span>
                             <div class="flex-between gap-8 mt-16">
                                 <span
                                     class="flex-shrink-0 w-48 h-48 flex-center rounded-circle bg-purple-600 text-white text-2xl">
-                                    <i class="ph-fill ph-graduation-cap"></i></span>
+                                    <i class="ph-fill ph-money"></i></span>
                                 <div id="course-progress" class="remove-tooltip-title rounded-tooltip-value">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-3 col-sm-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="mb-2">18k+</h4>
-                            <span class="text-gray-600">Community Support</span>
-                            <div class="flex-between gap-8 mt-16">
-                                <span
-                                    class="flex-shrink-0 w-48 h-48 flex-center rounded-circle bg-warning-600 text-white text-2xl"><i
-                                        class="ph-fill ph-users-three"></i></span>
-                                <div id="community-support" class="remove-tooltip-title rounded-tooltip-value">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <!-- Widgets End -->
 

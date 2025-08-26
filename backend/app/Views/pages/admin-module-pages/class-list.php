@@ -18,7 +18,7 @@
 
          <!-- Breadcrumb Right Start -->
          <div class="flex-align gap-8 flex-wrap">
-             <div class="position-relative text-gray-500 flex-align gap-4 text-13">
+             <!-- <div class="position-relative text-gray-500 flex-align gap-4 text-13">
                  <span class="text-inherit">Sort by: </span>
                  <div
                      class="flex-align text-gray-500 text-13 border border-gray-100 rounded-4 ps-20 focus-border-main-600 bg-white">
@@ -30,11 +30,11 @@
                          <option value="1">Matches</option>
                      </select>
                  </div>
-             </div>
+             </div> -->
              <button type="button"
-                 class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2"
+                 class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-5"
                  data-bs-toggle="modal" data-bs-target="#addClassModal"><span class="text-lg"><i
-                         class="ph ph-plus"></i></span>Add</button>
+                         class="ph ph-plus"></i></span>Add Class</button>
          </div>
          <!-- Breadcrumb Right End -->
      </div>
@@ -80,16 +80,20 @@
                          </td>
                          <td>
                              <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
+                                 <img src="<?=base_url()?>assets/images/thumbs/avatar-img10.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Jane Cooper</span>
+                                 <span class="h6 mb-0 fw-medium text-gray-300">Admin</span>
                              </div>
                          </td>
                          <td>
-                             <span data-class-id="<?=$class['id']?>" data-class-label="<?=$class['label']?>"
-                                 class="edit-class-js bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">Edit</span>
-                             <span data-id="<?=$class['id']?>" data-label="<?=$class['label']?>"
-                                 class="delete-class-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">Delete</span>
+                             <div class="flex-align justify-content-center gap-10">
+                                 <button data-class-id="<?=$class['id']?>" data-class-label="<?=$class['label']?>"
+                                     class="edit-class-js bg-warning-50 text-warning-600 py-2 px-14 rounded-pill hover-bg-warning-600 hover-text-white flex-align justify-content-center gap-5"><i
+                                         class="ph ph-pencil-simple"></i>Edit</button>
+                                 <button data-id="<?=$class['id']?>" data-label="<?=$class['label']?>"
+                                     class="delete-class-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white flex-align justify-content-center gap-5"><i
+                                         class="ph ph-trash"></i>Delete</button>
+                             </div>
                          </td>
                      </tr>
                      <?php } ?>

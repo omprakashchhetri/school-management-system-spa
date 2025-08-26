@@ -50,14 +50,8 @@ class ClassesController extends BaseController
      *
      * @return array
      */
-    public function add($data): array
+    public function add($data = []): array
     {
-        // $data = $this->request->getPost([
-        //     'class_name',
-        //     'label',
-        //     'short_form'
-        // ]);
-
         if ($this->classesModel->insert($data)) {
             return ['message' => 'Class added successfully'];
         }
@@ -65,48 +59,44 @@ class ClassesController extends BaseController
         return ['error' => 'Failed to add class'];
     }
 
-    /**
-     * Edit/Update class by ID (POST).
+   /**
+     * Edit/Update Class by ID (POST).
      *
      * @return array
      */
-    public function edit(): array
+    public function edit($data): array
     {
-        $id   = $this->request->getPost('id');
-        $data = $this->request->getPost([
-            'class_name',
-            'label',
-            'short_form'
-        ]);
+        $id   = $data['id'];
 
         if (!$id) {
-            return ['error' => 'Record ID is required'];
+            return ['error' => 'Class ID is required'];
         }
+
+        unset($data['id']); // prevent accidental overwrite
 
         if ($this->classesModel->update($id, $data)) {
             return ['message' => 'Class updated successfully'];
         }
 
-        return ['error' => 'Failed to update class'];
+        return ['error' => 'Failed to update Class'];
     }
 
     /**
-     * Soft Delete class by ID (POST).
+     * Delete Class (soft delete by setting deleted_at) (POST).
      *
      * @return array
      */
-    public function delete(): array
+    public function delete($id): array
     {
-        $id = $this->request->getPost('id');
 
         if (!$id) {
-            return ['error' => 'Record ID is required'];
+            return ['error' => 'Class ID is required'];
         }
 
-        $record = $this->classesModel->find($id);
+        $Class = $this->classesModel->find($id);
 
-        if (!$record) {
-            return ['error' => 'Record not found'];
+        if (!$Class) {
+            return ['error' => 'Class not found'];
         }
 
         $this->classesModel->update($id, [

@@ -4,14 +4,19 @@ namespace App\Controllers\Web\AdminModulePages;
 use App\Controllers\BaseController;
 use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 use App\Controllers\Data\AdminModulePages\ClassesController;
+use App\Controllers\Data\AdminModulePages\SectionsController;
 
 class AdminModuleController extends BaseController
 {
 
+
     protected $adminRoleManagementController;
     protected $classesController;
+    protected $sectionsController;
+
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
+        $this->sectionsController = new SectionsController();
         $this->classesController = new ClassesController();
     }
     public function roleManagement() {
@@ -82,9 +87,13 @@ class AdminModuleController extends BaseController
 
     public function section_list(): string
     {
+        $sectionList = $this->sectionsController->getAll();
+        $passToView = [
+            'sections' => $sectionList,
+        ];
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/section-list')            
+            .  view('pages/admin-module-pages/section-list', $passToView)            
         ;
     }
 
@@ -123,7 +132,21 @@ class AdminModuleController extends BaseController
 
     public function editClass() {
         $details = $this->request->getPost();
-        return json_encode($this->classesController->edit($details['data']));
+        return json_encode($this->classesController->edit($details));
+    }
+    public function addSection() {
+        $details = $this->request->getPost();
+        return json_encode($this->sectionsController->add($details));
+    }
+
+    public function editSection() {
+        $details = $this->request->getPost();
+        return json_encode($this->sectionsController->edit($details));
+    }
+
+    public function deleteSection() {
+        $sectionId = $this->request->getPost('id');
+        return json_encode($this->sectionsController->delete($sectionId));
     }
 
 }

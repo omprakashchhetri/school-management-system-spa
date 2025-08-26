@@ -41,9 +41,9 @@ jQuery(document).ready(function () {
       }
 
       // Generate label + short_form
-      let label = newClassName.replace(/class/i, "").trim(); // remove "Class"
+      let label = newClassName.trim(); // remove "Class"
       let className = newClassName.toLowerCase().replace(/\s+/g, "_"); // for DB
-      let shortForm = label; // just the number or short text
+      let shortForm = newClassName.replace(/class/i, "").trim(); // just the number or short text
 
       jQuery(".preloader").show();
       jQuery.ajax({
@@ -102,9 +102,9 @@ jQuery(document).ready(function () {
       }
 
       // regenerate label + short_form
-      let label = newClassName.replace(/class/i, "").trim();
+      let label = newClassName.trim();
       let className = newClassName.toLowerCase().replace(/\s+/g, "_");
-      let shortForm = label;
+      let shortForm = newClassName.replace(/class/i, "").trim();
 
       jQuery(".preloader").show();
       jQuery.ajax({
