@@ -12,7 +12,7 @@ class SectionsModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'sections';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

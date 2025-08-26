@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Data;
+namespace App\Controllers\Data\AdminModulePages;
 
 use App\Controllers\BaseController;
 
@@ -49,10 +49,8 @@ class SectionsController extends BaseController
      *
      * @return array
      */
-    public function add(): array
+    public function add($data = []): array
     {
-        $data = $this->request->getPost();
-
         if ($this->sectionsModel->insert($data)) {
             return ['message' => 'Section added successfully'];
         }
@@ -65,10 +63,9 @@ class SectionsController extends BaseController
      *
      * @return array
      */
-    public function edit(): array
+    public function edit($data): array
     {
-        $id   = $this->request->getPost('id');
-        $data = $this->request->getPost();
+        $id   = $data['id'];
 
         if (!$id) {
             return ['error' => 'Section ID is required'];
@@ -88,9 +85,8 @@ class SectionsController extends BaseController
      *
      * @return array
      */
-    public function delete(): array
+    public function delete($id): array
     {
-        $id = $this->request->getPost('id');
 
         if (!$id) {
             return ['error' => 'Section ID is required'];
