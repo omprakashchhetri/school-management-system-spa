@@ -16,6 +16,6 @@ if (!function_exists('formatTime')) {
 if (!function_exists('formatDateTime')) {
     function formatDateTime($dateTimeString) {
         $dt = new DateTime($dateTimeString);
-        return $dt->format('d F Y h:i:s A'); // 01 June 2025 10:30:00 AM
+        return $dt->format('d F Y h:i A'); // 01 June 2025 10:30 AM
     }
 }

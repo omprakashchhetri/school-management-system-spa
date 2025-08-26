@@ -3,13 +3,16 @@
 namespace App\Controllers\Web\AdminModulePages;
 use App\Controllers\BaseController;
 use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
+use App\Controllers\Data\AdminModulePages\ClassesController;
 
 class AdminModuleController extends BaseController
 {
 
     protected $adminRoleManagementController;
+    protected $classesController;
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
+        $this->classesController = new ClassesController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -43,9 +46,13 @@ class AdminModuleController extends BaseController
     
     public function class_list(): string
     {
+        $classesData = $this->classesController->getAll();
+        $passToView = [
+            'classesDetails' => $classesData,
+        ];
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/class-list')            
+            .  view('pages/admin-module-pages/class-list', $passToView)
         ;
     }
 
@@ -102,6 +109,21 @@ class AdminModuleController extends BaseController
     public function editRole() {
         $details = $this->request->getPost();
         return json_encode($this->adminRoleManagementController->edit($details['data']));
+    }
+
+    public function addClass() {
+        $details = $this->request->getPost();
+        return json_encode($this->classesController->add($details));
+    }
+
+    public function deleteClass() {
+        $classId = $this->request->getPost('id');
+        return json_encode($this->classesController->delete($classId));
+    }
+
+    public function editClass() {
+        $details = $this->request->getPost();
+        return json_encode($this->classesController->edit($details['data']));
     }
 
 }

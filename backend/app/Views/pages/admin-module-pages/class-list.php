@@ -31,16 +31,10 @@
                      </select>
                  </div>
              </div>
-             <div
-                 class="flex-align text-gray-500 text-13 border border-gray-100 rounded-4 ps-20 focus-border-main-600 bg-white">
-                 <span class="text-lg"><i class="ph ph-layout"></i></span>
-                 <select class="form-control ps-8 pe-20 py-16 border-0 text-inherit rounded-4 text-center"
-                     id="exportOptions">
-                     <option value="" selected disabled>Export</option>
-                     <option value="csv">CSV</option>
-                     <option value="json">JSON</option>
-                 </select>
-             </div>
+             <button type="button"
+                 class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2"
+                 data-bs-toggle="modal" data-bs-target="#addClassModal"><span class="text-lg"><i
+                         class="ph ph-plus"></i></span>Add</button>
          </div>
          <!-- Breadcrumb Right End -->
      </div>
@@ -58,18 +52,31 @@
                          </th>
                          <th class="h6 text-gray-300">Sl No.</th>
                          <th class="h6 text-gray-300">Class Name</th>
-                         <th class="h6 text-gray-300">DOB</th>
                          <th class="h6 text-gray-300">Created On</th>
                          <th class="h6 text-gray-300">Created By</th>
                          <th class="h6 text-gray-300">Actions</th>
                      </tr>
                  </thead>
                  <tbody>
+                     <?php if(!empty($classesDetails)) { 
+                        $count = 0;
+                    ?>
+                     <?php foreach($classesDetails as $class) { 
+                        $count++;
+                        ?>
                      <tr>
                          <td class="fixed-width">
                              <div class="form-check">
                                  <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
                              </div>
+                         </td>
+                         <td><span class="h6 mb-0 fw-medium text-gray-300"><?=$count?></span></td>
+                         <td>
+                             <span class="h6 mb-0 fw-medium text-gray-300"><?=$class['label']?></span>
+                         </td>
+                         <td>
+                             <span
+                                 class="h6 mb-0 fw-medium text-gray-300"><?=formatDateTime($class['created_at'])?></span>
                          </td>
                          <td>
                              <div class="flex-align gap-8">
@@ -79,415 +86,73 @@
                              </div>
                          </td>
                          <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Web & Mobile Design</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-teal-50 text-teal-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-teal-600 rounded-circle flex-shrink-0"></span>
-                                 Send
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
+                             <span data-class-id="<?=$class['id']?>" data-class-label="<?=$class['label']?>"
+                                 class="edit-class-js bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">Edit</span>
+                             <span data-id="<?=$class['id']?>" data-label="<?=$class['label']?>"
+                                 class="delete-class-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">Delete</span>
                          </td>
                      </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Graphics Design</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Feb 18, 2025</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-warning-50 text-warning-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-warning-600 rounded-circle flex-shrink-0"></span>
-                                 Checking
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Leslie Alexander</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Figma</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Feb 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-purple-50 text-purple-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-purple-600 rounded-circle flex-shrink-0"></span>
-                                 Assigned
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Creating Web Design</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">June 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">June 21, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-danger-50 text-danger-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-danger-600 rounded-circle flex-shrink-0"></span>
-                                 Decline
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Complete Wordpress Course</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">June 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">July 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-green-50 text-green-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-green-600 rounded-circle flex-shrink-0"></span>
-                                 Accepted
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Webflow Essentials Course</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Aug 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Beginners Guide to Design</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Sep 22, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-pink-50 text-pink-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-pink-600 rounded-circle flex-shrink-0"></span>
-                                 Not Submitted
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">AngularJS Crash Course
-                             </span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Oct 19, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Jenny Wilson</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Complete Wordpress Course</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Sunny Maria</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Responsive Web Design</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Oct 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Eleanor Pena</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Theme Development</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Oct 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Dec 20, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td class="fixed-width">
-                             <div class="form-check">
-                                 <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                             </div>
-                         </td>
-                         <td>
-                             <div class="flex-align gap-8">
-                                 <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
-                                     class="w-40 h-40 rounded-circle" />
-                                 <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                             </div>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Complete Python Bootcamp</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                         </td>
-                         <td>
-                             <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                         </td>
-                         <td>
-                             <span
-                                 class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                 <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                 Active
-                             </span>
-                         </td>
-                         <td>
-                             <a href="assignment.html#"
-                                 class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                 More</a>
-                         </td>
-                     </tr>
+                     <?php } ?>
+                     <?php } ?>
                  </tbody>
              </table>
          </div>
      </div>
+     <!-- Modal Add Role -->
+     <div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
+             <div class="modal-content radius-16 bg-base">
+                 <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
+                     <h1 class="modal-title fs-5" id="addClassModalLabel">Add New Class</h1>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                 </div>
+                 <div class="modal-body p-24">
+                     <div class="row">
+                         <div class="col-12 mb-20">
+                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">Class Name : </label>
+                             <input type="text" class="form-control radius-8" placeholder="Enter Class Name "
+                                 id="newClassName">
+                         </div>
+
+                         <div class="d-flex align-items-center justify-content-center gap-8 mt-24">
+                             <button type="submit" id="saveNewClassBtn"
+                                 class="btn bg-main-600 hover-bg-main-800 border-main-600 hover-border-main-800 text-md px-24 py-12 radius-8">
+                                 Save
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- Modal Add Role -->
+     <div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
+             <div class="modal-content radius-16 bg-base">
+                 <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
+                     <h1 class="modal-title fs-5" id="editClassModalLabel">Edit Class</h1>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                 </div>
+                 <div class="modal-body p-24">
+                     <input type="hidden" name="" id="editClassId">
+                     <div class="row">
+                         <div class="col-12 mb-20">
+                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">Class Name : </label>
+                             <input type="text" class="form-control radius-8" placeholder="Enter Class Name "
+                                 id="className">
+                         </div>
+
+                         <div class="d-flex align-items-center justify-content-center gap-8 mt-24">
+                             <button type="submit" id="editNewRoleBtn"
+                                 class="btn bg-main-600 hover-bg-main-800 border-main-600 hover-border-main-800 text-md px-24 py-12 radius-8">
+                                 Update
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
  </div>
+ <script src="<?=base_url()?>assets/js/class-list.js"></script>

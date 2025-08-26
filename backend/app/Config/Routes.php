@@ -53,6 +53,9 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('delete-role', 'Web\AdminModulePages\AdminModuleController::deleteRole');
         $routes->post('add-role', 'Web\AdminModulePages\AdminModuleController::addRole');
         $routes->post('edit-role', 'Web\AdminModulePages\AdminModuleController::editRole');
+        $routes->post('add-class', 'Web\AdminModulePages\AdminModuleController::addClass');
+        $routes->post('edit-class', 'Web\AdminModulePages\AdminModuleController::editClass');
+        $routes->post('delete-class', 'Web\AdminModulePages\AdminModuleController::deleteClass');
     });
 });
 
