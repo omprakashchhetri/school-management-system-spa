@@ -8,11 +8,9 @@ class DashboardController extends BaseController
 {
     public function dashboard(): string
     {
-        return view('templates/header')
-            .  view('templates/sidebar')
+        return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/dashboard')
-            .  view('templates/footer');
+            .  view('pages/admin-module-pages/dashboard');
     }
     
     public function login(): string

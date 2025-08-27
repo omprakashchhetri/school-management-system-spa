@@ -99,7 +99,7 @@
 							<div class="row">   
 								<div class="col-12 mb-20">
 									<label class="form-label fw-semibold text-primary-light text-sm mb-8">Role Name : </label>
-									<input type="text" class="form-control radius-8" placeholder="Enter Event Title " id="newRoleName">
+									<input type="text" class="form-control radius-8" placeholder="Enter Role Name " id="newRoleName">
 								</div>
 								
 								<div class="d-flex align-items-center justify-content-center gap-8 mt-24">

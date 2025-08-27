@@ -10018,6 +10018,9 @@ button:focus {
   padding-inline: 18px;
   padding-top: 18px;
 }
+.dt-layout-table {
+  overflow: auto;
+}
 div.dt-container .dt-paging .dt-paging-button {
   font-size: 15px;
 }
