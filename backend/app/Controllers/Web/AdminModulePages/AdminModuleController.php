@@ -4,6 +4,7 @@ namespace App\Controllers\Web\AdminModulePages;
 use App\Controllers\BaseController;
 use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 use App\Controllers\Data\AdminModulePages\ClassesController;
+use App\Controllers\Data\AdminModulePages\ClassTeacherManagementController;
 use App\Controllers\Data\AdminModulePages\SectionsController;
 use App\Controllers\Data\AdminModulePages\SubjectsController;
 
@@ -15,11 +16,14 @@ class AdminModuleController extends BaseController
     protected $classesController;
     protected $sectionsController;
     protected $subjectsController;
+    protected $classTeacherManagementController;
+
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
         $this->sectionsController = new SectionsController();
         $this->classesController = new ClassesController();
         $this->subjectsController = new SubjectsController();
+        $this->classTeacherManagementController = new ClassTeacherManagementController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -169,6 +173,12 @@ class AdminModuleController extends BaseController
     public function deleteSubject() {
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->subjectsController->delete($SubjectId));
+    }
+    
+    public function getClassTeacherList(){
+        $postData = $this->request->getPost();
+        $classTeacherData = $this->classTeacherManagementController->getAll($postData);
+        return $classTeacherData;
     }
 
 }
