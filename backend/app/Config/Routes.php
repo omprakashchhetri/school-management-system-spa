@@ -10,8 +10,7 @@ $routes->set404Override(function() {
     echo view('pages/page_not_found'); // custom 404 Page
 });
 
-$routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
-$routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
+
 // Login screen
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 $routes->post('login', 'Web\DashboardController::login');
@@ -21,6 +20,9 @@ $routes->group('post-login-student', function($routes) {
     
     
     $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
+
+    $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
+    $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     
     $routes->post('profile', 'Web\StudentModulePages\StudentModuleController::profile');
     $routes->post('documents', 'Web\StudentModulePages\StudentModuleController::document_list');
