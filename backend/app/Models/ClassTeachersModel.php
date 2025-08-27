@@ -12,7 +12,7 @@ class ClassTeachersModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'class_teachers';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

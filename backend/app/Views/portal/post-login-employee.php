@@ -10,7 +10,7 @@ let currentRoute = '';
 // Plugin configuration - Add your plugins here
 const pluginConfigs = {
     dataTable: {
-        selector: 'table.display, .datatable, #assignmentTable',
+        selector: 'table.display, .datatable',
         routes: ['dashboard', 'students', 'assignments', '*'], // * means all routes
         init: initDataTable,
         destroy: destroyDataTable

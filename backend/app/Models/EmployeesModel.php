@@ -8,7 +8,7 @@ class EmployeesModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'employees';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
@@ -30,6 +30,7 @@ class EmployeesModel extends Model
             'pincode',
             'district',
             'country',
+            'profile_image',
             'created_at',
             'updated_at',
             'deleted_at',
