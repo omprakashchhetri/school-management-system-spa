@@ -10013,6 +10013,7 @@ button:focus {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 .dt-layout-row {
   padding-inline: 18px;

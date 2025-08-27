@@ -102,7 +102,7 @@
              </table>
          </div>
      </div>
-     <!-- Modal Add Role -->
+     <!-- Modal Add Class -->
      <div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
              <div class="modal-content radius-16 bg-base">
@@ -130,7 +130,7 @@
          </div>
      </div>
 
-     <!-- Modal Add Role -->
+     <!-- Modal Edit Class -->
      <div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
              <div class="modal-content radius-16 bg-base">
@@ -148,7 +148,7 @@
                          </div>
 
                          <div class="d-flex align-items-center justify-content-center gap-8 mt-24">
-                             <button type="submit" id="editNewRoleBtn"
+                             <button type="submit" id="editNewClassBtn"
                                  class="btn bg-main-600 hover-bg-main-800 border-main-600 hover-border-main-800 text-md px-24 py-12 radius-8">
                                  Update
                              </button>

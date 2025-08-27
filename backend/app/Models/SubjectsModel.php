@@ -12,11 +12,11 @@ class SubjectsModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'subjects';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
-    protected $insertID = 0;
-    protected $returnType = 'array';
-    protected $useSoftDeletes = true;
-    protected $protectFields = true;
+    protected $useAutoIncrement = true; 
+    protected $insertID         = 0;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = true;
+    protected $protectFields    = true;
     protected $allowedFields = [
             'id',
             'subject_name',

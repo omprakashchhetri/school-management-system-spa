@@ -5,6 +5,7 @@ use App\Controllers\BaseController;
 use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 use App\Controllers\Data\AdminModulePages\ClassesController;
 use App\Controllers\Data\AdminModulePages\SectionsController;
+use App\Controllers\Data\AdminModulePages\SubjectsController;
 
 class AdminModuleController extends BaseController
 {
@@ -13,11 +14,12 @@ class AdminModuleController extends BaseController
     protected $adminRoleManagementController;
     protected $classesController;
     protected $sectionsController;
-
+    protected $subjectsController;
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
         $this->sectionsController = new SectionsController();
         $this->classesController = new ClassesController();
+        $this->subjectsController = new SubjectsController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -71,9 +73,13 @@ class AdminModuleController extends BaseController
     
     public function subject_list(): string
     {
+        $subjectsData = $this->subjectsController->getAll();
+        $passToView = [
+            'subjectsDetails' => $subjectsData,
+        ];
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-list')            
+            .  view('pages/admin-module-pages/subject-list', $passToView)
         ;
     }
 
@@ -134,6 +140,7 @@ class AdminModuleController extends BaseController
         $details = $this->request->getPost();
         return json_encode($this->classesController->edit($details));
     }
+    
     public function addSection() {
         $details = $this->request->getPost();
         return json_encode($this->sectionsController->add($details));
@@ -147,6 +154,21 @@ class AdminModuleController extends BaseController
     public function deleteSection() {
         $sectionId = $this->request->getPost('id');
         return json_encode($this->sectionsController->delete($sectionId));
+    }
+
+    public function addSubject() {
+        $details = $this->request->getPost();
+        return json_encode($this->subjectsController->add($details));
+    }
+
+    public function editSubject() {
+        $details = $this->request->getPost();
+        return json_encode($this->subjectsController->edit($details));
+    }
+
+    public function deleteSubject() {
+        $SubjectId = $this->request->getPost('id');
+        return json_encode($this->subjectsController->delete($SubjectId));
     }
 
 }

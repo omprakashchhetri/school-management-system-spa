@@ -46,7 +46,6 @@ class ClassesController extends BaseController
     }
 
     /**
-     * Add new class (POST).
      *
      * @return array
      */
@@ -60,7 +59,6 @@ class ClassesController extends BaseController
     }
 
    /**
-     * Edit/Update Class by ID (POST).
      *
      * @return array
      */
@@ -82,7 +80,7 @@ class ClassesController extends BaseController
     }
 
     /**
-     * Delete Class (soft delete by setting deleted_at) (POST).
+     * Delete Class (soft delete by setting deleted_at)
      *
      * @return array
      */

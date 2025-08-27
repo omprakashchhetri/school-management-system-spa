@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Data;
+namespace App\Controllers\Data\AdminModulePages;
 
 use App\Controllers\BaseController;
 
@@ -49,9 +49,8 @@ class SubjectsController extends BaseController
      *
      * @return array
      */
-    public function add(): array
+    public function add($data = []): array
     {
-        $data = $this->request->getPost();
 
         if ($this->subjectsModel->insert($data)) {
             return ['message' => 'Subject added successfully'];
@@ -65,16 +64,15 @@ class SubjectsController extends BaseController
      *
      * @return array
      */
-    public function edit(): array
+    public function edit($data): array
     {
-        $id   = $this->request->getPost('id');
-        $data = $this->request->getPost();
+        $id   = $data['id'];
 
         if (!$id) {
-            return ['error' => 'Subject ID is required'];
+            return ['error' => 'Class ID is required'];
         }
 
-        unset($data['id']); // avoid overwriting ID
+        unset($data['id']); // prevent accidental overwrite
 
         if ($this->subjectsModel->update($id, $data)) {
             return ['message' => 'Subject updated successfully'];
@@ -83,14 +81,14 @@ class SubjectsController extends BaseController
         return ['error' => 'Failed to update subject'];
     }
 
+
     /**
      * Delete subject (soft delete by setting deleted_at) (POST).
      *
      * @return array
      */
-    public function delete(): array
+    public function delete($id): array
     {
-        $id = $this->request->getPost('id');
 
         if (!$id) {
             return ['error' => 'Subject ID is required'];

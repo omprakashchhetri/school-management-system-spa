@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,5 +51,6 @@
     <!--==================== Preloader Start ====================-->
     <div class="preloader">
         <div class="loader"></div>
+        <div class="loader-text">Loading...</div>
     </div>
     <!--==================== Preloader End ====================-->

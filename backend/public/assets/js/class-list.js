@@ -85,8 +85,8 @@ jQuery(document).ready(function () {
   // EDIT CLASS
   // ============================
   jQuery(document)
-    .off("click", "#editNewRoleBtn")
-    .on("click", "#editNewRoleBtn", function () {
+    .off("click", "#editNewClassBtn")
+    .on("click", "#editNewClassBtn", function () {
       jQuery(".text-danger").remove();
       jQuery("#className").removeClass("border-danger");
 
