@@ -1,30 +1,15 @@
 jQuery(document).ready(async function () {
   var baseUrl = jQuery("#baseUrl").val();
 
-  // ✅ Get Preferences safely
-  const Preferences =
-    window.Capacitor && window.Capacitor.Plugins
-      ? window.Capacitor.Plugins.Preferences
-      : null;
-
   // ✅ Unified getItem
   async function getItem(key) {
-    if (Preferences) {
-      const { value } = await Preferences.get({ key });
-      return value;
-    } else {
-      return window.localStorage.getItem(key) || Cookies.get(key);
-    }
+    return window.localStorage.getItem(key) || Cookies.get(key);
   }
 
   // ✅ Unified setItem
   async function setItem(key, value) {
-    if (Preferences) {
-      await Preferences.set({ key, value });
-    } else {
-      window.localStorage.setItem(key, value);
-      Cookies.set(key, value);
-    }
+    window.localStorage.setItem(key, value);
+    Cookies.set(key, value);
   }
 
   // Get token + login type
@@ -36,7 +21,7 @@ jQuery(document).ready(async function () {
       window.location.href = baseUrl + "post-login-student/";
       return;
     } else if (loginType === "employee") {
-      window.location.href = baseUrl + "post-login-employee/";
+      window.location.href = baseUrl + "post-login-employee/admin/dashboard";
       return;
     }
   }
