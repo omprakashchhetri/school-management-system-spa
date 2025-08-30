@@ -7,6 +7,7 @@ use App\Controllers\Data\AdminModulePages\ClassesController;
 use App\Controllers\Data\AdminModulePages\ClassTeacherManagementController;
 use App\Controllers\Data\AdminModulePages\SectionsController;
 use App\Controllers\Data\AdminModulePages\SubjectsController;
+use App\Controllers\Data\AdminModulePages\ClassTeachersController;
 
 class AdminModuleController extends BaseController
 {
@@ -17,6 +18,7 @@ class AdminModuleController extends BaseController
     protected $sectionsController;
     protected $subjectsController;
     protected $classTeacherManagementController;
+    protected $classTeachersController;
 
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
@@ -24,6 +26,7 @@ class AdminModuleController extends BaseController
         $this->classesController = new ClassesController();
         $this->subjectsController = new SubjectsController();
         $this->classTeacherManagementController = new ClassTeacherManagementController();
+        $this->classTeachersController = new ClassTeachersController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -69,9 +72,17 @@ class AdminModuleController extends BaseController
 
     public function class_teacher_list(): string
     {
+        $classesData = $this->classesController->getAll();
+        $sectionList = $this->sectionsController->getAll();
+        $employeeList = $this->classTeacherManagementController->getAllEmployees();
+        $passToView = [
+            'classesDetails' => $classesData,
+            'sectionList' => $sectionList,
+            'employeeList' => $employeeList,
+        ];
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/class-teacher-list')            
+            .  view('pages/admin-module-pages/class-teacher-list', $passToView)            
         ;
     }
     
@@ -179,6 +190,21 @@ class AdminModuleController extends BaseController
         $postData = $this->request->getPost();
         $classTeacherData = $this->classTeacherManagementController->getAll($postData);
         return $classTeacherData;
+    }
+
+    public function addClassTeacher() {
+        $details = $this->request->getPost();
+        return json_encode($this->classTeachersController->add($details));
+    }
+
+    public function editClassTeacher() {
+        $details = $this->request->getPost();
+        return json_encode($this->classTeachersController->edit($details));
+    }
+
+    public function deleteClassTeacher() {
+        $SubjectId = $this->request->getPost('id');
+        return json_encode($this->classTeachersController->delete($SubjectId));
     }
 
 }
