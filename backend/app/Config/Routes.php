@@ -69,7 +69,9 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('delete-subject', 'Web\AdminModulePages\AdminModuleController::deleteSubject');
         
         $routes->post('get-class-teacher-list', 'Web\AdminModulePages\AdminModuleController::getClassTeacherList');
-
+        $routes->post('add-class-teacher', 'Web\AdminModulePages\AdminModuleController::addClassTeacher');
+        $routes->post('edit-class-teacher', 'Web\AdminModulePages\AdminModuleController::editClassTeacher');
+        $routes->post('delete-class-teacher', 'Web\AdminModulePages\AdminModuleController::deleteClassTeacher');
     });
 });
 

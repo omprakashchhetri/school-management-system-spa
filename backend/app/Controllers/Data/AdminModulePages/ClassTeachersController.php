@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Data;
+namespace App\Controllers\Data\AdminModulePages;
 
 use App\Controllers\BaseController;
 
@@ -61,9 +61,9 @@ class ClassTeachersController extends BaseController
      *
      * @return array
      */
-    public function add(): array
+    public function add($data): array
     {
-        $data = $this->request->getPost();
+        // $data = $this->request->getPost();
 
         if ($this->classTeachersModel->insert($data)) {
             return ['message' => 'Class-Teacher mapping added successfully'];
@@ -77,10 +77,9 @@ class ClassTeachersController extends BaseController
      *
      * @return array
      */
-    public function edit(): array
+    public function edit($data): array
     {
-        $id   = $this->request->getPost('id');
-        $data = $this->request->getPost();
+        $id = $data['id'];
 
         if (!$id) {
             return ['error' => 'Record ID is required'];
@@ -100,9 +99,8 @@ class ClassTeachersController extends BaseController
      *
      * @return array
      */
-    public function delete(): array
+    public function delete($id): array
     {
-        $id = $this->request->getPost('id');
 
         if (!$id) {
             return ['error' => 'Record ID is required'];
