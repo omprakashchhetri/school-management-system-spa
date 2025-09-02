@@ -126,6 +126,13 @@ class AdminModuleController extends BaseController
         ;
     }
 
+    public function employee_details($employeeId) {
+        return view('templates/sidebar')
+        .  view('templates/topbar')
+        .  view('pages/admin-module-pages/employee-details')
+        ;
+    }
+
     public function deleteRole() {
         $roleId = $this->request->getPost('id');
         return json_encode($this->adminRoleManagementController->delete($roleId));

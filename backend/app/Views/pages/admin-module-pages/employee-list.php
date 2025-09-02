@@ -72,7 +72,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Jane Cooper</span>
@@ -107,7 +107,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
@@ -142,7 +142,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Leslie Alexander</span>
@@ -177,7 +177,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
@@ -212,7 +212,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
@@ -247,7 +247,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
@@ -282,7 +282,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
@@ -317,7 +317,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
@@ -353,7 +353,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Jenny Wilson</span>
@@ -388,7 +388,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Sunny Maria</span>
@@ -423,7 +423,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Eleanor Pena</span>
@@ -458,7 +458,7 @@
                              </div>
                          </td>
                          <td>
-                             <div class="flex-align gap-8">
+                             <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
                                  <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
                                      class="w-40 h-40 rounded-circle" />
                                  <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>

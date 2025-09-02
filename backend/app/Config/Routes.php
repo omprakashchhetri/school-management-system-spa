@@ -72,6 +72,9 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('add-class-teacher', 'Web\AdminModulePages\AdminModuleController::addClassTeacher');
         $routes->post('edit-class-teacher', 'Web\AdminModulePages\AdminModuleController::editClassTeacher');
         $routes->post('delete-class-teacher', 'Web\AdminModulePages\AdminModuleController::deleteClassTeacher');
+
+        // Employee Pages
+        $routes->post('employee-details/(:segment)', 'Web\AdminModulePages\AdminModuleController::employee_details/$1');
     });
 });
 
