@@ -8,6 +8,7 @@ use App\Controllers\Data\AdminModulePages\ClassTeacherManagementController;
 use App\Controllers\Data\AdminModulePages\SectionsController;
 use App\Controllers\Data\AdminModulePages\SubjectsController;
 use App\Controllers\Data\AdminModulePages\ClassTeachersController;
+use App\Controllers\Data\AdminModulePages\EmployeeManagementController;
 
 class AdminModuleController extends BaseController
 {
@@ -19,6 +20,7 @@ class AdminModuleController extends BaseController
     protected $subjectsController;
     protected $classTeacherManagementController;
     protected $classTeachersController;
+    protected $employeeManagementController;
 
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
@@ -27,6 +29,7 @@ class AdminModuleController extends BaseController
         $this->subjectsController = new SubjectsController();
         $this->classTeacherManagementController = new ClassTeacherManagementController();
         $this->classTeachersController = new ClassTeachersController();
+        $this->employeeManagementController = new EmployeeManagementController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -212,6 +215,40 @@ class AdminModuleController extends BaseController
     public function deleteClassTeacher() {
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->classTeachersController->delete($SubjectId));
+    }
+
+    public function employee_list(): string
+    {
+        $roles = $this->adminRoleManagementController->getListOfRoles();
+        $passToView = [
+            'roles' => $roles,
+        ];
+        return view('templates/sidebar')
+            .  view('templates/topbar')
+            .  view('pages/admin-module-pages/employee-list', $passToView)
+        ;
+    }
+
+    public function getEmployeeList()
+    {
+        $postData = $this->request->getPost();
+        $classTeacherData = $this->employeeManagementController->getEmployeeList($postData);
+        return $classTeacherData;
+    }
+
+    public function addEmployee() {
+        $details = $this->request->getPost();
+        return json_encode($this->employeeManagementController->addEmployee($details));
+    }
+
+    public function editEmployee() {
+        $details = $this->request->getPost();
+        return json_encode($this->employeeManagementController->editEmployee($details));
+    }
+
+    public function deleteEmployee() {
+        $SubjectId = $this->request->getPost('id');
+        return json_encode($this->employeeManagementController->deleteEmployee($SubjectId));
     }
 
 }
