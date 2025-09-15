@@ -37,7 +37,7 @@ $routes->group('post-login-employee', function($routes) {
     $routes->get('(:any)', 'Web\PostLoginController::employee_post_login');
 
     $routes->post('student-list', 'Web\DashboardController::student_list');
-    $routes->post('employee-list', 'Web\DashboardController::employee_list');
+    $routes->post('employee-list', 'Web\AdminModulePages\AdminModuleController::employee_list');
     
     $routes->post('class-list','Web\AdminModulePages\AdminModuleController::class_list');
     $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
@@ -75,6 +75,10 @@ $routes->group('post-login-employee', function($routes) {
 
         // Employee Pages
         $routes->post('employee-details/(:segment)', 'Web\AdminModulePages\AdminModuleController::employee_details/$1');
+        $routes->post('get-employee-list', 'Web\AdminModulePages\AdminModuleController::getEmployeeList');
+        $routes->post('add-employee', 'Web\AdminModulePages\AdminModuleController::addEmployee');
+        $routes->post('edit-employee', 'Web\AdminModulePages\AdminModuleController::editEmployee');
+        $routes->post('delete-employee', 'Web\AdminModulePages\AdminModuleController::deleteEmployee');
     });
 });
 
