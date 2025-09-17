@@ -9,6 +9,7 @@ use App\Controllers\Data\AdminModulePages\SectionsController;
 use App\Controllers\Data\AdminModulePages\SubjectsController;
 use App\Controllers\Data\AdminModulePages\ClassTeachersController;
 use App\Controllers\Data\AdminModulePages\EmployeeManagementController;
+use App\Controllers\Data\AdminModulePages\SubjectAllocationsController;
 
 class AdminModuleController extends BaseController
 {
@@ -21,6 +22,7 @@ class AdminModuleController extends BaseController
     protected $classTeacherManagementController;
     protected $classTeachersController;
     protected $employeeManagementController;
+    protected $subjectAllocationsController;
 
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
@@ -30,6 +32,7 @@ class AdminModuleController extends BaseController
         $this->classTeacherManagementController = new ClassTeacherManagementController();
         $this->classTeachersController = new ClassTeachersController();
         $this->employeeManagementController = new EmployeeManagementController();
+        $this->subjectAllocationsController = new SubjectAllocationsController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -103,9 +106,19 @@ class AdminModuleController extends BaseController
 
     public function subject_allocation(): string
     {
+        $classesData = $this->classesController->getAll();
+        $sectionList = $this->sectionsController->getAll();
+        $employeeList = $this->classTeacherManagementController->getAllEmployees();
+        $subjectsData = $this->subjectsController->getAll();
+        $passToView = [
+            'classes' => $classesData,
+            'sections' => $sectionList,
+            'teachers' => $employeeList,
+            'subjects' => $subjectsData,
+        ];
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-allocation')            
+            .  view('pages/admin-module-pages/subject-allocation', $passToView)            
         ;
     }
 
@@ -249,6 +262,28 @@ class AdminModuleController extends BaseController
     public function deleteEmployee() {
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->employeeManagementController->deleteEmployee($SubjectId));
+    }
+
+    public function getSubjectAllocationList()
+    {
+        $postData = $this->request->getPost();
+        $classTeacherData = $this->subjectAllocationsController->getSubjectAllocationList($postData);
+        return $classTeacherData;
+    }
+
+    public function addSubjectAllocation() {
+        $details = $this->request->getPost();
+        return json_encode($this->subjectAllocationsController->add($details));
+    }
+
+    public function editSubjectAllocation() {
+        $details = $this->request->getPost();
+        return json_encode($this->subjectAllocationsController->edit($details));
+    }
+
+    public function deleteSubjectAllocation() {
+        $SubjectId = $this->request->getPost('id');
+        return json_encode($this->subjectAllocationsController->delete($SubjectId));
     }
 
 }
