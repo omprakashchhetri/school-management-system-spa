@@ -1,4 +1,3 @@
-<div>Test</div>
 <div class="dashboard-body">
     <div class="breadcrumb-with-buttons mb-24 flex-between flex-wrap gap-8">
         <!-- Breadcrumb Start -->
@@ -11,7 +10,7 @@
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
                 </li>
                 <li>
-                    <span class="text-main-600 fw-normal text-15">Assignments</span>
+                    <span class="text-main-600 fw-normal text-15">Subject Allocations</span>
                 </li>
             </ul>
         </div>
@@ -20,9 +19,9 @@
         <!-- Breadcrumb Right Start -->
         <button type="button"
             class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2"
-            data-bs-toggle="modal" data-bs-target="#addClassTeacherModal">
+            data-bs-toggle="modal" data-bs-target="#addSubjectAllocationModal">
             <i class="ph ph-plus me-4"></i>
-            Add Class Teacher
+            Allocate New Subject
         </button>
     </div>
     <!-- Breadcrumb Right End -->
@@ -39,11 +38,11 @@
                                     id="selectAll" />
                             </div>
                         </th>
-                        <th class="h6 text-gray-300">Class Teacher</th>
+                        <th class="h6 text-gray-300">Teacher</th>
                         <th class="h6 text-gray-300">Class</th>
                         <th class="h6 text-gray-300">Section</th>
+                        <th class="h6 text-gray-300">Subject</th>
                         <th class="h6 text-gray-300">Created At</th>
-                        <th class="h6 text-gray-300">Updated At</th>
                         <th class="h6 text-gray-300">Actions</th>
                     </tr>
                 </thead>
@@ -68,7 +67,7 @@
                             <span class="h6 mb-0 fw-medium text-gray-300">A</span>
                         </td>
                         <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
+                            <span class="h6 mb-0 fw-medium text-gray-300">History</span>
                         </td>
                         <td>
                             <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
@@ -84,125 +83,138 @@
             </table>
         </div>
     </div>
-    <!-- Modal Add Class Teacher -->
-    <div class="modal fade" id="addClassTeacherModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
-            <div class="modal-content radius-16 bg-base">
-                <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Class Teacher</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-24">
-                    <div class="row">
-                        <!-- Class Dropdown -->
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Class : </label>
-                            <select id="classSelect" class="form-select radius-8">
-                                <option value="">Select Class</option>
-                                <?php foreach ($classesDetails as $class): ?>
-                                <option value="<?= $class['id'] ?>">
-                                    <?= $class['class_name'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
 
-                        <!-- Section Dropdown -->
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Section : </label>
-                            <select id="sectionSelect" class="form-select radius-8">
-                                <option value="">Select Section</option>
-                                <?php foreach ($sectionList as $section): ?>
-                                <option value="<?= $section['id'] ?>">
-                                    <?= $section['section_label'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+</div>
 
-                        <!-- Employee Dropdown -->
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Teacher : </label>
-                            <select id="employeeSelect" class="form-select radius-8">
-                                <option value="">Select Teacher</option>
-                                <?php foreach ($employeeList as $employee): ?>
-                                <option value="<?= $employee['id'] ?>">
-                                    <?= $employee['firstname'] ?> <?= $employee['lastname'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-center gap-8 mt-24">
-                            <button type="submit" id="saveNewSectionBtn"
-                                class="btn bg-main-600 hover-bg-main-800 border-main-600 hover-border-main-800 text-md px-24 py-12 radius-8">
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
+<!-- Add Subject Allocation Modal -->
+<div class="modal fade" id="addSubjectAllocationModal" tabindex="-1" aria-labelledby="addSubjectAllocationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-top">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSubjectAllocationLabel">Add Subject Allocation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-        </div>
-    </div>
-    <div class="modal fade" id="editClassTeacherModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog modal-dialog-top">
-            <div class="modal-content radius-16 bg-base">
-                <div class="modal-header py-16 px-24 border border-top-0 border-start-0 border-end-0">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Class Teacher</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-24">
-                    <div class="row">
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Class : </label>
-                            <select id="classSelect" class="form-select radius-8">
-                                <option value="">Select Class</option>
-                                <?php foreach ($classesDetails as $class): ?>
-                                <option value="<?= $class['id'] ?>">
-                                    <?= $class['class_name'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+            <div class="modal-body">
+                <div class="row">
 
-                        <!-- Section Dropdown -->
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Section : </label>
-                            <select id="sectionSelect" class="form-select radius-8">
-                                <option value="">Select Section</option>
-                                <?php foreach ($sectionList as $section): ?>
-                                <option value="<?= $section['id'] ?>">
-                                    <?= $section['section_label'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                    <!-- Class -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Class</label>
+                        <select id="class" class="form-select">
+                            <option value="">Select Class</option>
+                            <?php foreach ($classes as $c): ?>
+                                <option value="<?= $c['id'] ?>"><?= $c['class_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                        <!-- Employee Dropdown -->
-                        <div class="col-12 mb-20">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Teacher : </label>
-                            <select id="employeeSelect" class="form-select radius-8">
-                                <option value="">Select Teacher</option>
-                                <?php foreach ($employeeList as $employee): ?>
-                                <option value="<?= $employee['id'] ?>">
-                                    <?= $employee['firstname'] ?> <?= $employee['lastname'] ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                    <!-- Section -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Section</label>
+                        <select id="section" class="form-select">
+                            <option value="">Select Section</option>
+                            <?php foreach ($sections as $s): ?>
+                                <option value="<?= $s['id'] ?>"><?= $s['section_label'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                        <div class="d-flex align-items-center justify-content-center gap-8 mt-24">
-                            <button type="submit" id="editSectionBtn"
-                                class="btn bg-main-600 hover-bg-main-800 border-main-600 hover-border-main-800 text-md px-24 py-12 radius-8">
-                                Save
-                            </button>
-                        </div>
+                    <!-- Teacher -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Teacher</label>
+                        <select id="teacher" class="form-select">
+                            <option value="">Select Teacher</option>
+                            <?php foreach ($teachers as $t): ?>
+                                <option value="<?= $t['id'] ?>"><?= $t['firstname'].' '.$t['lastname'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Subject</label>
+                        <select id="subject" class="form-select">
+                            <option value="">Select Subject</option>
+                            <?php foreach ($subjects as $sub): ?>
+                                <option value="<?= $sub['id'] ?>"><?= $sub['subject_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" id="saveSubjectAllocationBtn" class="btn btn-primary px-4">Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="<?=base_url()?>assets/js/class-teacher-management.js"></script>
+
+
+<!-- Edit Subject Allocation Modal -->
+<div class="modal fade" id="editSubjectAllocationModal" tabindex="-1" aria-labelledby="editSubjectAllocationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-top">
+        <div class="modal-content radius-16 bg-base">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSubjectAllocationLabel">Edit Subject Allocation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    <!-- Class -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Class</label>
+                        <select id="edit_class" class="form-select">
+                            <option value="">Select Class</option>
+                            <?php foreach ($classes as $c): ?>
+                                <option value="<?= $c['id'] ?>"><?= $c['class_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Section -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Section</label>
+                        <select id="edit_section" class="form-select">
+                            <option value="">Select Section</option>
+                            <?php foreach ($sections as $s): ?>
+                                <option value="<?= $s['id'] ?>"><?= $s['section_label'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Teacher -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Teacher</label>
+                        <select id="edit_teacher" class="form-select">
+                            <option value="">Select Teacher</option>
+                            <?php foreach ($teachers as $t): ?>
+                                <option value="<?= $t['id'] ?>"><?= $t['firstname'].' '.$t['lastname'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Subject</label>
+                        <select id="edit_subject" class="form-select">
+                            <option value="">Select Subject</option>
+                            <?php foreach ($subjects as $sub): ?>
+                                <option value="<?= $sub['id'] ?>"><?= $sub['subject_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" id="updateSubjectAllocationBtn" class="btn btn-primary px-4">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="<?= base_url() ?>assets/js/subject-allocation.js"></script>

@@ -70,7 +70,7 @@
                     </ul>
                     <!-- Submenu End -->
                 </li>
-                <li class="sidebar-menu__item">
+                <li class="sidebar-menu__item d-none">
                     <a href="payment-gateways" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-list-checks"></i></span>
                         <span class="text">Payment Gateway</span>
