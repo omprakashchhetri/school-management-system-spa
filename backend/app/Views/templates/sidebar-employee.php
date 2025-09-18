@@ -19,19 +19,19 @@
         <div class="p-20 pt-10">
             <ul class="sidebar-menu">
                 <li class="sidebar-menu__item">
-                    <a href="admin/dashboard" class="nav_js sidebar-menu__link">
+                    <a href="employee/dashboard" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-squares-four"></i></span>
                         <span class="text">Employee Dashboard</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="admin/role-list" class="nav_js sidebar-menu__link">
+                    <a href="employee/list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
                         <span class="text">Employee List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="admin/class-list" class="nav_js sidebar-menu__link">
+                    <a href="employee/" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-list-bullets"></i></span>
                         <span class="text">Demo Link</span>
                     </a>

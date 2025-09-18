@@ -86,8 +86,9 @@ $routes->group('post-login-employee', function($routes) {
     });
 
     $routes->group('employee', function($routes){
-        $routes->post('list', 'Web\AdminModulePages\AdminModuleController::addSubject');
-        $routes->post('add-edit', 'Web\AdminModulePages\AdminModuleController::editSubject');        
+        $routes->post('dashboard', 'Web\EmployeeModulePages\EmployeeModuleController::dashboard');
+        $routes->post('list', 'Web\EmployeeModulePages\EmployeeModuleController::list');
+        $routes->post('add-edit', 'Web\EmployeeModulePages\EmployeeModuleController::add_edit');        
     });
 });
 
