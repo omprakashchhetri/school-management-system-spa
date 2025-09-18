@@ -5,7 +5,7 @@ jQuery(document).ready(function () {
 			processing: true,
 			serverSide: true,
 			ajax: {
-				url: baseUrl + "post-login-employee/admin/get-employee-list/",
+				url: baseUrl + "post-login-employee/admin/get-employee-list",
 				type: "POST",
 			},
 			columns: [

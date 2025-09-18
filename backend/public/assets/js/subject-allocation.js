@@ -6,7 +6,7 @@ jQuery(document).ready(function () {
             processing: true,
             serverSide: true,
             ajax: {
-                url: baseUrl + "post-login-employee/admin/get-subject-allocation-list/",
+                url: baseUrl + "post-login-employee/admin/get-subject-allocation-list",
                 type: "POST",
             },
             columns: [
