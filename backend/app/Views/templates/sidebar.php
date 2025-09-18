@@ -31,25 +31,25 @@
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="class-list" class="nav_js sidebar-menu__link">
+                    <a href="admin/class-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-list-bullets"></i></span>
                         <span class="text">Class List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="employee-list" class="nav_js sidebar-menu__link">
+                    <a href="admin/employee-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-user-list"></i></span>
                         <span class="text">Employee List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="class-teacher-list" class="nav_js sidebar-menu__link">
+                    <a href="admin/class-teacher-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-chalkboard-teacher"></i></span>
                         <span class="text">Class Teacher List</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
-                    <a href="section-list" class="nav_js sidebar-menu__link">
+                    <a href="admin/section-list" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-list-checks"></i></span>
                         <span class="text">Section List</span>
                     </a>
@@ -62,16 +62,17 @@
                     <!-- Submenu start -->
                     <ul class="sidebar-submenu">
                         <li class="sidebar-submenu__item">
-                            <a href="subject-list" class="nav_js sidebar-submenu__link"> Subject List </a>
+                            <a href="admin/subject-list" class="nav_js sidebar-submenu__link"> Subject List </a>
                         </li>
                         <li class="sidebar-submenu__item">
-                            <a href="subject-allocation" class="nav_js sidebar-submenu__link"> Subject Allocation </a>
+                            <a href="admin/subject-allocation" class="nav_js sidebar-submenu__link"> Subject Allocation
+                            </a>
                         </li>
                     </ul>
                     <!-- Submenu End -->
                 </li>
                 <li class="sidebar-menu__item d-none">
-                    <a href="payment-gateways" class="nav_js sidebar-menu__link">
+                    <a href="admin/payment-gateways" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-list-checks"></i></span>
                         <span class="text">Payment Gateway</span>
                     </a>

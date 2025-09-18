@@ -17,16 +17,11 @@ $routes->post('login', 'Web\DashboardController::login');
 
 // For student type
 $routes->group('post-login-student', function($routes) {
-    
-    
     $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
-
     $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
-    
     $routes->post('profile', 'Web\StudentModulePages\StudentModuleController::profile');
     $routes->post('documents', 'Web\StudentModulePages\StudentModuleController::document_list');
-
 });
 
 // For Employee type
@@ -37,15 +32,6 @@ $routes->group('post-login-employee', function($routes) {
     $routes->get('(:any)', 'Web\PostLoginController::employee_post_login');
 
     $routes->post('student-list', 'Web\DashboardController::student_list');
-    $routes->post('employee-list', 'Web\AdminModulePages\AdminModuleController::employee_list');
-    
-    $routes->post('class-list','Web\AdminModulePages\AdminModuleController::class_list');
-    $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
-    $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::subject_list');
-    $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_allocation');
-    $routes->post('section-list','Web\AdminModulePages\AdminModuleController::section_list');
-    $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::payment_gateways');
-    $routes->post('subject-list', 'Web\AdminModulePages\AdminModuleController::subject_list');
 
     $routes->group('admin', function($routes){
         $routes->post('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
@@ -85,6 +71,23 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('add-subject-allocation', 'Web\AdminModulePages\AdminModuleController::addSubjectAllocation');
         $routes->post('edit-subject-allocation', 'Web\AdminModulePages\AdminModuleController::editSubjectAllocation');
         $routes->post('delete-subject-allocation', 'Web\AdminModulePages\AdminModuleController::deleteSubjectAllocation');
+
+        $routes->post('employee-list', 'Web\AdminModulePages\AdminModuleController::employee_list');    
+        
+        $routes->post('class-list','Web\AdminModulePages\AdminModuleController::class_list');
+        $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
+        
+        $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::subject_list');
+        $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_allocation');        
+        
+        $routes->post('section-list','Web\AdminModulePages\AdminModuleController::section_list');
+        $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::payment_gateways');
+
+    });
+
+    $routes->group('employee', function($routes){
+        $routes->post('list', 'Web\AdminModulePages\AdminModuleController::addSubject');
+        $routes->post('add-edit', 'Web\AdminModulePages\AdminModuleController::editSubject');        
     });
 });
 
