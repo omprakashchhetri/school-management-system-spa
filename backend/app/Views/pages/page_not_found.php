@@ -38,7 +38,7 @@
                             <h1 class="fw-semibold mb-7 fs-9">Opps!!!</h1>
                             <h4 class="text-center fw-semibold mb-10">This page you are looking for could not be found.
                             </h4>
-                            <a class="btn btn-main rounded-pill" href="admin/dashboard" role="button">Go Back to
+                            <a class="btn btn-main rounded-pill" href="pre-login" role="button">Go Back to
                                 Home</a>
                         </div>
                     </div>

@@ -10051,3 +10051,6 @@ div.dt-container .dt-search input {
 .dt-column-order {
   display: none;
 }
+.white-space-nowrap {
+  white-space: nowrap;
+}

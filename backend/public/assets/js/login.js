@@ -37,8 +37,7 @@ jQuery(document).ready(function () {
           Cookies.set("loginType", type);
           console.log(response.token);
           if (type.trim() === "student") {
-            window.location.href =
-              baseUrl + "post-login-student/student/dashboard";
+            window.location.href = baseUrl + "post-login-student/dashboard";
           } else if (type.trim() === "employee") {
             window.location.href =
               baseUrl + "post-login-employee/admin/dashboard";

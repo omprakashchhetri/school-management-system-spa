@@ -19,11 +19,17 @@
                     <div class="card border border-gray-100 rounded-12 box-shadow-custom w-350">
                         <div class="card-body">
                             <div class="max-h-270 overflow-y-auto scroll-sm pe-8">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <small class="text-primary text-11">Modules</small>
+                                    <a class="text-primary border border-primary px-3 py-2 hover-bg-main-500 hover-text-white rounded text-11"
+                                        href="view-modules">View
+                                        All</a>
+                                </div>
                                 <div class="row g-3">
 
                                     <!-- Student Management -->
                                     <div class="col-12">
-                                        <a href="#student"
+                                        <a href="view-modules"
                                             class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
                                             <span class="px-10 py-7 rounded-circle bg-light"><i
                                                     class="ph ph-student text-3xl text-primary"></i></span>

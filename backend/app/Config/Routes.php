@@ -34,6 +34,7 @@ $routes->group('post-login-employee', function($routes) {
     $routes->post('student-list', 'Web\DashboardController::student_list');
 
     $routes->group('admin', function($routes){
+        $routes->post('view-modules', 'Web\AdminModulePages\AdminModuleController::view_modules');
         $routes->post('role-list', 'Web\AdminModulePages\AdminModuleController::roleManagement');
         $routes->post('role-details/(:any)', 'Web\AdminModulePages\AdminModuleController::roleToolManagement/$1');    
         $routes->get('dashboard', 'Web\DashboardController::dashboard');

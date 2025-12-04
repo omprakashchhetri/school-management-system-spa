@@ -47,5 +47,5 @@ class DashboardController extends BaseController
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/subject-list')
         ;
-    }
+    }   
 }

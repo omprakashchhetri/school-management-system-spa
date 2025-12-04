@@ -145,6 +145,4 @@ class EmployeeManagementController extends BaseController
 
         return ['message' => 'Employee deleted successfully'];
     }
-
-
 }

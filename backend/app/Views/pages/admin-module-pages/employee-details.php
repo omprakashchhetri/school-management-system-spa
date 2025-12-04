@@ -70,43 +70,44 @@
                         <button class="btn btn-outline-main rounded-pill py-9">Edit Employee</button>
                     </div>
                 </div>
-                <ul class="nav common-tab style-two nav-pills mb-0" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation">
+                <ul class="nav common-tab style-two nav-pills mb-0 flex-nowrap overflow-x-auto pb-5" id="pills-tab"
+                    role="tablist">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link active" id="pills-details-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-details" type="button" role="tab" aria-controls="pills-details"
                             aria-selected="true">
                             Personal Details
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link" id="pills-professional-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-professional" type="button" role="tab"
                             aria-controls="pills-professional" aria-selected="false">
                             Professional Info
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link" id="pills-attendance-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-attendance" type="button" role="tab" aria-controls="pills-attendance"
                             aria-selected="false">
                             Attendance
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link" id="pills-subjects-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-subjects" type="button" role="tab" aria-controls="pills-subjects"
                             aria-selected="false">
                             Subject Allocation
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link" id="pills-classes-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-classes" type="button" role="tab" aria-controls="pills-classes"
                             aria-selected="false">
                             Class Teacher
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item white-space-nowrap" role="presentation">
                         <button class="nav-link" id="pills-documents-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-documents" type="button" role="tab" aria-controls="pills-documents"
                             aria-selected="false">
