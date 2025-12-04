@@ -18,7 +18,7 @@ jQuery(document).ready(async function () {
 
   if (token && loginType) {
     if (loginType === "student") {
-      window.location.href = baseUrl + "post-login-student/";
+      window.location.href = baseUrl + "post-login-student/dashboard";
       return;
     } else if (loginType === "employee") {
       window.location.href = baseUrl + "post-login-employee/admin/dashboard";
