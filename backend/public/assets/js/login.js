@@ -38,7 +38,7 @@ jQuery(document).ready(function () {
           console.log(response.token);
           if (type.trim() === "student") {
             window.location.href =
-              baseUrl + "post-login-student/student/dashboard";
+              baseUrl + "post-login-student/dashboard";
           } else if (type.trim() === "employee") {
             window.location.href =
               baseUrl + "post-login-employee/admin/dashboard";

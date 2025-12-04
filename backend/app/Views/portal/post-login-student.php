@@ -98,7 +98,6 @@
         jQuery(function() {
             var token = storage.getItem("authToken");
             var tokenCookie = Cookies.get("authToken");
-
             if (!token && !tokenCookie) {
                 // Redirect to post-login.html if token exists
                 window.location.href = baseUrl + "pre-login/";
