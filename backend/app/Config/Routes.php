@@ -91,6 +91,14 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('list', 'Web\EmployeeModulePages\EmployeeModuleController::list');
         $routes->post('add-edit', 'Web\EmployeeModulePages\EmployeeModuleController::add_edit');        
     });
+
+    $routes->group('academic', function($routes){
+        $routes->post('syllabus-list', 'Web\AcademicModulePages\SyllabusModuleController::list');
+        $routes->post('get-syllabus-list', 'Web\AcademicModulePages\SyllabusModuleController::getSyllabusList');
+        $routes->post('add-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::addSyllabus');
+        $routes->post('edit-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::editSyllabus');
+        $routes->post('delete-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::deleteSyllabus');
+    });
 });
 
 // For api
