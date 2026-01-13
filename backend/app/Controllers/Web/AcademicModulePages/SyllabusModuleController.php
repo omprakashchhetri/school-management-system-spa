@@ -56,6 +56,25 @@ class SyllabusModuleController extends BaseController
         ;
     }
 
+    public function syllabusDetails($id) {
+        $classesData = $this->classesController->getAll();
+        $sectionList = $this->sectionsController->getAll();
+        $employeeList = $this->classTeacherManagementController->getAllEmployees();
+        $subjectsData = $this->subjectsController->getAll();
+        $syllabusDetails = $this->syllabusManagementController->getOneSyllabus($id);
+        $passToView = [
+            'classes' => $classesData,
+            'sections' => $sectionList,
+            'teachers' => $employeeList,
+            'subjects' => $subjectsData,
+            'syllabusDetails' => $syllabusDetails,
+        ];
+        return view('templates/sidebar-academic')
+            .  view('templates/topbar')
+            .  view('pages/academic-module-pages/syllabus-details', $passToView)
+        ;
+    }
+
     public function addSyllabus() {
         $details = $this->request->getPost();
         return json_encode($this->syllabusManagementController->addSyllabus($details));
