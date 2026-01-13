@@ -187,7 +187,5 @@
             </div>
         </div>
     </div>
-
-
 </div>
 <script src="<?= base_url() ?>assets/js/employee-list.js"></script>

@@ -30,18 +30,17 @@
                 <div class="avatar-upload">
                     <input type="file" id="coverImageUpload" accept=".png, .jpg, .jpeg" />
                     <div class="avatar-preview">
-                        <div id="coverImagePreview" style="
-                  background-image: url('assets/images/thumbs/setting-cover-img.png');
+                        <div id="coverImagePreview" style="background-image: url('https://images.unsplash.com/photo-1599454100789-b211e369bd04?q=80&w=1306&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
                 "></div>
                     </div>
                 </div>
             </div>
 
-            <div class="setting-profile px-24">
+            <div class="setting-profile px-24" style="margin-top: -50px;">
                 <div class="flex-between flex-wrap">
                     <div class="d-flex align-items-end flex-wrap mb-20 gap-24">
-                        <img src="assets/images/thumbs/student-profile-img.jpg" alt=""
-                            class="w-120 h-120 rounded-circle border border-white" />
+                        <img src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="" class="w-120 h-120 rounded-circle border border-white" />
                         <div>
                             <h4 class="mb-8">Emily Johnson</h4>
                             <div class="setting-profile__infos flex-align flex-wrap gap-16">
@@ -229,124 +228,102 @@
         </div>
         <!-- Personal Details Tab End -->
 
-        <!-- Fees History Tab Start -->
-        <div class="tab-pane fade" id="pills-fees" role="tabpanel" aria-labelledby="pills-fees-tab" tabindex="0">
+        <div class="tab-pane fade" id="pills-attendance" role="tabpanel" aria-labelledby="pills-attendance-tab"
+            tabindex="0">
+
             <div class="card mt-24">
                 <div class="card-header border-bottom">
-                    <div class="flex-between flex-wrap gap-16">
-                        <div>
-                            <h4 class="mb-4">Fees History</h4>
-                            <p class="text-gray-600 text-15">
-                                Payment records and fee details
-                            </p>
-                        </div>
-                        <div class="flex-align gap-8">
-                            <select class="form-control form-select py-6">
-                                <option>Academic Year 2024-25</option>
-                                <option>Academic Year 2023-24</option>
-                            </select>
-                        </div>
-                    </div>
+                    <h4 class="mb-4">Attendance Record</h4>
+                    <p class="text-gray-600 text-15">Student attendance tracking and statistics</p>
                 </div>
-                <div class="card-body">
-                    <div class="row gy-4 mb-24">
-                        <div class="col-xxl-3 col-sm-6">
-                            <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-main-50">
-                                <span
-                                    class="text-white bg-main-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                                    <i class="ph ph-currency-dollar"></i>
-                                </span>
-                                <div>
-                                    <h4 class="mb-0">$12,000</h4>
-                                    <span class="fw-medium text-main-600">Total Fees</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xxl-3 col-sm-6">
-                            <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-success-50">
-                                <span
-                                    class="text-white bg-success-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                                    <i class="ph ph-check-circle"></i>
-                                </span>
-                                <div>
-                                    <h4 class="mb-0">$9,000</h4>
-                                    <span class="fw-medium text-success-600">Paid Amount</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xxl-3 col-sm-6">
-                            <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-warning-50">
-                                <span
-                                    class="text-white bg-warning-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                                    <i class="ph ph-warning"></i>
-                                </span>
-                                <div>
-                                    <h4 class="mb-0">$3,000</h4>
-                                    <span class="fw-medium text-warning-600">Pending Amount</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xxl-3 col-sm-6">
-                            <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-info-50">
-                                <span
-                                    class="text-white bg-info-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                                    <i class="ph ph-calendar-blank"></i>
-                                </span>
-                                <div>
-                                    <h4 class="mb-0">Dec 30</h4>
-                                    <span class="fw-medium text-info-600">Next Due Date</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="card-body p-0 overflow-x-auto">
-                        <table class="table table-striped align-middle">
-                            <thead class="bg-light">
-                                <tr>
-                                    <td class="text-dark">Sep 14, 2024</td>
-                                    <td class="text-dark">Saturday</td>
-                                    <td><span
-                                            class="badge badge-sm text-secondary-600 bg-secondary-100 py-1 px-10 rounded-pill">Holiday</span>
-                                    </td>
-                                    <td>-</td>
-                                    <td class="text-muted">Weekend</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-dark">Sep 13, 2024</td>
-                                    <td class="text-dark">Friday</td>
-                                    <td><span
-                                            class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Present</span>
-                                    </td>
-                                    <td class="text-dark">08:05 AM</td>
-                                    <td class="text-muted">-</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-dark">Sep 12, 2024</td>
-                                    <td class="text-dark">Thursday</td>
-                                    <td><span
-                                            class="badge badge-sm text-warning-600 bg-warning-100 py-1 px-10 rounded-pill">Late</span>
-                                    </td>
-                                    <td class="text-dark">08:35 AM</td>
-                                    <td class="text-muted">Arrived late due to traffic</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-dark">Sep 11, 2024</td>
-                                    <td class="text-dark">Wednesday</td>
-                                    <td><span
-                                            class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Present</span>
-                                    </td>
-                                    <td class="text-dark">08:12 AM</td>
-                                    <td class="text-muted">-</td>
-                                </tr>
-                                </tbody>
-                        </table>
-                    </div>
-
+                <div class="card-body p-0 overflow-x-auto">
+                    <table class="table table-striped align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Status</th>
+                                <th>Check In Time</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Wednesday</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300"><span
+                                            class="badge bg-success">Present</span></span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">08:15 AM</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">-</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Sep 17, 2024</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Tuesday</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300"><span
+                                            class="badge bg-success">Present</span></span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">08:10 AM</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">-</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Sep 16, 2024</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Monday</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300"><span
+                                            class="badge bg-danger">Absent</span></span></td>
+                                <td>-</td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Sick leave</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
         </div>
-        <!-- Attendance Tab End -->
+
+        <div class="tab-pane fade" id="pills-fees" role="tabpanel" aria-labelledby="pills-fees-tab" tabindex="0">
+
+            <div class="card mt-24">
+                <div class="card-header border-bottom">
+                    <h4 class="mb-4">Fee Records</h4>
+                    <p class="text-gray-600 text-15">Student fee payment history</p>
+                </div>
+
+                <div class="card-body p-0 overflow-x-auto">
+                    <table class="table table-striped align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Payment Date</th>
+                                <th>Status</th>
+                                <th>Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Tuition Fee - Term 1</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">$3,000</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Apr 30, 2024</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Apr 25, 2024</span></td>
+                                <td><span class="badge bg-success">Paid</span></td>
+                                <td><button class="btn btn-info btn-sm p-10">Download</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Tuition Fee - Term 3</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">$3,000</span></td>
+                                <td><span class="h6 mb-0 fw-medium text-gray-300">Dec 30, 2024</span></td>
+                                <td>-</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td><button class="btn btn-main btn-sm p-10">Pay Now</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
 
         <!-- Assignments Tab Start -->
         <div class="tab-pane fade" id="pills-assignments" role="tabpanel" aria-labelledby="pills-assignments-tab"
@@ -445,15 +422,18 @@
                                             <span class="text-dark">Mathematics</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">Quadratic Equations - Chapter 4</td>
-                                    <td class="text-dark">Sep 10, 2024</td>
-                                    <td class="text-dark">Sep 17, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Quadratic
+                                            Equations - Chapter 4</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 10,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 17,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Submitted</span>
                                     </td>
                                     <td class="text-dark">18/20</td>
                                     <td>
-                                        <button class="btn btn-outline-info py-4 px-10 text-13">
+                                        <button class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-eye me-6"></i>View
                                         </button>
                                     </td>
@@ -466,9 +446,12 @@
                                             <span class="text-dark">Science</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">Chemical Reactions Lab Report</td>
-                                    <td class="text-dark">Sep 12, 2024</td>
-                                    <td class="text-dark">Sep 20, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Chemical
+                                            Reactions Lab Report</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 12,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 20,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-warning-600 bg-warning-100 py-1 px-10 rounded-pill">In
                                             Progress</span>
@@ -488,15 +471,18 @@
                                             <span class="text-dark">English</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">Essay on Climate Change</td>
-                                    <td class="text-dark">Sep 08, 2024</td>
-                                    <td class="text-dark">Sep 15, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Essay on Climate
+                                            Change</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 08,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 15,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Submitted</span>
                                     </td>
                                     <td class="text-dark">15/15</td>
                                     <td>
-                                        <button class="btn btn-outline-info py-4 px-10 text-13">
+                                        <button class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-eye me-6"></i>View
                                         </button>
                                     </td>
@@ -509,9 +495,12 @@
                                             <span class="text-dark">History</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">World War II Analysis</td>
-                                    <td class="text-dark">Sep 05, 2024</td>
-                                    <td class="text-dark">Sep 12, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">World War II
+                                            Analysis</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 05,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 12,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-danger-600 bg-danger-100 py-1 px-10 rounded-pill">Overdue</span>
                                     </td>
@@ -530,9 +519,12 @@
                                             <span class="text-dark">Mathematics</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">Trigonometry Practice Problems</td>
-                                    <td class="text-dark">Sep 14, 2024</td>
-                                    <td class="text-dark">Sep 21, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Trigonometry
+                                            Practice Problems</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 14,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 21,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-warning-600 bg-warning-100 py-1 px-10 rounded-pill">In
                                             Progress</span>
@@ -552,15 +544,18 @@
                                             <span class="text-dark">Science</span>
                                         </div>
                                     </td>
-                                    <td class="text-dark">Physics - Laws of Motion</td>
-                                    <td class="text-dark">Sep 11, 2024</td>
-                                    <td class="text-dark">Sep 18, 2024</td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Physics - Laws
+                                            of Motion</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 11,
+                                            2024</span></td>
+                                    <td class="text-dark"><span class="h6 mb-0 fw-medium text-gray-300">Sep 18,
+                                            2024</span></td>
                                     <td><span
                                             class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Submitted</span>
                                     </td>
                                     <td class="text-dark">19/20</td>
                                     <td>
-                                        <button class="btn btn-outline-info py-4 px-10 text-13">
+                                        <button class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-eye me-6"></i>View
                                         </button>
                                     </td>
@@ -966,347 +961,6 @@ $(document).ready(function() {
             reader.readAsDataURL(file);
         }
     });
+    jQuery('table').dataTable();
 });
 </script>
-<th class="h6 text-dark fw-bold">Fee Type</th>
-<th class="h6 text-dark fw-bold">Amount</th>
-<th class="h6 text-dark fw-bold">Due Date</th>
-<th class="h6 text-dark fw-bold">Payment Date</th>
-<th class="h6 text-dark fw-bold">Status</th>
-<th class="h6 text-dark fw-bold">Receipt</th>
-</tr>
-</thead>
-<tbody>
-    <tr>
-        <td class="text-dark">Tuition Fee - Term 1</td>
-        <td class="text-dark">$3,000</td>
-        <td class="text-dark">Apr 30, 2024</td>
-        <td class="text-dark">Apr 25, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Tuition Fee - Term 2</td>
-        <td class="text-dark">$3,000</td>
-        <td class="text-dark">Aug 30, 2024</td>
-        <td class="text-dark">Aug 28, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Tuition Fee - Term 3</td>
-        <td class="text-dark">$3,000</td>
-        <td class="text-dark">Dec 30, 2024</td>
-        <td class="text-muted">-</td>
-        <td><span class="badge badge-sm text-warning-600 bg-warning-100 py-1 px-10 rounded-pill">Pending</span>
-        </td>
-        <td>
-            <button class="btn btn-main py-4 px-10 text-13">
-                <i class="ph ph-credit-card me-6"></i>Pay Now
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Library Fee</td>
-        <td class="text-dark">$500</td>
-        <td class="text-dark">Apr 30, 2024</td>
-        <td class="text-dark">Apr 25, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Lab Fee</td>
-        <td class="text-dark">$800</td>
-        <td class="text-dark">Apr 30, 2024</td>
-        <td class="text-dark">Apr 25, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Sports Fee</td>
-        <td class="text-dark">$400</td>
-        <td class="text-dark">Apr 30, 2024</td>
-        <td class="text-dark">Apr 25, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark">Activity Fee</td>
-        <td class="text-dark">$300</td>
-        <td class="text-dark">Apr 30, 2024</td>
-        <td class="text-dark">Apr 25, 2024</td>
-        <td><span class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-        </td>
-        <td>
-            <button class="btn btn-outline-info py-4 px-10 text-13">
-                <i class="ph ph-download me-6"></i>Download
-            </button>
-        </td>
-    </tr>
-</tbody>
-</table>
-</div>
-
-</div>
-</div>
-</div>
-<!-- Fees History Tab End -->
-
-<!-- Attendance Tab Start -->
-<div class="tab-pane fade" id="pills-attendance" role="tabpanel" aria-labelledby="pills-attendance-tab" tabindex="0">
-    <div class="card mt-24">
-        <div class="card-header border-bottom">
-            <div class="flex-between flex-wrap gap-16">
-                <div>
-                    <h4 class="mb-4">Attendance Record</h4>
-                    <p class="text-gray-600 text-15">
-                        Student attendance tracking and statistics
-                    </p>
-                </div>
-                <div class="flex-align gap-8">
-                    <select class="form-control form-select py-6">
-                        <option>This Month</option>
-                        <option>Last Month</option>
-                        <option>Last 3 Months</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="row gy-4 mb-24">
-                <div class="col-xxl-3 col-sm-6">
-                    <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-main-50">
-                        <span class="text-white bg-main-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                            <i class="ph ph-calendar-check"></i>
-                        </span>
-                        <div>
-                            <h4 class="mb-0">20</h4>
-                            <span class="fw-medium text-main-600">Present Days</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-3 col-sm-6">
-                    <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-warning-50">
-                        <span
-                            class="text-white bg-warning-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                            <i class="ph ph-calendar-x"></i>
-                        </span>
-                        <div>
-                            <h4 class="mb-0">3</h4>
-                            <span class="fw-medium text-warning-600">Absent Days</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-3 col-sm-6">
-                    <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-info-50">
-                        <span class="text-white bg-info-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                            <i class="ph ph-clock"></i>
-                        </span>
-                        <div>
-                            <h4 class="mb-0">1</h4>
-                            <span class="fw-medium text-info-600">Late Arrivals</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-3 col-sm-6">
-                    <div class="statistics-card p-xl-4 p-16 flex-align gap-10 rounded-8 bg-success-50">
-                        <span
-                            class="text-white bg-success-600 w-36 h-36 rounded-circle flex-center text-xl flex-shrink-0">
-                            <i class="ph ph-percent"></i>
-                        </span>
-                        <div>
-                            <h4 class="mb-0">87%</h4>
-                            <span class="fw-medium text-success-600">Attendance Rate</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-body p-0 overflow-x-auto">
-                <table class="table table-striped align-middle">
-                    <thead class="bg-light">
-                        <tr>
-                            <th class="h6 text-dark fw-bold">Date</th>
-                            <th class="h6 text-dark fw-bold">Day</th>
-                            <th class="h6 text-dark fw-bold">Status</th>
-                            <th class="h6 text-dark fw-bold">Check In Time</th>
-                            <th class="h6 text-dark fw-bold">Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-dark">Sep 18, 2024</td>
-                            <td class="text-dark">Wednesday</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Present</span>
-                            </td>
-                            <td class="text-dark">08:15 AM</td>
-                            <td class="text-muted">-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Sep 17, 2024</td>
-                            <td class="text-dark">Tuesday</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Present</span>
-                            </td>
-                            <td class="text-dark">08:10 AM</td>
-                            <td class="text-muted">-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Sep 16, 2024</td>
-                            <td class="text-dark">Monday</td>
-                            <td><span
-                                    class="badge badge-sm text-danger-600 bg-danger-100 py-1 px-10 rounded-pill">Absent</span>
-                            </td>
-                            <td>-</td>
-                            <td class="text-muted">Sick leave (parent informed)</td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Sep 15, 2024</td>
-                            <td class="text-dark">Sunday</td>
-                            <td><span
-                                    class="badge badge-sm text-secondary-600 bg-secondary-100 py-1 px-10 rounded-pill">Holiday</span>
-                            </td>
-                            <td>-</td>
-                            <td class="text-muted">Weekend</td>
-                        </tr>
-                        <tr>
-                            <th class="h6 text-dark fw-bold">Fee Type</th>
-                            <th class="h6 text-dark fw-bold">Amount</th>
-                            <th class="h6 text-dark fw-bold">Due Date</th>
-                            <th class="h6 text-dark fw-bold">Payment Date</th>
-                            <th class="h6 text-dark fw-bold">Status</th>
-                            <th class="h6 text-dark fw-bold">Receipt</th>
-                        </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-dark">Tuition Fee - Term 1</td>
-                            <td class="text-dark">$3,000</td>
-                            <td class="text-dark">Apr 30, 2024</td>
-                            <td class="text-dark">Apr 25, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Tuition Fee - Term 2</td>
-                            <td class="text-dark">$3,000</td>
-                            <td class="text-dark">Aug 30, 2024</td>
-                            <td class="text-dark">Aug 28, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Tuition Fee - Term 3</td>
-                            <td class="text-dark">$3,000</td>
-                            <td class="text-dark">Dec 30, 2024</td>
-                            <td class="text-muted">-</td>
-                            <td><span
-                                    class="badge badge-sm text-warning-600 bg-warning-100 py-1 px-10 rounded-pill">Pending</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-main py-4 px-10 text-13">
-                                    <i class="ph ph-credit-card me-6"></i>Pay Now
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Library Fee</td>
-                            <td class="text-dark">$500</td>
-                            <td class="text-dark">Apr 30, 2024</td>
-                            <td class="text-dark">Apr 25, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Lab Fee</td>
-                            <td class="text-dark">$800</td>
-                            <td class="text-dark">Apr 30, 2024</td>
-                            <td class="text-dark">Apr 25, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Sports Fee</td>
-                            <td class="text-dark">$400</td>
-                            <td class="text-dark">Apr 30, 2024</td>
-                            <td class="text-dark">Apr 25, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-dark">Activity Fee</td>
-                            <td class="text-dark">$300</td>
-                            <td class="text-dark">Apr 30, 2024</td>
-                            <td class="text-dark">Apr 25, 2024</td>
-                            <td><span
-                                    class="badge badge-sm text-success-600 bg-success-100 py-1 px-10 rounded-pill">Paid</span>
-                            </td>
-                            <td>
-                                <button class="btn btn-outline-info py-4 px-10 text-13">
-                                    <i class="ph ph-download me-6"></i>Download
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Fees History Tab End -->
