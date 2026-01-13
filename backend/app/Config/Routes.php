@@ -95,6 +95,7 @@ $routes->group('post-login-employee', function($routes) {
     $routes->group('academic', function($routes){
         $routes->post('syllabus-list', 'Web\AcademicModulePages\SyllabusModuleController::list');
         $routes->post('get-syllabus-list', 'Web\AcademicModulePages\SyllabusModuleController::getSyllabusList');
+        $routes->post('syllabus-details/(:segment)', 'Web\AcademicModulePages\SyllabusModuleController::syllabusDetails/$1');
         $routes->post('add-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::addSyllabus');
         $routes->post('edit-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::editSyllabus');
         $routes->post('delete-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::deleteSyllabus');

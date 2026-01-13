@@ -124,7 +124,7 @@ class SyllabusManagementController extends BaseController
             $data[] = [
                 'checkbox' => '<input type="checkbox" value="' . $row->id . '" class="form-check-input">',
 
-                'class' => '<span class="h6 mb-0 fw-medium text-gray-300">' . $row->class_name . '</span>',
+                'class' => '<span class="h6 mb-0 fw-medium text-gray-300 nav_js" data-route="academic/syllabus-details/' . $row->id . '">' . $row->class_name . '</span>',
                 'section' => '<span class="h6 mb-0 fw-medium text-gray-300">' . $row->section_label . '</span>',
                 'subject' => '<span class="h6 mb-0 fw-medium text-gray-300">' . $row->subject_name . '</span>',
                 'teacher' => '<span class="h6 mb-0 fw-medium text-gray-300">' . $teacherName . '</span>',
@@ -169,6 +169,47 @@ class SyllabusManagementController extends BaseController
             'data' => $data
         ]);
     }
+    /**
+     * Get one syllabus record by ID with class, section, subject, and teacher details.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getOneSyllabus(int $id): array
+    {
+        $record = $this->syllabusModel
+            ->select('
+            s.id,
+            s.related_class,
+            s.related_section,
+            s.related_subject,
+            s.related_teacher,
+            s.uploaded_syllabus_file,
+            s.description,
+            s.created_at,
+            s.updated_at,
+
+            c.class_name,
+            sec.section_label,
+            sub.subject_name,
+            CONCAT(emp.firstname, " ", emp.lastname) AS teacher_name
+        ')
+            ->from('syllabus s')
+            ->join('classes c', 'c.id = s.related_class', 'left')
+            ->join('sections sec', 'sec.id = s.related_section', 'left')
+            ->join('subjects sub', 'sub.id = s.related_subject', 'left')
+            ->join('employees emp', 'emp.id = s.related_teacher', 'left')
+            ->where('s.deleted_at', null)
+            ->where('s.id', $id)
+            ->first();
+
+        if (!$record) {
+            return ['error' => 'Syllabus record not found'];
+        }
+
+        return $record;
+    }
+
     public function addSyllabus(array $data): array
     {
         $file = service('request')->getFile('syllabus_file');
