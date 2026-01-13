@@ -19,7 +19,7 @@
             </ul>
         </div>
 
-        <a href="attendance/mark-attendance"
+        <a href="mark-attendance"
             class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2">
             <i class="ph ph-plus me-4"></i>
             Mark Attendance
