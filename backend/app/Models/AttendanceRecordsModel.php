@@ -4,32 +4,32 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 /**
- * Model: StudentAttendanceModel
+ * Model: AttendanceRecordsModel
  * Auto-generated from SQL DDL
  */
-class StudentAttendanceModel extends Model
+class AttendanceRecordsModel extends Model
 {
     protected $DBGroup = 'default';
-    protected $table = 'student_attendance';
+    protected $table = 'attendance_records';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $protectFields = true;
+
+    /**
+     * IMPORTANT:
+     * - Do NOT include `id`
+     * - Do NOT include timestamp fields
+     */
     protected $allowedFields = [
-            'id',
-            'student_id',
-            'status',
-            'punch_in',
-            'punch_out',
-            'date',
-            'attendance_type',
-            'attendance_record_id',
-            'created_at',
-            'updated_at',
-            'deleted_at',
-        ];
+        'class_id',
+        'section_id',
+        'date',
+        'taken_by',
+        'taken_at'
+    ];
 
     // Dates
     protected $useTimestamps = true;
@@ -54,5 +54,4 @@ class StudentAttendanceModel extends Model
     protected $afterFind = [];
     protected $beforeDelete = [];
     protected $afterDelete = [];
-
 }
