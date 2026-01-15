@@ -19,7 +19,7 @@
         <div class="p-20 pt-10">
             <ul class="sidebar-menu">
                 <li class="sidebar-menu__item">
-                    <a href="attendance/list" class="nav_js sidebar-menu__link">
+                    <a href="attendance/mark-attendance" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
                         <span class="text">Attendance List</span>
                     </a>
