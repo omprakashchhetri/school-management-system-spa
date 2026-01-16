@@ -16,6 +16,7 @@ class SyllabusModuleController extends BaseController
     protected $sectionsController;
     protected $subjectsController;
     protected $classTeacherManagementController;
+    
     public function __construct()
     {
         
