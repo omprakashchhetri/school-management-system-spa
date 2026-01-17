@@ -19,66 +19,50 @@
     <div class="main-wrapper">
         <div class="row g-3">
 
-            <!-- Student Management -->
-            <div class="col-md-4">
-                <a href="view-modules"
-                    class="d-flex flex-column bg-white justify-content-start align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-student text-4xl text-primary"></i></span>
-                    <span class="fw-medium text-13">Student Management</span>
-                </a>
-            </div>
+            <?php foreach ($roleToolPermissions['tools'] as $tool): ?>
 
-            <!-- Teacher Management -->
-            <div class="col-md-4">
-                <a href="#teacher"
-                    class="d-flex flex-column bg-white justify-content-start align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-chalkboard-teacher text-4xl text-success"></i></span>
-                    <span class="fw-medium text-13">Teacher Management</span>
-                </a>
-            </div>
+                <?php
+                // Permission check
+                if ($tool['can_view'] != 1)
+                    continue;
 
-            <!-- Attendance -->
-            <div class="col-md-4">
-                <a href="#attendance"
-                    class="d-flex flex-column bg-white justify-content-start align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-calendar-check text-4xl text-warning"></i></span>
-                    <span class="fw-medium text-13">Attendance</span>
-                </a>
-            </div>
+                $details = $tool['tool_details'];
 
-            <!-- Exams -->
-            <div class="col-md-4">
-                <a href="#exams"
-                    class="d-flex flex-column bg-white justify-content-start align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-notebook text-4xl text-danger"></i></span>
-                    <span class="fw-medium text-13">Exams</span>
-                </a>
-            </div>
+                // Safety + visibility checks
+                if (
+                    empty($details['tool_name']) ||
+                    empty($details['base_route']) ||
+                    $details['is_active'] == 0
+                ) {
+                    continue;
+                }
 
-            <!-- Fees Management -->
-            <div class="col-md-4">
-                <a href="#fees"
-                    class="d-flex flex-column bg-white justify-content-start align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-wallet text-4xl text-info"></i></span>
-                    <span class="fw-medium text-13">Fees Management</span>
-                </a>
-            </div>
+                // Fallbacks (never break UI)
+                $icon = !empty($details['icon']) ? $details['icon'] : 'ph-squares-four';
+                $color = !empty($details['color']) ? $details['color'] : 'text-gray-400';
+                ?>
 
-            <!-- Library -->
-            <div class="col-md-4">
-                <a href="#library"
-                    class="d-flex flex-column bg-white align-items-center text-center p-15 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                    <span class="px-10 py-7 rounded-circle bg-light"><i
-                            class="ph ph-books text-4xl text-purple"></i></span>
-                    <span class="fw-medium text-13">Library</span>
-                </a>
-            </div>
+                <div class="col-md-4">
+                    <div class="nav_js cursor-pointer d-flex flex-column bg-white justify-content-start align-items-center
+                   text-center p-15 gap-5 border rounded-10 text-secondary-light
+                   hover-bg-main-50 h-100 hover-text-primary transition-2"
+                        data-route="<?= esc($details['base_route']); ?>">
 
-        </div><!-- row end -->
+                        <span class="px-10 py-7 rounded-circle bg-light">
+                            <i class="ph <?= esc($icon); ?> text-4xl <?= esc($color); ?>"></i>
+                        </span>
+
+                        <span class="fw-medium text-13">
+                            <?= esc($details['tool_name']); ?>
+                        </span>
+
+                    </div>
+                </div>
+
+            <?php endforeach; ?>
+
+        </div>
+
+
     </div>
 </div>

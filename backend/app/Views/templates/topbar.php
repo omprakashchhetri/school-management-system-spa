@@ -21,73 +21,55 @@
                             <div class="max-h-270 overflow-y-auto scroll-sm pe-8">
                                 <div class="d-flex justify-content-between mb-4">
                                     <small class="text-primary text-11">Modules</small>
-                                    <a class="text-primary border border-primary px-3 py-2 hover-bg-main-500 hover-text-white rounded text-11"
-                                        href="view-modules">View
-                                        All</a>
+                                    <button
+                                        class="text-primary border border-primary px-3 py-2 hover-bg-main-500 hover-text-white rounded text-11 nav_js"
+                                        data-route="admin/view-modules">View All</button>
                                 </div>
                                 <div class="row g-3">
+                                    <?php foreach ($roleToolPermissions['tools'] as $tool): ?>
+                                        <?php
+                                        
+                                        // Permission check
+                                        if ($tool['can_view'] != 1)
+                                            continue;
 
-                                    <!-- Student Management -->
-                                    <div class="col-12">
-                                        <a href="view-modules"
-                                            class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-student text-3xl text-primary"></i></span>
-                                            <span class="fw-medium text-13">Student Management</span>
-                                        </a>
-                                    </div>
+                                        $details = $tool['tool_details'];
+                                        // Safety checks
+                                        if (
+                                            empty($details['base_route']) ||
+                                            empty($details['tool_name']) ||
+                                            $details['is_active'] == 0 // flip logic later if needed
+                                        ) {
+                                            continue;
+                                        }
 
-                                    <!-- Teacher Management -->
-                                    <div class="col-12">
-                                        <a href="#teacher"
-                                            class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-chalkboard-teacher text-3xl text-success"></i></span>
-                                            <span class="fw-medium text-13">Teacher Management</span>
-                                        </a>
-                                    </div>
+                                        // Fallbacks (never break UI)
+                                        $icon = !empty($details['icon']) ? $details['icon'] : 'ph-squares-four';
+                                        $color = !empty($details['color']) ? $details['color'] : 'text-gray-400';
+                                        ?>
 
-                                    <!-- Attendance -->
-                                    <div class="col-12">
-                                        <a href="#attendance"
-                                            class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-calendar-check text-3xl text-warning"></i></span>
-                                            <span class="fw-medium text-13">Attendance</span>
-                                        </a>
-                                    </div>
+                                        <div class="col-12"><!-- use col-md-4 for View All -->
+                                            <div class="nav_js cursor-pointer d-flex justify-content-start align-items-center p-8 gap-5 border rounded-10
+                   text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2"
+                                                data-route="<?= htmlspecialchars($details['base_route']); ?>">
 
-                                    <!-- Exams -->
-                                    <div class="col-12">
-                                        <a href="#exams"
-                                            class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-notebook text-3xl text-danger"></i></span>
-                                            <span class="fw-medium text-13">Exams</span>
-                                        </a>
-                                    </div>
+                                                <span class="px-10 py-7 rounded-circle bg-light">
+                                                    <i
+                                                        class="ph <?= htmlspecialchars($icon); ?> text-3xl <?= htmlspecialchars($color); ?>"></i>
+                                                </span>
 
-                                    <!-- Fees Management -->
-                                    <div class="col-12">
-                                        <a href="#fees"
-                                            class="d-flex justify-content-start align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-wallet text-3xl text-info"></i></span>
-                                            <span class="fw-medium text-13">Fees Management</span>
-                                        </a>
-                                    </div>
+                                                <span class="fw-medium text-13">
+                                                    <?= htmlspecialchars($details['tool_name']); ?>
+                                                </span>
 
-                                    <!-- Library -->
-                                    <div class="col-12">
-                                        <a href="#library"
-                                            class="d-flex align-items-center text-center p-8 gap-5 border rounded-10 text-decoration-none text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2">
-                                            <span class="px-10 py-7 rounded-circle bg-light"><i
-                                                    class="ph ph-books text-3xl text-purple"></i></span>
-                                            <span class="fw-medium text-13">Library</span>
-                                        </a>
-                                    </div>
+                                            </div>
+                                        </div>
 
-                                </div><!-- row end -->
+                                    <?php endforeach; ?>
+                                </div>
+
+
+
                             </div>
                         </div>
                     </div>
@@ -137,7 +119,7 @@
                                 </div>
                                 <div class="p-24 max-h-270 overflow-y-auto scroll-sm">
                                     <div class="d-flex align-items-start gap-12">
-                                        <img src="<?=base_url()?>assets/images/thumbs/notification-img1.png" alt=""
+                                        <img src="<?= base_url() ?>assets/images/thumbs/notification-img1.png" alt=""
                                             class="w-48 h-48 rounded-circle object-fit-cover">
                                         <div class="border-bottom border-gray-100 mb-24 pb-24">
                                             <div class="flex-align gap-4">
@@ -187,7 +169,7 @@
                                                 <!-- Three Dot Dropdown End -->
                                             </div>
                                             <div class="flex-align gap-6 mt-8">
-                                                <img src="<?=base_url()?>assets/images/icons/google-drive.png" alt="">
+                                                <img src="<?= base_url() ?>assets/images/icons/google-drive.png" alt="">
                                                 <div class="flex-align gap-4">
                                                     <p class="text-gray-900 text-sm text-line-1">Design brief
                                                         and
@@ -206,7 +188,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-start gap-12">
-                                        <img src="<?=base_url()?>assets/images/thumbs/notification-img2.png" alt=""
+                                        <img src="<?= base_url() ?>assets/images/thumbs/notification-img2.png" alt=""
                                             class="w-48 h-48 rounded-circle object-fit-cover">
                                         <div class="">
                                             <a href="index.html#"
@@ -227,7 +209,7 @@
                 <!-- Notification Start -->
 
                 <!-- Language Start -->
-                <div class="dropdown">
+                <div class="dropdown d-none">
                     <button
                         class="text-gray-500 w-40 h-40 bg-main-50 hover-bg-main-100 transition-2 rounded-circle text-xl flex-center"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -244,7 +226,7 @@
                                             for="arabic">
                                             <span
                                                 class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-8">
-                                                <img src="<?=base_url()?>assets/images/thumbs/flag1.png" alt=""
+                                                <img src="<?= base_url() ?>assets/images/thumbs/flag1.png" alt=""
                                                     class="w-32-px h-32-px border borde border-gray-100 rounded-circle flex-shrink-0">
                                                 <span class="text-15 fw-semibold mb-0">Arabic</span>
                                             </span>
@@ -258,7 +240,7 @@
                                             for="germany">
                                             <span
                                                 class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-8">
-                                                <img src="<?=base_url()?>assets/images/thumbs/flag2.png" alt=""
+                                                <img src="<?= base_url() ?>assets/images/thumbs/flag2.png" alt=""
                                                     class="w-32-px h-32-px border borde border-gray-100 rounded-circle flex-shrink-0">
                                                 <span class="text-15 fw-semibold mb-0">Germany</span>
                                             </span>
@@ -272,7 +254,7 @@
                                             for="english">
                                             <span
                                                 class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-8">
-                                                <img src="<?=base_url()?>assets/images/thumbs/flag3.png" alt=""
+                                                <img src="<?= base_url() ?>assets/images/thumbs/flag3.png" alt=""
                                                     class="w-32-px h-32-px border borde border-gray-100 rounded-circle flex-shrink-0">
                                                 <span class="text-15 fw-semibold mb-0">English</span>
                                             </span>
@@ -286,7 +268,7 @@
                                             for="spanish">
                                             <span
                                                 class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-8">
-                                                <img src="<?=base_url()?>assets/images/thumbs/flag4.png" alt=""
+                                                <img src="<?= base_url() ?>assets/images/thumbs/flag4.png" alt=""
                                                     class="w-32-px h-32-px border borde border-gray-100 rounded-circle flex-shrink-0">
                                                 <span class="text-15 fw-semibold mb-0">Spanish</span>
                                             </span>
@@ -308,7 +290,7 @@
                     class="users arrow-down-icon border border-gray-200 rounded-pill p-4 d-inline-block pe-40 position-relative"
                     type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="position-relative">
-                        <img src="<?=base_url()?>assets/images/thumbs/user-img.png" alt="Image"
+                        <img src="<?= base_url() ?>assets/images/thumbs/user-img.png" alt="Image"
                             class="h-32 w-32 rounded-circle">
                         <span
                             class="activation-badge w-8 h-8 position-absolute inset-block-end-0 inset-inline-end-0"></span>
@@ -318,7 +300,7 @@
                     <div class="card border border-gray-100 rounded-12 box-shadow-custom">
                         <div class="card-body">
                             <div class="flex-align gap-8 mb-20 pb-20 border-bottom border-gray-100">
-                                <img src="<?=base_url()?>assets/images/thumbs/user-img.png" alt=""
+                                <img src="<?= base_url() ?>assets/images/thumbs/user-img.png" alt=""
                                     class="w-54 h-54 rounded-circle">
                                 <div class="">
                                     <h4 class="mb-0">Michel John</h4>

@@ -8,6 +8,8 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Models\EmployeesModel;
+use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 
 /**
  * Class BaseController
@@ -36,6 +38,8 @@ abstract class BaseController extends Controller
      * @var list<string>
      */
     protected $helpers = [];
+    protected $employeesModel;
+    protected $adminRoleManagementController;
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
@@ -46,13 +50,33 @@ abstract class BaseController extends Controller
     /**
      * @return void
      */
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-    {
-        // Do Not Edit This Line
+    public function initController(
+        RequestInterface $request,
+        ResponseInterface $response,
+        LoggerInterface $logger
+    ) {
         parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+        // Existing initializations
+        $this->employeesModel = new EmployeesModel();
+        $this->adminRoleManagementController = new AdminRoleManagementController();
 
-        // E.g.: $this->session = service('session');
+        // ✅ ADD THIS
+        $roleToolPermissions = $this->getRoleToolPermissions();
+        service('renderer')->setVar('roleToolPermissions', $roleToolPermissions);
+    }
+
+
+    public function getRoleToolPermissions()
+    {
+        $header = $this->request->getHeaderLine('Authorization');
+        $authToken = str_replace('Bearer ', '', $header);
+        $employee = $this->employeesModel
+            ->select('id, role_id')
+            ->where('issued_jwt_token', $authToken)
+            ->where('deleted_at', null)
+            ->first();
+        $roleToolPermissions = $this->adminRoleManagementController->getOne((int) $employee['role_id']);
+        return $roleToolPermissions;
     }
 }
