@@ -186,6 +186,10 @@ function navigateTo(route, push = true) {
             // Cookies.remove('authToken');
             // localStorage.removeItem('authToken');
             // window.location.href = baseUrl + "pre-login";
+            alert("Error loading page. Please try again.");
+        },
+        complete:function(){
+            $('.preloader').hide();
         }
     });
 }
