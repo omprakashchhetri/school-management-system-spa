@@ -37,4 +37,20 @@ class StudentModuleController extends BaseController
         ;
     }
 
+    public function student_report() {
+       
+        return view('templates/sidebar-attendance')
+            .  view('templates/topbar')
+            .  view('pages/student-module-pages/student-report')
+        ;
+    }
+
+    public function report_card() {
+       
+        return view('templates/sidebar-attendance')
+            .  view('templates/topbar')
+            .  view('pages/student-module-pages/report-card')
+        ;
+    }
+
 }

@@ -8,7 +8,7 @@
     <!-- Title -->
     <title> Echocrew Learning Dashboard HTML Template</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?=base_url()?>assets/images/logo/favicon.png">
+    <link rel="shortcut icon" href="<?=base_url()?>assets/images/logo/logo-sm.png">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?=base_url()?>assets/css/bootstrap.min.css">
     <!-- file upload -->

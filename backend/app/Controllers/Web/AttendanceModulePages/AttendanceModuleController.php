@@ -50,5 +50,4 @@ class AttendanceModuleController extends BaseController
             .  view('pages/student-module-pages/student-details')
         ;
     }
-    
 }
