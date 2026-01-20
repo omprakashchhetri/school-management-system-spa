@@ -114,6 +114,8 @@ $routes->group('post-login-employee', function($routes) {
     $routes->post('student-report', 'Web\StudentModulePages\StudentModuleController::student_report');
     
     $routes->post('report-card', 'Web\StudentModulePages\StudentModuleController::report_card');
+
+    $routes->post('create-exam-routine', 'Web\ExaminationModulePages\ExaminationModuleController::create_exam_routine');
 });
 
 // For api

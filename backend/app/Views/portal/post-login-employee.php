@@ -10,7 +10,7 @@ let currentRoute = '';
 // Plugin configuration - Add your plugins here
 const pluginConfigs = {
     dataTable: {
-        selector: 'table.display, .datatable, #assignmentTable',
+        selector: 'table.display, .datatable, #assignmentTable, #reportCardTable',
         routes: ['dashboard', 'students', 'assignments', '*'], // * means all routes
         init: initDataTable,
         destroy: destroyDataTable
@@ -188,7 +188,7 @@ function navigateTo(route, push = true) {
             // window.location.href = baseUrl + "pre-login";
             alert("Error loading page. Please try again.");
         },
-        complete:function(){
+        complete: function() {
             $('.preloader').hide();
         }
     });
