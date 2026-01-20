@@ -109,6 +109,15 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('delete-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::deleteAttendance');
     });
 
+    $routes->group('fees', function($routes){
+        $routes->post('slab-list', 'Web\FeesModulePages\FeesModuleController::slabList');
+        $routes->post('get-fees-slab-list', 'Web\FeesModulePages\FeesModuleController::getFeesSlabList');
+        $routes->post('add-fees-slab', 'Web\FeesModulePages\FeesModuleController::addFeesSlab');
+        $routes->post('edit-fees-slab', 'Web\FeesModulePages\FeesModuleController::editFeesSlab');
+        $routes->post('delete-fees-slab', 'Web\FeesModulePages\FeesModuleController::deleteFeesSlab');
+        
+    });
+
     $routes->post('student-details', 'Web\AttendanceModulePages\AttendanceModuleController::student_details');
 
     $routes->post('student-report', 'Web\StudentModulePages\StudentModuleController::student_report');
