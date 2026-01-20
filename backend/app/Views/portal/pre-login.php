@@ -10,7 +10,7 @@
     <!-- Jquery js -->
     <script src="<?=base_url()?>assets/js/jquery-3.7.1.min.js"></script>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?=base_url()?>assets/images/logo/favicon.png">
+    <link rel="shortcut icon" href="<?=base_url()?>assets/images/logo/logo-sm.png">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?=base_url()?>assets/css/bootstrap.min.css">
     <!-- file upload -->
@@ -62,7 +62,7 @@
 
 <body>
     <input type="hidden" id="baseUrl" value="<?=base_url()?>">
-    
+
     <!--==================== Preloader Start ====================-->
     <div class="preloader">
         <div class="loader"></div>
@@ -70,7 +70,7 @@
     <!--==================== Preloader End ====================-->
 
     <div id="app"></div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
     <script src="<?=base_url('assets/js/pre-login.js')?>"></script>
 </body>
