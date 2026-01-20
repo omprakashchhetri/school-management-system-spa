@@ -111,6 +111,10 @@ $routes->group('post-login-employee', function($routes) {
 
     $routes->group('fees', function($routes){
         $routes->post('slab-list', 'Web\FeesModulePages\FeesModuleController::slabList');
+        $routes->post('get-fees-slab-list', 'Web\FeesModulePages\FeesModuleController::getFeesSlabList');
+        $routes->post('add-fees-slab', 'Web\FeesModulePages\FeesModuleController::addFeesSlab');
+        $routes->post('edit-fees-slab', 'Web\FeesModulePages\FeesModuleController::editFeesSlab');
+        $routes->post('delete-fees-slab', 'Web\FeesModulePages\FeesModuleController::deleteFeesSlab');
         
     });
 
