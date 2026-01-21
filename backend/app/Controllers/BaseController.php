@@ -62,8 +62,13 @@ abstract class BaseController extends Controller
         $this->adminRoleManagementController = new AdminRoleManagementController();
 
         // ✅ ADD THIS
-        $roleToolPermissions = $this->getRoleToolPermissions();
-        service('renderer')->setVar('roleToolPermissions', $roleToolPermissions);
+        if(isset($request->user)){
+            if(strtolower($request->user->data->data->loginType) !== 'employee'){
+                return;
+            }
+            $roleToolPermissions = $this->getRoleToolPermissions();
+            service('renderer')->setVar('roleToolPermissions', $roleToolPermissions);
+        }
     }
 
 
