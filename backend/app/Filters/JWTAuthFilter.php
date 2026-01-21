@@ -13,11 +13,20 @@ class JWTAuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $header = $request->getHeaderLine('Authorization');
+
+        // 🔑 Fallback to cookie for browser loads
+        if (!$header) {
+            $tokenFromCookie = $request->getCookie('authToken');
+            if ($tokenFromCookie) {
+                $header = 'Bearer ' . $tokenFromCookie;
+            }
+        }
+
         $uri = service('uri');
         $segment1 = $uri->getSegment(1); // Gets 'pre-login' from '/index.php/pre-login/'
         
         // Define routes to skip
-        $skipRoutes = ['api', 'pre-login', 'post-login-employee', 'post-login-student', 'login'];
+        $skipRoutes = ['api', 'pre-login', 'login'];
         
         if (in_array($segment1, $skipRoutes)) {
             return; // Skip JWT validation
@@ -36,7 +45,6 @@ class JWTAuthFilter implements FilterInterface
                 'message' => 'Invalid Authorization header format'
             ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
-
         $token = substr($header, 7);
 
         try {
