@@ -99,6 +99,11 @@ class JWTAuthFilter implements FilterInterface
             ];
 
         } catch (\Exception $e) {
+            // Browser request → redirect
+            if ($request->isAJAX() === false) {
+                return redirect()->to('/pre-login')->with('error', 'Session expired. Please login again.');
+            }
+            
             return service('response')->setJSON([
                 'status' => 'error',
                 'message' => 'Invalid or expired token',
