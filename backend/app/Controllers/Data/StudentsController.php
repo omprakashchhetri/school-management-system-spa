@@ -52,6 +52,16 @@ class StudentsController extends BaseController
     
 
     public function getStudentById($studentId) {
-        
+
+        $student = $this->studentsModel
+        ->where('id', (int) $studentId)
+        ->where('deleted_at', null)
+        ->first();
+    
+        if (!$student) {
+            return ['error' => 'Student not found'];
+        }
+
+        return $student;
     }
 }

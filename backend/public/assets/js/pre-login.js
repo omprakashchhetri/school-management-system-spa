@@ -1,33 +1,18 @@
 jQuery(document).ready(async function () {
-  var baseUrl = jQuery("#baseUrl").val();
 
-  // ✅ Unified getItem
-  async function getItem(key) {
-    return window.localStorage.getItem(key) || Cookies.get(key);
-  }
+  const baseUrl = jQuery("#baseUrl").val();
 
-  // ✅ Unified setItem
-  async function setItem(key, value) {
-    window.localStorage.setItem(key, value);
-    Cookies.set(key, value);
-  }
+  const getItem = (key) =>
+    localStorage.getItem(key) || Cookies.get(key);
 
-  // Get token + login type
-  const token = await getItem("authToken");
-  const loginType = await getItem("loginType");
+  const clearAuth = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("loginType");
+    Cookies.remove("authToken");
+    Cookies.remove("loginType");
+  };
 
-  if (token && loginType) {
-    if (loginType === "student") {
-      window.location.href = baseUrl + "post-login-student/dashboard";
-      return;
-    } else if (loginType === "employee") {
-      window.location.href = baseUrl + "post-login-employee/admin/dashboard";
-      return;
-    }
-  }
-
-  // No token → load login page
-  function getLoginPage() {
+  const loadLogin = () => {
     jQuery.ajax({
       url: baseUrl + "login",
       type: "POST",
@@ -36,7 +21,50 @@ jQuery(document).ready(async function () {
         jQuery(".preloader").hide();
       },
     });
+  };
+
+  const token     = getItem("authToken");
+  const loginType = getItem("loginType");
+
+  if (!token || !loginType) {
+    loadLogin();
+    return;
   }
 
-  getLoginPage();
+  let dashboardUrl = "";
+
+  if (loginType === "student") {
+    dashboardUrl = baseUrl + "post-login-student/dashboard";
+  } 
+  else if (loginType === "employee") {
+    dashboardUrl = baseUrl + "post-login-employee/admin/dashboard";
+  } 
+  else {
+    clearAuth();
+    loadLogin();
+    return;
+  }
+
+  try {
+    const res = await jQuery.ajax({
+      url: dashboardUrl,
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    if (res?.error) {
+      clearAuth();
+      loadLogin();
+      return;
+    }
+    window.location.href(dashboardUrl);
+
+  } catch (err) {
+    console.error("Auth check failed:", err);
+    clearAuth();
+    loadLogin();
+  }
+
 });
