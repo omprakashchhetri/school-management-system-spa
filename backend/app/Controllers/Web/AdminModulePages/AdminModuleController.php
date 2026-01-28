@@ -142,14 +142,111 @@ class AdminModuleController extends BaseController
         ;
     }
 
-    public function employee_details($employeeId) {
-
+    public function employee_details($employeeId)
+    {
+        $employeeData = $this->employeeManagementController->getEmployeeDetails($employeeId);
+        
+        if (!$employeeData) {
+            return redirect()->to('admin/employee-list')->with('error', 'Employee not found');
+        }
+        
         return view('templates/sidebar')
-        .  view('templates/topbar')
-        .  view('pages/admin-module-pages/employee-details')
-        ;
+            . view('templates/topbar')
+            . view('pages/admin-module-pages/employee-details', ['employeeDetails' => $employeeData]);
     }
 
+    // Edit employee details AJAX function
+    public function updateEmployeeDetails() {
+        $details = $this->request->getPost();
+        return json_encode($this->employeeManagementController->updateEmployeeDetails($details));
+    }
+
+    // Upload employee images AJAX functions
+   public function uploadEmployeeProfileImage() 
+    {
+        $employeeId = $this->request->getPost('employee_id');
+        
+        if (!$employeeId) {
+            return json_encode(['error' => 'Employee ID required']);
+        }
+        
+        return json_encode($this->employeeManagementController->uploadEmployeeImage($employeeId, 'profile', $this->request));
+    }
+
+    // Upload employee cover image AJAX function
+    public function uploadEmployeeCoverImage() 
+    {
+        $employeeId = $this->request->getPost('employee_id');
+        
+        if (!$employeeId) {
+            return json_encode(['error' => 'Employee ID required']);
+        }
+        
+        return json_encode($this->employeeManagementController->uploadEmployeeImage($employeeId, 'cover', $this->request));
+    }
+
+    public function uploadEmployeeDocument() 
+    {
+        $employeeId = $this->request->getPost('employee_id');
+        $documentType = $this->request->getPost('document_type');
+        $documentName = $this->request->getPost('document_name');
+        
+        if (!$employeeId) {
+            return json_encode(['error' => 'Employee ID required']);
+        }
+
+        if (!$documentType) {
+            return json_encode(['error' => 'Document type required']);
+        }
+
+        if (!$documentName) {
+            return json_encode(['error' => 'Document name required']);
+        }
+
+        $data = [
+            'employee_id' => $employeeId,
+            'document_type' => $documentType,
+            'document_name' => $documentName
+        ];
+
+        return json_encode($this->employeeManagementController->uploadEmployeeDocument($data, $this->request));
+    }
+
+    public function deleteEmployeeDocument() 
+    {
+        $documentId = $this->request->getPost('document_id');
+        
+        if (!$documentId) {
+            return json_encode(['error' => 'Document ID required']);
+        }
+
+        return json_encode($this->employeeManagementController->deleteEmployeeDocument($documentId));
+    }
+
+    public function updateDocumentStatus() 
+    {
+        $documentId = $this->request->getPost('document_id');
+        $status = $this->request->getPost('status');
+        
+        if (!$documentId || !$status) {
+            return json_encode(['error' => 'Document ID and status required']);
+        }
+
+        return json_encode($this->employeeManagementController->updateDocumentStatus($documentId, $status));
+    }
+
+    public function downloadEmployeeDocument($documentId)
+    {
+        $documentData = $this->employeeManagementController->getDocumentForDownload($documentId);
+        
+        if (!$documentData) {
+            return redirect()->back()->with('error', 'Document or file not found');
+        }
+
+        return $this->response->download($documentData['filepath'], null)->setFileName($documentData['filename']);
+    }
+
+    // View Module Page Functions
     public function view_modules(): string
     {
         return view('templates/sidebar')

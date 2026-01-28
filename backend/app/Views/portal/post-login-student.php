@@ -64,9 +64,9 @@ function navigateTo(route, push = true) {
             });
         },
         error: function() {
-            //Cookies.remove('authToken');
-            //localStorage.removeItem('authToken');
-            //window.location.href = baseUrl + "pre-login";
+            Cookies.remove('authToken');
+            localStorage.removeItem('authToken');
+            window.location.href = baseUrl + "pre-login";
         }
     });
 }

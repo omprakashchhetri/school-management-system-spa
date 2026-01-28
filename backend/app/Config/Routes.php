@@ -66,6 +66,13 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('add-employee', 'Web\AdminModulePages\AdminModuleController::addEmployee');
         $routes->post('edit-employee', 'Web\AdminModulePages\AdminModuleController::editEmployee');
         $routes->post('delete-employee', 'Web\AdminModulePages\AdminModuleController::deleteEmployee');
+        $routes->post('update-employee-details', 'Web\AdminModulePages\AdminModuleController::updateEmployeeDetails');
+        $routes->post('upload-employee-profile-image', 'Web\AdminModulePages\AdminModuleController::uploadEmployeeProfileImage');
+        $routes->post('upload-employee-cover-image', 'Web\AdminModulePages\AdminModuleController::uploadEmployeeCoverImage');
+        $routes->post('upload-employee-document', 'Web\AdminModulePages\AdminModuleController::uploadEmployeeDocument');
+        $routes->post('delete-employee-document', 'Web\AdminModulePages\AdminModuleController::deleteEmployeeDocument');
+        $routes->post('update-document-status', 'Web\AdminModulePages\AdminModuleController::updateDocumentStatus');
+        $routes->get('download-employee-document/(:num)', 'Web\AdminModulePages\AdminModuleController::downloadEmployeeDocument/$1');
 
         //Subject Allocation
         $routes->post('get-subject-allocation-list', 'Web\AdminModulePages\AdminModuleController::getSubjectAllocationList');

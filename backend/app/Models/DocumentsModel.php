@@ -12,7 +12,7 @@ class DocumentsModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'documents';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
@@ -20,6 +20,8 @@ class DocumentsModel extends Model
     protected $allowedFields = [
             'id',
             'document_name',
+            'document_type',
+            'status',
             'file',
             'related_teacher',
             'related_student',

@@ -48,6 +48,5 @@ class EmployeesController extends BaseController
             'status' => 1,
             'token'  => $token,
         ]);
-    }
-    
+    }    
 }

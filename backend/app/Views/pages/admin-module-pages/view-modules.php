@@ -21,7 +21,7 @@
 
             <?php foreach ($roleToolPermissions['tools'] as $tool): ?>
 
-                <?php
+            <?php
                 // Permission check
                 if ($tool['can_view'] != 1)
                     continue;
@@ -42,22 +42,22 @@
                 $color = !empty($details['color']) ? $details['color'] : 'text-gray-400';
                 ?>
 
-                <div class="col-md-4">
-                    <div class="nav_js cursor-pointer d-flex flex-column bg-white justify-content-start align-items-center
+            <div class="col-md-4 col-6">
+                <div class="nav_js cursor-pointer d-flex flex-column bg-white justify-content-start align-items-center
                    text-center p-15 gap-5 border rounded-10 text-secondary-light
-                   hover-bg-main-50 h-100 hover-text-primary transition-2"
-                        data-route="<?= esc($details['base_route']); ?>">
+                   hover-bg-main-200 hover-border-main-100 h-100 hover-text-primary transition-2"
+                    data-route="<?= esc($details['base_route']); ?>">
 
-                        <span class="px-10 py-7 rounded-circle bg-light">
-                            <i class="ph <?= esc($icon); ?> text-4xl <?= esc($color); ?>"></i>
-                        </span>
+                    <span class="px-10 py-7 rounded-circle bg-light">
+                        <i class="ph <?= esc($icon); ?> text-4xl <?= esc($color); ?>"></i>
+                    </span>
 
-                        <span class="fw-medium text-13">
-                            <?= esc($details['tool_name']); ?>
-                        </span>
+                    <span class="fw-medium text-13">
+                        <?= esc($details['tool_name']); ?>
+                    </span>
 
-                    </div>
                 </div>
+            </div>
 
             <?php endforeach; ?>
 
