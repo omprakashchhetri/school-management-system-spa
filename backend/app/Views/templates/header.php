@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="<?=base_url()?>assets/css/loader.css">
     <!-- Jquery js -->
     <script src="<?=base_url()?>assets/js/jquery-3.7.1.min.js"></script>
+
     <!-- Bootstrap Bundle Js -->
     <script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>

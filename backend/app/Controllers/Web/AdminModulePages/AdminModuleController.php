@@ -10,6 +10,7 @@ use App\Controllers\Data\AdminModulePages\SubjectsController;
 use App\Controllers\Data\AdminModulePages\ClassTeachersController;
 use App\Controllers\Data\AdminModulePages\EmployeeManagementController;
 use App\Controllers\Data\AdminModulePages\SubjectAllocationsController;
+use App\Controllers\Data\AdminModulePages\AdmissionController;
 
 class AdminModuleController extends BaseController
 {
@@ -23,6 +24,7 @@ class AdminModuleController extends BaseController
     protected $classTeachersController;
     protected $employeeManagementController;
     protected $subjectAllocationsController;
+    protected $admissionController;
 
     public function __construct(){
         $this->adminRoleManagementController = new AdminRoleManagementController();
@@ -33,6 +35,7 @@ class AdminModuleController extends BaseController
         $this->classTeachersController = new ClassTeachersController();
         $this->employeeManagementController = new EmployeeManagementController();
         $this->subjectAllocationsController = new SubjectAllocationsController();
+        $this->admissionController = new AdmissionController();
     }
     public function roleManagement() {
         // $adminRoleManagement = new AdminRoleManagementController();
@@ -393,4 +396,162 @@ class AdminModuleController extends BaseController
         return json_encode($this->subjectAllocationsController->delete($SubjectId));
     }
 
+
+    /**
+     * Add these methods to your existing AdminModuleController.php
+     * Location: app/Controllers/Web/AdminModulePages/AdminModuleController.php
+     */
+
+    // ============================================
+    // ADMISSION METHODS - Add to AdminModuleController
+    // ============================================
+
+    /**
+     * Display admission form
+     */
+    public function createAdmission() {
+        $passToView = [
+            'title' => 'Student Admission',
+        ];
+        return view('templates/sidebar', $passToView)
+            . view('templates/topbar')
+            . view('pages/admin-module-pages/create-admission');
+    }
+
+    /**
+     * Add new student admission
+     */
+    public function addStudent() {
+        log_message('debug', '=== STUDENT ADMISSION START ===');
+        
+        $details = $this->request->getPost();
+        log_message('debug', 'POST Data: ' . print_r($details, true));
+        
+        // Check if file exists
+        $file = $this->request->getFile('profile_image');
+        log_message('debug', 'File exists: ' . ($file ? 'YES' : 'NO'));
+        
+        if ($file) {
+            log_message('debug', 'File name: ' . $file->getName());
+            log_message('debug', 'File is valid: ' . ($file->isValid() ? 'YES' : 'NO'));
+            log_message('debug', 'File has moved: ' . ($file->hasMoved() ? 'YES' : 'NO'));
+            log_message('debug', 'File error: ' . $file->getErrorString());
+        }
+        
+        // First, add the student
+        $result = $this->admissionController->add($details);
+        log_message('debug', 'Add student result: ' . print_r($result, true));
+        
+        // If student added successfully, handle image upload
+        if (isset($result['success']) && $result['success'] && isset($result['id'])) {
+            $studentId = $result['id'];
+            log_message('debug', 'Student ID: ' . $studentId);
+            
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                log_message('debug', 'Starting image upload...');
+                
+                // Generate unique filename
+                $newName = 'profile_' . $studentId . '_' . time() . '.' . $file->getExtension();
+                log_message('debug', 'New filename: ' . $newName);
+                
+                // Set upload path
+                $uploadPath = FCPATH . 'uploads/students/';
+                log_message('debug', 'Upload path: ' . $uploadPath);
+                
+                // Create directory if it doesn't exist
+                if (!is_dir($uploadPath)) {
+                    log_message('debug', 'Creating directory...');
+                    mkdir($uploadPath, 0777, true);
+                }
+                
+                log_message('debug', 'Directory exists: ' . (is_dir($uploadPath) ? 'YES' : 'NO'));
+                log_message('debug', 'Directory writable: ' . (is_writable($uploadPath) ? 'YES' : 'NO'));
+
+                // Move the file
+                if ($file->move($uploadPath, $newName)) {
+                    log_message('debug', 'File moved successfully!');
+                    
+                    // Update student record with image filename
+                    $updateResult = $this->admissionController->edit([
+                        'id' => $studentId,
+                        'profile_image' => $newName
+                    ]);
+                    log_message('debug', 'Update result: ' . print_r($updateResult, true));
+                    
+                    $result['image_uploaded'] = true;
+                    $result['image_name'] = $newName;
+                } else {
+                    log_message('error', 'Failed to move file!');
+                    log_message('error', 'File error: ' . $file->getErrorString());
+                    $result['image_error'] = 'Failed to move file: ' . $file->getErrorString();
+                }
+            } else {
+                log_message('debug', 'File validation failed or file already moved');
+                if ($file) {
+                    log_message('debug', 'File valid: ' . ($file->isValid() ? 'YES' : 'NO'));
+                    log_message('debug', 'File moved: ' . ($file->hasMoved() ? 'YES' : 'NO'));
+                    log_message('debug', 'File error: ' . $file->getErrorString());
+                }
+            }
+        }
+        
+        log_message('debug', 'Final result: ' . print_r($result, true));
+        log_message('debug', '=== STUDENT ADMISSION END ===');
+        
+        return json_encode($result);
+    }
+
+    /**
+     * Upload student profile image (separate AJAX endpoint)
+     */
+    public function uploadStudentProfileImage() 
+    {
+        $studentId = $this->request->getPost('student_id');
+        
+        if (!$studentId) {
+            return json_encode(['error' => 'Student ID required']);
+        }
+        
+        return json_encode($this->admissionController->uploadStudentProfileImage($studentId, $this->request));
+    }
+
+    /**
+     * Get all students
+     */
+    public function getStudents() {
+        return json_encode($this->admissionController->getAll());
+    }
+
+    /**
+     * Edit student
+     */
+    public function editStudent() {
+        $details = $this->request->getPost();
+        return json_encode($this->admissionController->edit($details));
+    }
+
+    /**
+     * Delete student
+     */
+    public function deleteStudent() {
+        $id = $this->request->getPost('id');
+        return json_encode($this->admissionController->delete($id));
+    }
+
+    /**
+     * Get classes for dropdown
+     */
+    public function getClasses() {
+        return json_encode($this->classesController->getAll());
+    }
+
+    /**
+     * Get sections by class for dropdown
+     */
+    public function getSections() {        
+        
+        $sections = $this->sectionsController->getAll();
+
+        return json_encode(array_values($sections));
+    }
 }

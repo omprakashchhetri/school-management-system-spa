@@ -2,101 +2,117 @@
 <div id="app"></div>
 
 <script>
-// Global variables to track active plugins and instances
-let activePlugins = {};
-let pluginInstances = {};
-let currentRoute = '';
+// =========================== CONFIGURATION ===========================
+const baseUrl = "<?=base_url()?>";
+const baseUrlOfApp = window.location.href.split("post-login-employee/")[0] + "post-login-employee/";
+const restOfBaseUrl = window.location.href.split("post-login-employee/")[1];
 
-// Plugin configuration - Add your plugins here
+// Global state management
+const AppState = {
+    activePlugins: {},
+    pluginInstances: {},
+    currentRoute: '',
+    isNavigating: false,
+    navigationQueue: []
+};
+
+// Global variables for calendar
+let date = new Date();
+let year = date.getFullYear();
+let month = date.getMonth();
+
+// =========================== PLUGIN CONFIGURATIONS ===========================
+
 const pluginConfigs = {
     dataTable: {
         selector: 'table.display, .datatable, #assignmentTable, #reportCardTable',
-        routes: ['dashboard', 'students', 'assignments', '*'], // * means all routes
+        routes: ['dashboard', 'students', 'assignments', 'reports', '*'],
         init: initDataTable,
-        destroy: destroyDataTable
+        destroy: destroyDataTable,
+        priority: 1
+    },
+    fileUpload: {
+        selector: '.fileUpload',
+        routes: ['*'], // Available on all routes
+        init: initFileUpload,
+        destroy: destroyFileUpload,
+        priority: 2
     },
     calendar: {
         selector: '.display, .calendar-widget',
         routes: ['dashboard', 'calendar'],
         init: initCalendar,
-        destroy: destroyCalendar
+        destroy: destroyCalendar,
+        priority: 3
     },
     charts: {
         selector: '#complete-course, #earned-certificate, #course-progress, #community-support, #doubleLineChart, #radialMultipleBar',
         routes: ['dashboard', 'analytics'],
         init: initCharts,
-        destroy: destroyCharts
+        destroy: destroyCharts,
+        priority: 4
     },
     quillEditor: {
         selector: '.quill-editor, #editor',
-        routes: ['compose', 'edit', 'blog'],
+        routes: ['compose', 'edit', 'blog', 'create-admission', 'admission-create'],
         init: initQuillEditor,
-        destroy: destroyQuillEditor
-    },
-    fileUpload: {
-        selector: '.file-upload, input[type="file"].upload',
-        routes: ['upload', 'profile', 'assignments'],
-        init: initFileUpload,
-        destroy: destroyFileUpload
+        destroy: destroyQuillEditor,
+        priority: 5
     },
     plyr: {
         selector: '.plyr, video, audio',
         routes: ['courses', 'media', 'lessons'],
         init: initPlyr,
-        destroy: destroyPlyr
+        destroy: destroyPlyr,
+        priority: 6
     },
     fullCalendar: {
         selector: '#full-calendar, .full-calendar',
         routes: ['calendar', 'schedule'],
         init: initFullCalendar,
-        destroy: destroyFullCalendar
+        destroy: destroyFullCalendar,
+        priority: 7
     },
     jqueryUI: {
         selector: '.ui-datepicker, .ui-sortable, .ui-draggable',
-        routes: ['*'], // Available on all routes
+        routes: ['*'],
         init: initJQueryUI,
-        destroy: destroyJQueryUI
+        destroy: destroyJQueryUI,
+        priority: 8
     },
     vectorMap: {
         selector: '#world-map, .vector-map',
         routes: ['analytics', 'reports'],
         init: initVectorMap,
-        destroy: destroyVectorMap
+        destroy: destroyVectorMap,
+        priority: 9
     },
     exportOptions: {
         selector: '#exportOptions',
         routes: ['students', 'reports', 'data'],
         init: initExportOptions,
-        destroy: destroyExportOptions
+        destroy: destroyExportOptions,
+        priority: 10
     }
 };
 
 // Custom configurations for specific routes
 const customConfigs = {
-    // Example: Different DataTable config for different routes
     dataTable: {
         'students': {
             pageLength: 25,
             order: [
                 [0, 'asc']
             ],
-            columns: [{
-                    data: 'name'
-                },
-                {
-                    data: 'email'
-                },
-                {
-                    data: 'status'
-                }
-            ]
+            responsive: true
         },
         'assignments': {
             pageLength: 10,
             order: [
                 [2, 'desc']
             ],
-            searching: true
+            searching: true,
+            responsive: true
         }
     },
     quillEditor: {
@@ -127,26 +143,34 @@ const customConfigs = {
     }
 };
 
-// Simple function to reload main.js
-function reloadMainJS() {
-    // Remove existing script
-    $('#mainJsScript').remove();
+// =========================== NAVIGATION ===========================
 
-    // Add new script with cache buster
-    $('<script>')
-        .attr('id', 'mainJsScript')
-        .attr('src', baseUrl + 'assets/js/main.js?v=' + Date.now())
-        .appendTo('head');
-
-    console.log('main.js reloaded');
-}
-
-// Enhanced navigateTo function
 function navigateTo(route, push = true) {
+    // Prevent navigation during an existing navigation
+    if (AppState.isNavigating) {
+        console.log('Navigation already in progress, queuing:', route);
+        AppState.navigationQueue.push({
+            route,
+            push
+        });
+        return;
+    }
+
+    AppState.isNavigating = true;
+
     var storage = window.localStorage;
     var token = storage.getItem("authToken");
     var tokenCookie = Cookies.get("authToken");
     var authToken = token || tokenCookie;
+
+    if (!authToken) {
+        console.error('No auth token found');
+        window.location.href = baseUrl + "pre-login/";
+        return;
+    }
+
+    // Show loading indicator
+    $('.preloader').show();
 
     // Clean up current plugins before navigation
     cleanupAllPlugins();
@@ -157,64 +181,97 @@ function navigateTo(route, push = true) {
         headers: {
             'Authorization': 'Bearer ' + authToken
         },
+        timeout: 15000, // 15 second timeout
         success: function(data) {
-            // Insert new content
-            $("#app").html(data);
+            try {
+                // Insert new content
+                $("#app").html(data);
 
-            // Update current route
-            currentRoute = route;
+                // Update current route
+                AppState.currentRoute = route;
 
-            // Initialize plugins for this route
-            initializePluginsForRoute(route);
+                // Small delay to ensure DOM is ready
+                setTimeout(() => {
+                    // Initialize plugins for this route
+                    initializePluginsForRoute(route);
 
-            // Re-bind global event listeners
-            bindGlobalEventListeners();
+                    // Re-bind global event listeners
+                    bindGlobalEventListeners();
 
-            // Update browser history
-            if (push) {
-                let newUrl = baseUrlOfApp + route;
-                if (route === "") newUrl = baseUrlOfApp + "/";
-                history.pushState({
-                    route: route
-                }, "", newUrl);
+                    // Update browser history
+                    if (push) {
+                        let newUrl = baseUrlOfApp + route;
+                        if (route === "") newUrl = baseUrlOfApp;
+                        history.pushState({
+                            route: route
+                        }, "", newUrl);
+                    }
+
+                    console.log(`Navigation complete: ${route}`);
+                }, 100);
+
+            } catch (error) {
+                console.error('Error rendering page:', error);
+                showErrorMessage('Failed to load page content');
             }
-
-            $('.preloader').hide();
-            console.log(`Navigation complete: ${route}`);
         },
-        error: function() {
-            Cookies.remove('authToken');
-            localStorage.removeItem('authToken');
-            window.location.href = baseUrl + "pre-login";
-            alert("Error loading page. Please try again.");
+        error: function(xhr, status, error) {
+            console.error('Navigation error:', status, error);
+
+            if (xhr.status === 401 || xhr.status === 403) {
+                // Authentication error
+                logout();
+            } else {
+                showErrorMessage('Error loading page. Please try again.');
+            }
         },
         complete: function() {
             $('.preloader').hide();
+            AppState.isNavigating = false;
+
+            // Process queued navigation if any
+            if (AppState.navigationQueue.length > 0) {
+                const next = AppState.navigationQueue.shift();
+                setTimeout(() => navigateTo(next.route, next.push), 100);
+            }
         }
     });
 }
 
-// Main function to initialize plugins for current route
+// =========================== PLUGIN MANAGEMENT ===========================
+
 function initializePluginsForRoute(route) {
     console.log(`Initializing plugins for route: ${route}`);
 
-    Object.keys(pluginConfigs).forEach(pluginName => {
+    // Sort plugins by priority
+    const sortedPlugins = Object.keys(pluginConfigs).sort((a, b) => {
+        return (pluginConfigs[a].priority || 999) - (pluginConfigs[b].priority || 999);
+    });
+
+    sortedPlugins.forEach(pluginName => {
         const config = pluginConfigs[pluginName];
 
         // Check if plugin should be loaded for this route
         if (shouldLoadPlugin(config.routes, route)) {
-            // Check if required elements exist
-            const elements = document.querySelectorAll(config.selector);
-            if (elements.length > 0) {
-                console.log(`Loading plugin: ${pluginName}`);
-                config.init(route);
-                activePlugins[pluginName] = true;
-            }
+            // Use setTimeout to ensure DOM is ready
+            setTimeout(() => {
+                try {
+                    const elements = document.querySelectorAll(config.selector);
+                    if (elements.length > 0) {
+                        console.log(`Loading plugin: ${pluginName} (${elements.length} elements)`);
+                        config.init(route);
+                        AppState.activePlugins[pluginName] = true;
+                    } else {
+                        console.log(`Plugin ${pluginName} skipped - no matching elements`);
+                    }
+                } catch (error) {
+                    console.error(`Error initializing plugin ${pluginName}:`, error);
+                }
+            }, 50 * (config.priority || 1)); // Stagger initialization
         }
     });
 }
 
-// Check if plugin should be loaded for given route
 function shouldLoadPlugin(pluginRoutes, currentRoute) {
     if (pluginRoutes.includes('*')) return true;
     if (pluginRoutes.includes(currentRoute)) return true;
@@ -222,25 +279,32 @@ function shouldLoadPlugin(pluginRoutes, currentRoute) {
     // Check for wildcard patterns
     return pluginRoutes.some(pattern => {
         if (pattern.includes('*')) {
-            const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+            const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
             return regex.test(currentRoute);
         }
         return false;
     });
 }
 
-// Clean up all active plugins
 function cleanupAllPlugins() {
-    Object.keys(activePlugins).forEach(pluginName => {
-        if (activePlugins[pluginName] && pluginConfigs[pluginName]) {
-            console.log(`Cleaning up plugin: ${pluginName}`);
-            pluginConfigs[pluginName].destroy();
-            activePlugins[pluginName] = false;
+    console.log('Cleaning up all plugins...');
+
+    Object.keys(AppState.activePlugins).forEach(pluginName => {
+        if (AppState.activePlugins[pluginName] && pluginConfigs[pluginName]) {
+            try {
+                console.log(`Cleaning up plugin: ${pluginName}`);
+                pluginConfigs[pluginName].destroy();
+                AppState.activePlugins[pluginName] = false;
+            } catch (error) {
+                console.error(`Error cleaning up plugin ${pluginName}:`, error);
+            }
         }
     });
+
+    // Clear all plugin instances
+    AppState.pluginInstances = {};
 }
 
-// Get custom config for plugin and route
 function getCustomConfig(pluginName, route) {
     if (customConfigs[pluginName] && customConfigs[pluginName][route]) {
         return customConfigs[pluginName][route];
@@ -258,7 +322,8 @@ function initDataTable(route) {
         language: {
             search: "Search:",
             lengthMenu: "Show _MENU_ entries"
-        }
+        },
+        destroy: true // Allow re-initialization
     };
 
     const config = customConfig ? {
@@ -266,113 +331,174 @@ function initDataTable(route) {
         ...customConfig
     } : defaultConfig;
 
-    $('table.display, .datatable, #assignmentTable').each(function() {
-        if (!$.fn.DataTable.isDataTable(this)) {
+    $('table.display, .datatable, #assignmentTable, #reportCardTable').each(function() {
+        try {
+            // Destroy existing DataTable if present
+            if ($.fn.DataTable.isDataTable(this)) {
+                $(this).DataTable().destroy();
+            }
+
             const table = $(this).DataTable(config);
-            if (!pluginInstances.dataTables) pluginInstances.dataTables = [];
-            pluginInstances.dataTables.push(table);
+            if (!AppState.pluginInstances.dataTables) AppState.pluginInstances.dataTables = [];
+            AppState.pluginInstances.dataTables.push(table);
+        } catch (error) {
+            console.error('DataTable initialization error:', error);
         }
     });
 }
 
 function destroyDataTable() {
-    if (pluginInstances.dataTables) {
-        pluginInstances.dataTables.forEach(table => {
-            if (table && typeof table.destroy === 'function') {
-                table.destroy();
+    if (AppState.pluginInstances.dataTables) {
+        AppState.pluginInstances.dataTables.forEach(table => {
+            try {
+                if (table && typeof table.destroy === 'function') {
+                    table.destroy();
+                }
+            } catch (error) {
+                console.error('DataTable destroy error:', error);
             }
         });
-        pluginInstances.dataTables = [];
+        AppState.pluginInstances.dataTables = [];
     }
 }
 
-function initCalendar(route) {
-    if (document.querySelector('.display') && document.querySelector('.days')) {
-        let display = document.querySelector(".display");
-        let days = document.querySelector(".days");
-        let previous = document.querySelector(".left");
-        let next = document.querySelector(".right");
-
-        if (previous && next) {
-            // Store event handlers for cleanup
-            const prevHandler = () => {
-                days.innerHTML = "";
-                if (month < 0) {
-                    month = 11;
-                    year = year - 1;
-                }
-                month = month - 1;
-                date.setMonth(month);
-                displayCalendar();
-            };
-
-            const nextHandler = () => {
-                days.innerHTML = "";
-                if (month > 11) {
-                    month = 0;
-                    year = year + 1;
-                }
-                month = month + 1;
-                date.setMonth(month);
-                displayCalendar();
-            };
-
-            previous.addEventListener("click", prevHandler);
-            next.addEventListener("click", nextHandler);
-
-            // Store handlers for cleanup
-            pluginInstances.calendarHandlers = {
-                prevHandler,
-                nextHandler,
-                previous,
-                next
-            };
-
-            displayCalendar();
+function initFileUpload(route) {
+    // Initialize file upload plugin for each .fileUpload element
+    $('.fileUpload').each(function() {
+        try {
+            const inputName = $(this).data('input-name') || '[]';
+            $(this).fileUpload({
+                inputName: inputName
+            });
+            console.log('File upload initialized for element with name:', inputName);
+        } catch (error) {
+            console.error('File upload initialization error:', error);
         }
+    });
+}
+
+function destroyFileUpload() {
+    // Clean up file upload instances
+    $('.fileUpload').each(function() {
+        try {
+            $(this).empty(); // Clear the content
+        } catch (error) {
+            console.error('File upload destroy error:', error);
+        }
+    });
+}
+
+function initCalendar(route) {
+    const display = document.querySelector(".display");
+    const days = document.querySelector(".days");
+    const previous = document.querySelector(".left");
+    const next = document.querySelector(".right");
+
+    if (display && days && previous && next) {
+        const prevHandler = () => {
+            days.innerHTML = "";
+            month = month - 1;
+            if (month < 0) {
+                month = 11;
+                year = year - 1;
+            }
+            date.setMonth(month);
+            displayCalendar();
+        };
+
+        const nextHandler = () => {
+            days.innerHTML = "";
+            month = month + 1;
+            if (month > 11) {
+                month = 0;
+                year = year + 1;
+            }
+            date.setMonth(month);
+            displayCalendar();
+        };
+
+        previous.addEventListener("click", prevHandler);
+        next.addEventListener("click", nextHandler);
+
+        AppState.pluginInstances.calendarHandlers = {
+            prevHandler,
+            nextHandler,
+            previous,
+            next
+        };
+
+        displayCalendar();
     }
 }
 
 function destroyCalendar() {
-    if (pluginInstances.calendarHandlers) {
+    if (AppState.pluginInstances.calendarHandlers) {
         const {
             prevHandler,
             nextHandler,
             previous,
             next
-        } = pluginInstances.calendarHandlers;
+        } = AppState.pluginInstances.calendarHandlers;
         if (previous && next) {
             previous.removeEventListener("click", prevHandler);
             next.removeEventListener("click", nextHandler);
         }
-        pluginInstances.calendarHandlers = null;
+        AppState.pluginInstances.calendarHandlers = null;
     }
 }
 
 function initCharts(route) {
-    // Initialize different charts based on elements present
-    if (document.querySelector('#complete-course')) {
-        createChart('complete-course', '#2FB2AB');
-    }
-    if (document.querySelector('#earned-certificate')) {
-        createChart('earned-certificate', '#27CFA7');
-    }
-    if (document.querySelector('#course-progress')) {
-        createChart('course-progress', '#6142FF');
-    }
-    if (document.querySelector('#community-support')) {
-        createChart('community-support', '#FA902F');
-    }
-    if (document.querySelector('#doubleLineChart')) {
-        createLineChart('doubleLineChart', '#27CFA7');
-    }
-    if (document.querySelector('#radialMultipleBar')) {
-        createRadialChart();
-    }
+    const chartConfigs = [{
+            id: 'complete-course',
+            color: '#2FB2AB',
+            type: 'area'
+        },
+        {
+            id: 'earned-certificate',
+            color: '#27CFA7',
+            type: 'area'
+        },
+        {
+            id: 'course-progress',
+            color: '#6142FF',
+            type: 'area'
+        },
+        {
+            id: 'community-support',
+            color: '#FA902F',
+            type: 'area'
+        },
+        {
+            id: 'doubleLineChart',
+            color: '#27CFA7',
+            type: 'line'
+        },
+        {
+            id: 'radialMultipleBar',
+            color: null,
+            type: 'radial'
+        }
+    ];
+
+    chartConfigs.forEach(config => {
+        const element = document.querySelector(`#${config.id}`);
+        if (element) {
+            try {
+                if (config.type === 'area') {
+                    createChart(config.id, config.color);
+                } else if (config.type === 'line') {
+                    createLineChart(config.id, config.color);
+                } else if (config.type === 'radial') {
+                    createRadialChart();
+                }
+            } catch (error) {
+                console.error(`Error creating chart ${config.id}:`, error);
+            }
+        }
+    });
 }
 
 function destroyCharts() {
-    // ApexCharts cleanup
     if (window.ApexCharts) {
         const chartElements = ['#complete-course', '#earned-certificate', '#course-progress',
             '#community-support', '#doubleLineChart', '#radialMultipleBar'
@@ -380,10 +506,11 @@ function destroyCharts() {
 
         chartElements.forEach(selector => {
             const element = document.querySelector(selector);
-            if (element) {
-                // ApexCharts stores chart instance in element
-                if (element.chart) {
+            if (element && element.chart) {
+                try {
                     element.chart.destroy();
+                } catch (error) {
+                    console.error(`Error destroying chart ${selector}:`, error);
                 }
             }
         });
@@ -413,124 +540,146 @@ function initQuillEditor(route) {
     } : defaultConfig;
 
     document.querySelectorAll('.quill-editor, #editor').forEach(element => {
-        if (!element.classList.contains('ql-container')) {
-            const quill = new Quill(element, config);
-            if (!pluginInstances.quillEditors) pluginInstances.quillEditors = [];
-            pluginInstances.quillEditors.push(quill);
+        try {
+            if (!element.classList.contains('ql-container') && window.Quill) {
+                const quill = new Quill(element, config);
+                if (!AppState.pluginInstances.quillEditors) AppState.pluginInstances.quillEditors = [];
+                AppState.pluginInstances.quillEditors.push(quill);
+            }
+        } catch (error) {
+            console.error('Quill editor initialization error:', error);
         }
     });
 }
 
 function destroyQuillEditor() {
-    if (pluginInstances.quillEditors) {
-        pluginInstances.quillEditors.forEach(quill => {
-            if (quill && quill.container) {
-                const toolbar = quill.container.previousSibling;
-                if (toolbar && toolbar.classList.contains('ql-toolbar')) {
-                    toolbar.remove();
+    if (AppState.pluginInstances.quillEditors) {
+        AppState.pluginInstances.quillEditors.forEach(quill => {
+            try {
+                if (quill && quill.container) {
+                    const toolbar = quill.container.previousSibling;
+                    if (toolbar && toolbar.classList.contains('ql-toolbar')) {
+                        toolbar.remove();
+                    }
+                    quill.container.innerHTML = '';
                 }
-                quill.container.innerHTML = '';
+            } catch (error) {
+                console.error('Quill editor destroy error:', error);
             }
         });
-        pluginInstances.quillEditors = [];
+        AppState.pluginInstances.quillEditors = [];
     }
 }
 
-function initFileUpload(route) {
-    // Initialize your file upload plugin here
-    document.querySelectorAll('.file-upload, input[type="file"].upload').forEach(element => {
-        // Example file upload initialization
-        element.addEventListener('change', handleFileUpload);
-    });
-}
-
-function destroyFileUpload() {
-    document.querySelectorAll('.file-upload, input[type="file"].upload').forEach(element => {
-        element.removeEventListener('change', handleFileUpload);
-    });
-}
-
-function handleFileUpload(event) {
-    // Your file upload logic here
-    console.log('File selected:', event.target.files);
-}
-
 function initPlyr(route) {
-    const players = Plyr.setup('.plyr, video, audio');
-    pluginInstances.plyrPlayers = players;
+    if (window.Plyr) {
+        try {
+            const players = Plyr.setup('.plyr, video, audio');
+            AppState.pluginInstances.plyrPlayers = players;
+        } catch (error) {
+            console.error('Plyr initialization error:', error);
+        }
+    }
 }
 
 function destroyPlyr() {
-    if (pluginInstances.plyrPlayers) {
-        pluginInstances.plyrPlayers.forEach(player => {
-            if (player && typeof player.destroy === 'function') {
-                player.destroy();
+    if (AppState.pluginInstances.plyrPlayers) {
+        AppState.pluginInstances.plyrPlayers.forEach(player => {
+            try {
+                if (player && typeof player.destroy === 'function') {
+                    player.destroy();
+                }
+            } catch (error) {
+                console.error('Plyr destroy error:', error);
             }
         });
-        pluginInstances.plyrPlayers = [];
+        AppState.pluginInstances.plyrPlayers = [];
     }
 }
 
 function initFullCalendar(route) {
     $('#full-calendar, .full-calendar').each(function() {
-        $(this).fullCalendar({
-            // Your FullCalendar configuration
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            }
-        });
+        try {
+            $(this).fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                }
+            });
+        } catch (error) {
+            console.error('FullCalendar initialization error:', error);
+        }
     });
 }
 
 function destroyFullCalendar() {
     $('#full-calendar, .full-calendar').each(function() {
-        if ($(this).hasClass('fc')) {
-            $(this).fullCalendar('destroy');
+        try {
+            if ($(this).hasClass('fc')) {
+                $(this).fullCalendar('destroy');
+            }
+        } catch (error) {
+            console.error('FullCalendar destroy error:', error);
         }
     });
 }
 
 function initJQueryUI(route) {
-    $('.ui-datepicker').each(function() {
-        if (!$(this).hasClass('hasDatepicker')) {
-            $(this).datepicker();
-        }
-    });
+    try {
+        $('.ui-datepicker').each(function() {
+            if (!$(this).hasClass('hasDatepicker')) {
+                $(this).datepicker();
+            }
+        });
 
-    $('.ui-sortable').each(function() {
-        if (!$(this).hasClass('ui-sortable')) {
-            $(this).sortable();
-        }
-    });
+        $('.ui-sortable').each(function() {
+            if (!$(this).hasClass('ui-sortable')) {
+                $(this).sortable();
+            }
+        });
 
-    $('.ui-draggable').each(function() {
-        if (!$(this).hasClass('ui-draggable')) {
-            $(this).draggable();
-        }
-    });
+        $('.ui-draggable').each(function() {
+            if (!$(this).hasClass('ui-draggable')) {
+                $(this).draggable();
+            }
+        });
+    } catch (error) {
+        console.error('jQuery UI initialization error:', error);
+    }
 }
 
 function destroyJQueryUI() {
-    $('.ui-datepicker.hasDatepicker').datepicker('destroy');
-    $('.ui-sortable').sortable('destroy');
-    $('.ui-draggable').draggable('destroy');
+    try {
+        $('.ui-datepicker.hasDatepicker').datepicker('destroy');
+        $('.ui-sortable').sortable('destroy');
+        $('.ui-draggable').draggable('destroy');
+    } catch (error) {
+        console.error('jQuery UI destroy error:', error);
+    }
 }
 
 function initVectorMap(route) {
     $('#world-map, .vector-map').each(function() {
-        $(this).vectorMap({
-            map: 'world_mill_en',
-            backgroundColor: 'transparent'
-        });
+        try {
+            $(this).vectorMap({
+                map: 'world_mill_en',
+                backgroundColor: 'transparent'
+            });
+        } catch (error) {
+            console.error('Vector map initialization error:', error);
+        }
     });
 }
 
 function destroyVectorMap() {
     $('#world-map, .vector-map').each(function() {
-        if ($(this).children('.jvectormap-container').length) {
-            $(this).empty();
+        try {
+            if ($(this).children('.jvectormap-container').length) {
+                $(this).empty();
+            }
+        } catch (error) {
+            console.error('Vector map destroy error:', error);
         }
     });
 }
@@ -566,7 +715,7 @@ function initExportOptions(route) {
         };
 
         exportElement.addEventListener('change', exportHandler);
-        pluginInstances.exportHandler = {
+        AppState.pluginInstances.exportHandler = {
             element: exportElement,
             handler: exportHandler
         };
@@ -574,35 +723,50 @@ function initExportOptions(route) {
 }
 
 function destroyExportOptions() {
-    if (pluginInstances.exportHandler) {
+    if (AppState.pluginInstances.exportHandler) {
         const {
             element,
             handler
-        } = pluginInstances.exportHandler;
+        } = AppState.pluginInstances.exportHandler;
         if (element && handler) {
-            element.removeEventListener('change', handler);
+            try {
+                element.removeEventListener('change', handler);
+            } catch (error) {
+                console.error('Export options destroy error:', error);
+            }
         }
-        pluginInstances.exportHandler = null;
+        AppState.pluginInstances.exportHandler = null;
     }
 }
 
-// =========================== UTILITY FUNCTIONS ===========================
+// =========================== EVENT BINDING ===========================
 
 function bindGlobalEventListeners() {
+    // Unbind first to prevent duplicates
+    $(document).off("click", "#logoutBtn");
+    $(document).off("click", "a.nav_js, .nav_js");
+
     // Re-bind logout button
-    $(document).off("click", "#logoutBtn").on("click", "#logoutBtn", logout);
+    $(document).on("click", "#logoutBtn", function(e) {
+        e.preventDefault();
+        logout();
+    });
 
     // Re-bind navigation links
-    $(document).off("click", "a.nav_js, .nav_js").on("click", "a.nav_js, .nav_js", function(e) {
+    $(document).on("click", "a.nav_js, .nav_js", function(e) {
         e.preventDefault();
         $('.preloader').show();
         let route = $(this).attr("href") || $(this).data("route");
         if (route) {
-            if (route == "/") route = "";
+            if (route === "/") route = "";
             navigateTo(route);
         }
     });
+
+    console.log('Global event listeners bound');
 }
+
+// =========================== UTILITY FUNCTIONS ===========================
 
 function displayCalendar() {
     const display = document.querySelector(".display");
@@ -793,6 +957,7 @@ function downloadCSV(data) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function downloadJSON(data) {
@@ -807,25 +972,41 @@ function downloadJSON(data) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
+
+function showErrorMessage(message) {
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            confirmButtonColor: '#d33'
+        });
+    } else {
+        alert(message);
+    }
+}
+
+function logout() {
+    console.log('Logging out...');
+    cleanupAllPlugins();
+    Cookies.remove('authToken');
+    localStorage.removeItem('authToken');
+    window.location.href = baseUrl + "pre-login";
+}
+
 // =========================== INITIALIZATION ===========================
-// Base URL Configuration - REQUIRED
-const baseUrl = "<?=base_url()?>";
-const baseUrlOfApp = window.location.href.split("post-login-employee/")[0] + "post-login-employee/";
-const restOfBaseUrl = window.location.href.split("post-login-employee/")[1];
 
-// Global variables for calendar
-let date = new Date();
-let year = date.getFullYear();
-let month = date.getMonth();
-
-// Document ready
 $(document).ready(function() {
+    console.log('SPA Initializing...');
+
     var storage = window.localStorage;
     var token = storage.getItem("authToken");
     var tokenCookie = Cookies.get("authToken");
 
     if (!token && !tokenCookie) {
+        console.log('No auth token found, redirecting to login');
         window.location.href = baseUrl + "pre-login/";
         return;
     }
@@ -833,25 +1014,22 @@ $(document).ready(function() {
     let path = restOfBaseUrl || "";
     navigateTo(path, false);
 
-    // Inactivity timer
+    // Inactivity timer (10 minutes)
     let inactivityTimer;
 
     function resetInactivityTimer() {
         clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(logout, 10000000);
+        inactivityTimer = setTimeout(logout, 600000); // 10 minutes
     }
 
     ['load', 'mousemove', 'keypress', 'scroll', 'click', 'touchstart'].forEach(event => {
         window.addEventListener(event, resetInactivityTimer);
     });
-});
 
-function logout() {
-    cleanupAllPlugins(); // Clean up before logout
-    Cookies.remove('authToken');
-    localStorage.removeItem('authToken');
-    window.location.href = baseUrl + "pre-login";
-}
+    resetInactivityTimer();
+
+    console.log('SPA Initialized successfully');
+});
 
 // Handle browser back/forward
 window.onpopstate = function(event) {
@@ -859,4 +1037,26 @@ window.onpopstate = function(event) {
         navigateTo(event.state.route, false);
     }
 };
+
+// Handle page visibility change
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        console.log('Page hidden');
+    } else {
+        console.log('Page visible');
+        // Optionally refresh data when page becomes visible
+    }
+});
+
+// Global error handler
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
+});
+
+// Unhandled promise rejection handler
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+});
+
+console.log('SPA script loaded');
 </script>

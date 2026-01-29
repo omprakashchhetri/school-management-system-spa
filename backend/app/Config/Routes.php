@@ -125,6 +125,22 @@ $routes->group('post-login-employee', function($routes) {
         
     });
 
+    $routes->post('admission-create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
+    $routes->get('admin/admission/create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
+
+    // Form submission and AJAX calls
+    $routes->post('add-student', 'Web\AdminModulePages\AdminModuleController::addStudent');
+    $routes->post('get-students', 'Web\AdminModulePages\AdminModuleController::getStudents');
+    $routes->post('edit-student', 'Web\AdminModulePages\AdminModuleController::editStudent');
+    $routes->post('delete-student', 'Web\AdminModulePages\AdminModuleController::deleteStudent');
+    $routes->post('upload-student-image', 'Web\AdminModulePages\AdminModuleController::uploadStudentProfileImage');
+
+    // Dropdown data
+    $routes->post('get-classes', 'Web\AdminModulePages\AdminModuleController::getClasses');
+    $routes->post('get-sections', 'Web\AdminModulePages\AdminModuleController::getSections');
+
+
+
     $routes->post('student-details', 'Web\AttendanceModulePages\AttendanceModuleController::student_details');
 
     $routes->post('student-report', 'Web\StudentModulePages\StudentModuleController::student_report');

@@ -12,7 +12,7 @@ class StudentsModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'students';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
@@ -35,6 +35,7 @@ class StudentsModel extends Model
             'mother_name',
             'father_contact_no',
             'mother_contact_no',
+            'profile_image',
             'street',
             'city',
             'pincode',
