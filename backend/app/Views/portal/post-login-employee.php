@@ -1034,3 +1034,43 @@
 
     console.log('SPA script loaded');
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+  if (!window.Capacitor) return;
+
+  const { App } = await import('@capacitor/app');
+
+  let lastBack = 0;
+
+  App.addListener('backButton', () => {
+
+    // SPA navigation available → go back in history
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    // Home screen → double back to exit
+    const now = Date.now();
+
+    if (now - lastBack < 2000) {
+      App.exitApp();
+    } else {
+      lastBack = now;
+      showToast('Press back again to exit');
+    }
+
+  });
+
+  async function showToast(msg) {
+    try {
+      const { Toast } = await import('@capacitor/toast');
+      Toast.show({ text: msg, duration: 'short' });
+    } catch (e) {
+      console.log(msg);
+    }
+  }
+
+});
+</script>
