@@ -37,7 +37,7 @@ jQuery(document).ready(async function () {
     dashboardUrl = baseUrl + "post-login-student/dashboard";
   } 
   else if (loginType === "employee") {
-    dashboardUrl = baseUrl + "post-login-employee/admin/dashboard";
+    dashboardUrl = baseUrl + "post-login-employee/admin/view-modules";
   } 
   else {
     clearAuth();
