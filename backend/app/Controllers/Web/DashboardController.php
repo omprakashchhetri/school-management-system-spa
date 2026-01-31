@@ -24,6 +24,9 @@ class DashboardController extends BaseController
         return view('portal/pre-login');
     }
 
+    public function forgot_password(): string{
+        return view('portal/forgot-password');
+    }
     
     public function student_list(): string
     {

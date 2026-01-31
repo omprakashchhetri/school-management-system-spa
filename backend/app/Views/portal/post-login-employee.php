@@ -26,7 +26,7 @@ let month = date.getMonth();
 const pluginConfigs = {
     dataTable: {
         selector: 'table.display, .datatable, #assignmentTable, #reportCardTable',
-        routes: ['dashboard', 'students', 'assignments', 'reports', '*'],
+        routes: ['admin/dashboard', 'students', 'assignments', 'reports', '*'],
         init: initDataTable,
         destroy: destroyDataTable,
         priority: 1
@@ -40,14 +40,14 @@ const pluginConfigs = {
     },
     calendar: {
         selector: '.display, .calendar-widget',
-        routes: ['dashboard', 'calendar'],
+        routes: ['admin/dashboard', 'calendar'],
         init: initCalendar,
         destroy: destroyCalendar,
         priority: 3
     },
     charts: {
         selector: '#complete-course, #earned-certificate, #course-progress, #community-support, #doubleLineChart, #radialMultipleBar',
-        routes: ['dashboard', 'analytics'],
+        routes: ['admin/dashboard', 'analytics'],
         init: initCharts,
         destroy: destroyCharts,
         priority: 4

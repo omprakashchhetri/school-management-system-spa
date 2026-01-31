@@ -13,7 +13,9 @@ $routes->set404Override(function() {
 
 // Login screen
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
+$routes->get('forgot-password', 'Web\DashboardController::forgot_password');
 $routes->post('login', 'Web\DashboardController::login');
+
 
 // For student type
 $routes->group('post-login-student', function($routes) {
