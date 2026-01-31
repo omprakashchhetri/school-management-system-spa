@@ -1020,6 +1020,26 @@
             navigateTo(event.state.route, false);
         }
     };
+    let lastBackPress = 0;
+
+    document.addEventListener("backbutton", function (e) {
+
+        const now = Date.now();
+
+        if (window.history.length > 1) {
+            e.preventDefault();
+            window.history.back();
+        } else {
+            if (now - lastBackPress < 2000) {
+                navigator.app.exitApp();
+            } else {
+                lastBackPress = now;
+                alert("Press back again to exit");
+            }
+        }
+
+    }, false);
+
 
     // =========================== VISIBILITY ===========================
     document.addEventListener('visibilitychange', function () {
