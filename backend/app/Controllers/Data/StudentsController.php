@@ -53,15 +53,28 @@ class StudentsController extends BaseController
 
     public function getStudentById($studentId) {
 
-        $student = $this->studentsModel
-        ->where('id', (int) $studentId)
-        ->where('deleted_at', null)
-        ->first();
-    
+        $builder = $this->studentsModel->builder();
+
+        $builder->select('
+            students.*,
+            classes.id AS class_id,
+            classes.class_name AS class_name,
+            sections.id  AS section_id,
+            sections.section_label AS section_name
+        ');
+
+        $builder->join('classes', 'classes.id = students.related_class', 'left');
+        $builder->join('sections', 'sections.id = students.related_section', 'left');
+
+        $builder->where('students.id', (int) $studentId);
+        $builder->where('students.deleted_at', null);
+
+        $student = $builder->get()->getRowArray();
         if (!$student) {
             return ['error' => 'Student not found'];
         }
 
         return $student;
     }
+
 }

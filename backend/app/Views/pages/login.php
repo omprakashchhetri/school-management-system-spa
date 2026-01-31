@@ -58,7 +58,7 @@
                         <input class="form-check-input flex-shrink-0 rounded-4" type="checkbox" value="" id="remember">
                         <label class="form-check-label text-15 flex-grow-1" for="remember">Remember Me </label>
                     </div>
-                    <a href="forgot-password.html"
+                    <a href="forgot-password"
                         class="text-main-600 hover-text-decoration-underline text-15 fw-medium">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-main rounded-pill w-100">Sign In</button>
