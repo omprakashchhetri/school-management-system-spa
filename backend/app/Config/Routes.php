@@ -98,6 +98,7 @@ $routes->group('post-login-employee', function($routes) {
     $routes->group('employee', function($routes){
         $routes->post('dashboard', 'Web\EmployeeModulePages\EmployeeModuleController::dashboard');
         $routes->post('list', 'Web\EmployeeModulePages\EmployeeModuleController::list');
+        $routes->post('profile', 'Web\EmployeeModulePages\EmployeeModuleController::employee_profile');
         $routes->post('add-edit', 'Web\EmployeeModulePages\EmployeeModuleController::add_edit');        
     });
 
@@ -127,6 +128,18 @@ $routes->group('post-login-employee', function($routes) {
         
     });
 
+    // ==================== STUDENT API ROUTES ====================
+    $routes->group('student', function($routes) {
+        $routes->post('list', 'Web\DashboardController::student_list');
+        $routes->post('get-student-list', 'Web\DashboardController::get_student_list');
+        $routes->post('add-student', 'Web\DashboardController::add_student');
+        $routes->post('edit-student', 'Web\DashboardController::edit_student');
+        $routes->post('delete-student', 'Web\DashboardController::delete_student');
+        $routes->get('export-students', 'Web\DashboardController::export_students');
+        $routes->post('get-classes', 'Web\DashboardController::get_classes');
+        $routes->post('get-sections', 'Web\DashboardController::get_sections');
+    });
+
     $routes->post('admission-create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
     $routes->get('admin/admission/create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
 
@@ -149,7 +162,10 @@ $routes->group('post-login-employee', function($routes) {
     
     $routes->post('report-card', 'Web\StudentModulePages\StudentModuleController::report_card');
 
-    $routes->post('create-exam-routine', 'Web\ExaminationModulePages\ExaminationModuleController::create_exam_routine');
+    // Examination Routes
+    $routes->group('examination', function($routes) {
+        $routes->post('create-routine', 'Web\ExaminationModulePages\ExaminationModuleController::create_exam_routine');
+    });
 });
 
 // For api

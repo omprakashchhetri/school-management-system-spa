@@ -18,6 +18,7 @@ $profileImage = !empty($employee['profile_image'])
 ?>
 
 <div class="dashboard-body">
+    <input type="hidden" name="employeeId" id="employeeId" value="<?= esc($employee['id']) ?>">
     <!-- Breadcrumb Start -->
     <div class="breadcrumb mb-24">
         <ul class="flex-align gap-4">
@@ -331,7 +332,8 @@ $profileImage = !empty($employee['profile_image'])
                                 Subjects and classes currently assigned to this teacher
                             </p>
                         </div>
-                        <button class="btn btn-main rounded-pill py-8 px-16">
+                        <button class="btn btn-main rounded-pill py-8 px-16" data-bs-toggle="modal"
+                            data-bs-target="#addSubjectAllocationModal">
                             <i class="ph ph-plus me-8"></i>
                             Assign Subject
                         </button>
@@ -378,7 +380,9 @@ $profileImage = !empty($employee['profile_image'])
                                                 <button class="btn btn-outline-main rounded-pill py-6 px-12 text-13">
                                                     <i class="ph ph-pencil-line me-6"></i> Edit
                                                 </button>
-                                                <button class="btn btn-danger rounded-pill py-6 px-12 text-13">
+                                                <button
+                                                    class="btn btn-danger rounded-pill py-6 px-12 text-13 delete-subject-allocation-js"
+                                                    data-id="<?= esc($allocation['id']) ?>">
                                                     <i class="ph ph-trash me-6"></i> Remove
                                                 </button>
                                             </div>
@@ -539,8 +543,8 @@ $profileImage = !empty($employee['profile_image'])
                                 </td>
                                 <td class="text-center">
                                     <div class="flex-align justify-content-center gap-8">
-                                        <a href="<?= base_url('post-login-employee/admin/download-employee-document/' . $doc['id']) ?>"
-                                            class="btn btn-outline-info py-6 px-12 text-13" target="_blank">
+                                        <a href="<?= base_url('uploads/employees/documents/' . $doc['file']) ?>"
+                                            class="btn btn-info py-6 px-12 text-13" target="_blank">
                                             <i class="ph ph-download me-4"></i>
                                             Download
                                         </a>
@@ -573,7 +577,7 @@ $profileImage = !empty($employee['profile_image'])
                                                 </li>
                                             </ul>
                                         </div>
-                                        <button class="btn btn-outline-danger py-6 px-12 text-13 delete-document-js"
+                                        <button class="btn btn-danger py-6 px-12 text-13 delete-document-js"
                                             data-document-id="<?= $doc['id'] ?>">
                                             <i class="ph ph-trash me-4"></i>
                                             Delete
@@ -638,6 +642,75 @@ $profileImage = !empty($employee['profile_image'])
                             <i class="ph ph-upload me-8"></i>
                             Upload Document
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Subject Allocation Modal -->
+        <div class="modal fade" id="addSubjectAllocationModal" tabindex="-1" aria-labelledby="addSubjectAllocationLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-top">
+                <div class="modal-content radius-16 bg-base">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addSubjectAllocationLabel">Add Subject Allocation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <!-- Class -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Class</label>
+                                <select id="classSubAllo" class="form-select">
+                                    <option value="">Select Class</option>
+                                    <?php foreach ($classes as $c): ?>
+                                    <option value="<?= $c['id'] ?>"><?= $c['class_name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Section -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Section</label>
+                                <select id="sectionSubAllo" class="form-select">
+                                    <option value="">Select Section</option>
+                                    <?php foreach ($sections as $s): ?>
+                                    <option value="<?= $s['id'] ?>"><?= $s['section_label'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Teacher -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Teacher</label>
+                                <select id="teacherSubAllo" class="form-select">
+                                    <option value="">Select Teacher</option>
+                                    <?php foreach ($teachers as $t): ?>
+                                    <option value="<?= $t['id'] ?>"
+                                        <?= $t['id'] == $employee['id'] ? 'selected' : '' ?>>
+                                        <?= $t['firstname'].' '.$t['lastname'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Subject</label>
+                                <select id="subjectSubAllo" class="form-select">
+                                    <option value="">Select Subject</option>
+                                    <?php foreach ($subjects as $sub): ?>
+                                    <option value="<?= $sub['id'] ?>"><?= $sub['subject_name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="mt-10">
+                                    <button type="button" id="saveSubjectAllocationBtn"
+                                        class="btn btn-primary px-4 w-100">Save</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

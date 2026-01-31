@@ -39,13 +39,23 @@
                     <div class="col-12">
                         <h6 class="mb-16 fw-bold">Profile Image</h6>
                     </div>
-                    <div class="col-xxl-3 col-md-4 col-sm-5">
+                    <div class="col-md-6">
                         <label class="h5 fw-semibold font-heading mb-8">Profile Photo</label>
                         <!-- Add data-input-name attribute -->
                         <div id="profileImageUpload" class="fileUpload image-upload" data-input-name="profile_image">
                         </div>
                     </div>
+                    <!-- End Profile Image -->
 
+                    <div class="col-md-3 mt-md-auto">
+                        <label class="h5 mb-8 fw-semibold font-heading">Admission No *</label>
+                        <input type="text" class="form-control py-11" id="admission_no" name="admission_no" required>
+                    </div>
+                    <div class="col-md-3 mt-md-auto">
+                        <label class="h5 mb-8 fw-semibold font-heading">Admission Date *</label>
+                        <input type="date" class="form-control py-11" id="admission_date" name="admission_date"
+                            value="<?= date('Y-m-d  ') ?>" required>
+                    </div>
                     <!-- Personal Information -->
                     <div class="col-12">
                         <h6 class="mb-16 fw-bold border-top pt-16">Personal Information</h6>
@@ -97,7 +107,7 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <label class="h5 mb-8 fw-semibold font-heading">Caste</label>
                         <select class="form-control py-11" name="student_caste">
                             <option value="">Select Caste</option>
@@ -174,6 +184,31 @@
                                 class="text-danger">*</span></label>
                         <select name="related_section" id="related_section" class="form-select py-9 text-15" required>
                             <option value="">Select section</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="h5 mb-8 fw-semibold font-heading">Status *</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="">Select Status</option>
+                            <option value="Admitted">Admitted</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="On Leave">On Leave</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Dropped Out">Dropped Out</option>
+                            <option value="Transferred">Transferred</option>
+                            <option value="Graduated">Graduated</option>
+                            <option value="Terminated">Terminated</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="h5 mb-8 fw-semibold font-heading">Gender</label>
+                        <select class="form-select" id="gender" name="gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
                         </select>
                     </div>
 
