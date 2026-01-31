@@ -1,146 +1,160 @@
 <div id="app"></div>
 
 <!-- Bootstrap Bundle Js -->
-<script src="<?=base_url()?>assets/js/boostrap.bundle.min.js"></script>
+<script src="<?= base_url() ?>assets/js/boostrap.bundle.min.js"></script>
 <!-- Phosphor Js -->
-<script src="<?=base_url()?>assets/js/phosphor-icon.js"></script>
+<script src="<?= base_url() ?>assets/js/phosphor-icon.js"></script>
 <!-- file upload -->
-<script src="<?=base_url()?>assets/js/file-upload.js"></script>
+<script src="<?= base_url() ?>assets/js/file-upload.js"></script>
 <!-- file upload -->
-<script src="<?=base_url()?>assets/js/plyr.js"></script>
+<script src="<?= base_url() ?>assets/js/plyr.js"></script>
 <!-- dataTables -->
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 <!-- full calendar -->
-<script src="<?=base_url()?>assets/js/full-calendar.js"></script>
+<script src="<?= base_url() ?>assets/js/full-calendar.js"></script>
 <!-- jQuery UI -->
-<script src="<?=base_url()?>assets/js/jquery-ui.js"></script>
+<script src="<?= base_url() ?>assets/js/jquery-ui.js"></script>
 <!-- jQuery UI -->
-<script src="<?=base_url()?>assets/js/editor-quill.js"></script>
+<script src="<?= base_url() ?>assets/js/editor-quill.js"></script>
 <!-- apex charts -->
-<script src="<?=base_url()?>assets/js/apexcharts.min.js"></script>
+<script src="<?= base_url() ?>assets/js/apexcharts.min.js"></script>
 <!-- jvectormap Js -->
-<script src="<?=base_url()?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
+<script src="<?= base_url() ?>assets/js/jquery-jvectormap-2.0.5.min.js"></script>
 <!-- jvectormap world Js -->
-<script src="<?=base_url()?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
+<script src="<?= base_url() ?>assets/js/jquery-jvectormap-world-mill-en.js"></script>
 <!-- main js -->
-<script src="<?=base_url()?>assets/js/main.js"></script>
+<script src="<?= base_url() ?>assets/js/main.js"></script>
 <script>
-const baseUrl = "<?=base_url()?>";
-const baseUrlOfApp = window.location.href.split("post-login-student/")[0] + "post-login-student/";
-const restOfBaseUrl = window.location.href.split("post-login-student/")[1];
-// Core SPA Navigation Function
-function navigateTo(route, push = true) {
-    var storage = window.localStorage;
-    var token = storage.getItem("authToken");
-    var tokenCookie = Cookies.get("authToken");
-    var authToken = token || tokenCookie;
-    $.ajax({
-        url: baseUrlOfApp + route,
-        method: "POST",
-        headers: {
-            'Authorization': 'Bearer ' + authToken
-        },
-        success: function(data) {
-            $("#app").html(data);
+    /* =========================== CONFIGURATION =========================== */
+    const baseUrl = "<?= base_url() ?>";
+    const baseUrlOfApp =
+        window.location.href.split("post-login-student/")[0] + "post-login-student/";
+    const restOfBaseUrl =
+        window.location.href.split("post-login-student/")[1] || "";
 
-            // Update browser history if needed
-            if (push) {
-                let newUrl = baseUrlOfApp + route;
-                if (route === "") newUrl = baseUrlOfApp + "/";
-                history.pushState({
-                    route: route
-                }, "", newUrl);
+    /* =========================== AUTH BOOTSTRAP =========================== */
+    const Auth = (function () {
+        const token =
+            localStorage.getItem('authToken') ||
+            (typeof Cookies !== 'undefined' ? Cookies.get('authToken') : null);
+
+        return {
+            token,
+            isAuthenticated: !!token
+        };
+    })();
+
+    /* 🔒 HARD FAIL EARLY */
+    if (!Auth.isAuthenticated) {
+        window.location.href = baseUrl + "pre-login/";
+        throw new Error("Authentication required");
+    }
+
+    /* =========================== GLOBAL AJAX AUTH =========================== */
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            if (Auth.token) {
+                xhr.setRequestHeader("Authorization", "Bearer " + Auth.token);
             }
-            $('.preloader').hide();
+        }
+    });
 
-            jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function() {
-                // alert("User inactive for 1 minute!");
-                // You can also redirect or logout user here
-                // window.location.href = "/logout";
-                // authToken cookie delete
-                Cookies.remove('authToken');
-                localStorage.removeItem('authToken');
-                window.location.href = baseUrl + "pre-login";
+    /* =========================== CORE NAVIGATION =========================== */
+    function navigateTo(route, push = true) {
+
+        $('.preloader').show();
+
+        $.ajax({
+            url: baseUrlOfApp + route,
+            method: "POST",
+
+            success: function (data) {
+                $("#app").html(data);
+
+                if (push) {
+                    let newUrl = baseUrlOfApp + route;
+                    if (route === "") newUrl = baseUrlOfApp;
+                    history.pushState({ route }, "", newUrl);
+                }
+
+                $('.preloader').hide();
+                bindLogout();
+            },
+
+            error: function (xhr) {
+                if (xhr.status === 401 || xhr.status === 403) {
+                    logout();
+                } else {
+                    $('.preloader').hide();
+                    logout();
+                }
+            }
+        });
+    }
+
+    /* =========================== LOGOUT =========================== */
+    function logout() {
+        Cookies.remove('authToken', { path: '/' });
+        Cookies.remove('loginType', { path: '/' });
+
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('loginType');
+
+        window.location.href = baseUrl + "pre-login/";
+    }
+
+    /* =========================== LOGOUT BINDING =========================== */
+    function bindLogout() {
+        $(document)
+            .off("click", "#logoutBtn")
+            .on("click", "#logoutBtn", function (e) {
+                e.preventDefault();
+                logout();
             });
-        },
-        error: function() {
-            Cookies.remove('authToken');
-            localStorage.removeItem('authToken');
-            window.location.href = baseUrl + "pre-login";
+    }
+
+    /* =========================== GLOBAL 401 HANDLER =========================== */
+    $(document).ajaxError(function (event, xhr) {
+        if (xhr.status === 401) {
+            logout();
         }
     });
-}
 
-// Click handler for links and .nav_js
-$(document).on("click", "a.nav_js, .nav_js", function(e) {
-    e.preventDefault();
-    let route = $(this).attr("href") || $(this).data("route");
-    $('.preloader').show();
-    if (route) {
-        if (route == "/") {
-            route = "";
+    /* =========================== INITIAL LOAD =========================== */
+    $(document).ready(function () {
+
+        let path = restOfBaseUrl || "";
+        navigateTo(path, false);
+
+        /* ---------------- Inactivity Timer ---------------- */
+        let inactivityTimer;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(logout, 600000); // 10 mins
         }
-        navigateTo(route);
-    }
-});
 
-// Handle browser back/forward buttons
-window.onpopstate = function(event) {
-    if (event.state && event.state.route) {
-        navigateTo(event.state.route, false); // don't push again
-    }
-};
+        ['load', 'mousemove', 'keypress', 'scroll', 'click', 'touchstart']
+            .forEach(evt => window.addEventListener(evt, resetInactivityTimer));
 
-// Initial load (load from URL bar's last segment)
-$(document).ready(function() {
-    var storage = window.localStorage;
-    jQuery(function() {
-        var token = storage.getItem("authToken");
-        var tokenCookie = Cookies.get("authToken");
-        if (!token && !tokenCookie) {
-            // Redirect to post-login.html if token exists
-            window.location.href = baseUrl + "pre-login/";
-        }
+        resetInactivityTimer();
     });
-    let path = "";
-    if (restOfBaseUrl != "") {
-        path = restOfBaseUrl;
-    } else {
-        path = ""; // 👈 default route
-    }
-    // console.log(path);
-    jQuery(document).off("click", "#logoutBtn").on("click", "#logoutBtn", logout);
-    navigateTo(path, false);
-    let inactivityTime = function() {
-        let timeout;
-        let inactivityLimit = 10000000; // 1 minute (set your own limit)
 
-        function resetTimer() {
-            clearTimeout(timeout);
-            timeout = setTimeout(logout, inactivityLimit);
+    /* =========================== HISTORY =========================== */
+    window.onpopstate = function (event) {
+        if (event.state && event.state.route !== undefined) {
+            navigateTo(event.state.route, false);
         }
-
-
-
-        // Reset timer on these events
-        window.onload = resetTimer;
-        document.onmousemove = resetTimer;
-        document.onkeypress = resetTimer;
-        document.onscroll = resetTimer;
-        document.onclick = resetTimer;
-        document.ontouchstart = resetTimer; // for mobile
     };
-    inactivityTime();
-});
 
-function logout() {
-    // alert("User inactive for 1 minute!");
-    // You can also redirect or logout user here
-    // window.location.href = "/logout";
-    // authToken cookie delete
-    Cookies.remove('authToken');
-    // authToken localStorage से delete
-    localStorage.removeItem('authToken');
-    window.location.href = baseUrl + "pre-login";
-}
+    /* =========================== VISIBILITY =========================== */
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            // optional refresh hook
+        }
+    });
+
+    /* =========================== GLOBAL ERROR GUARDS =========================== */
+    window.addEventListener("error", e => console.error(e.error));
+    window.addEventListener("unhandledrejection", e => console.error(e.reason));
 </script>

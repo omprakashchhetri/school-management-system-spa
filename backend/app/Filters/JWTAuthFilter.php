@@ -12,108 +12,139 @@ class JWTAuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        $header = $request->getHeaderLine('Authorization');
+        $token = null;
 
-        // 🔑 Fallback to cookie for browser loads
-        if (!$header) {
-            $tokenFromCookie = $request->getCookie('authToken');
-            if ($tokenFromCookie) {
-                $header = 'Bearer ' . $tokenFromCookie;
+        /* -------------------------------------------------
+           1. PRIMARY: Authorization Header
+           (AJAX, SPA, Cordova)
+        ------------------------------------------------- */
+        $authHeader = $request->getHeaderLine('Authorization');
+        
+        if ($authHeader && stripos($authHeader, 'Bearer ') === 0) {
+            $token = trim(substr($authHeader, 7));
+        }
+
+        /* -------------------------------------------------
+           2. FALLBACK: Cookie
+           (Browser page load only)
+        ------------------------------------------------- */
+        if (!$token) {
+            $cookieToken = $request->getCookie('authToken');
+            if ($cookieToken) {
+                $token = $cookieToken;
             }
         }
 
+        /* -------------------------------------------------
+           3. Skip routes (public)
+        ------------------------------------------------- */
         $uri = service('uri');
-        $segment1 = $uri->getSegment(1); // Gets 'pre-login' from '/index.php/pre-login/'
-        
-        // Define routes to skip
+        $segment1 = $uri->getSegment(1);
+
         $skipRoutes = ['api', 'pre-login', 'login'];
-        
-        if (in_array($segment1, $skipRoutes)) {
-            return; // Skip JWT validation
-        }
-        
-        if (!$header) {
-            return service('response')->setJSON([
-                'status' => 'error',
-                'message' => 'Authorization header missing'
-            ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+        if (in_array($segment1, $skipRoutes, true)) {
+            return;
         }
 
-        if (strpos($header, 'Bearer ') !== 0) {
-            return service('response')->setJSON([
-                'status' => 'error',
-                'message' => 'Invalid Authorization header format'
-            ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
-        }
-        $token = substr($header, 7);
-
-        try {
-            $secretKey = getenv('JWT_SECRET');
-            $decoded   = JWT::decode($token, new Key($secretKey, 'HS256'));
-            $decodedData = $decoded->data;
-            // Make sure loginType is included
-            if (empty($decodedData->loginType) || empty($decodedData->id)) {
-                return service('response')->setJSON([
-                    'status' => 'error',
-                    'message' => 'Invalid token payload: missing loginType or id'
-                ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+        /* -------------------------------------------------
+           4. No token → reject
+        ------------------------------------------------- */
+        if (!$token) {
+            if ($request->isAJAX()) {
+                return service('response')
+                    ->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Authentication required'
+                    ])
+                    ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
             }
 
-            // Decide which model to load based on loginType
-            switch (strtolower($decodedData->loginType)) {
+            return redirect()->to('/pre-login');
+        }
+
+        /* -------------------------------------------------
+           5. Decode & Validate JWT
+        ------------------------------------------------- */
+        try {
+            $decoded = JWT::decode(
+                $token,
+                new Key(getenv('JWT_SECRET'), 'HS256')
+            );
+
+            if (
+                empty($decoded->data->id) ||
+                empty($decoded->data->loginType)
+            ) {
+                throw new \Exception('Invalid token payload');
+            }
+
+            $userId    = (int) $decoded->data->id;
+            $loginType = strtolower($decoded->data->loginType);
+
+            /* -------------------------------------------------
+               6. Resolve model
+            ------------------------------------------------- */
+            switch ($loginType) {
                 case 'employee':
                     $model = model('EmployeesModel');
                     break;
+
                 case 'student':
                     $model = model('StudentsModel');
                     break;
+
                 default:
-                    return service('response')->setJSON([
-                        'status' => 'error',
-                        'message' => 'Unknown loginType in token'
-                    ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+                    throw new \Exception('Invalid login type');
             }
 
-            // Fetch user by ID
-            $user = $model->where('id', $decodedData->id)->where('issued_jwt_token', $token)->first();
+            /* -------------------------------------------------
+               7. Validate user + issued token
+            ------------------------------------------------- */
+            $user = $model
+                ->where('id', $userId)
+                ->where('issued_jwt_token', $token)
+                ->where('deleted_at', null)
+                ->first();
 
             if (!$user) {
-                return service('response')->setJSON([
-                    'status' => 'error',
-                    'message' => 'User not found'
-                ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+                throw new \Exception('User not found or token revoked');
             }
 
-            // Optionally check active status
-            if (isset($user['deleted_at']) && $user['deleted_at'] !== null) {
-                return service('response')->setJSON([
-                    'status' => 'error',
-                    'message' => 'Account inactive'
-                ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
-            }
-
-            // Attach user + token payload to request
+            /* -------------------------------------------------
+               8. Attach authenticated user to request
+               (THIS is the only auth state controllers use)
+            ------------------------------------------------- */
             $request->user = (object)[
-                'data'   => $decoded,
-                'record' => $user
+                'id'        => $userId,
+                'loginType' => $loginType,
+                'token'     => $token,
+                'record'    => $user
             ];
 
-        } catch (\Exception $e) {
-            // Browser request → redirect
-            if ($request->isAJAX() === false) {
-                return redirect()->to('/pre-login')->with('error', 'Session expired. Please login again.');
+        } catch (\Throwable $e) {
+
+            // AJAX → JSON
+            if ($request->isAJAX()) {
+                return service('response')
+                    ->setJSON([
+                        'status'  => 'error',
+                        'message' => 'Invalid or expired session'
+                    ])
+                    ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
             }
-            
-            return service('response')->setJSON([
-                'status' => 'error',
-                'message' => 'Invalid or expired token',
-                'error'   => $e->getMessage()
-            ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+
+            // Browser → redirect
+            return redirect()
+                ->to('/pre-login')
+                ->with('error', 'Session expired. Please login again.');
         }
     }
 
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
-    {
-        // Nothing to do here
+    public function after(
+        RequestInterface $request,
+        ResponseInterface $response,
+        $arguments = null
+    ) {
+        // Nothing to do
     }
 }

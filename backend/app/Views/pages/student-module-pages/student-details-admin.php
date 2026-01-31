@@ -3,13 +3,13 @@
     <div class="breadcrumb mb-24">
         <ul class="flex-align gap-4">
             <li>
-                <a href="dashboard" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
+                <a href="index.html" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
             </li>
             <li>
                 <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
             </li>
             <li>
-                <a href="profile" class="text-gray-200 fw-normal text-15 hover-text-main-600">Students</a>
+                <a href="students.html" class="text-gray-200 fw-normal text-15 hover-text-main-600">Students</a>
             </li>
             <li>
                 <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
@@ -20,7 +20,7 @@
         </ul>
     </div>
     <!-- Breadcrumb End -->
-<?php print_r($studentData); ?>
+
     <div class="card overflow-hidden">
         <div class="card-body p-0">
             <div class="cover-img position-relative">
@@ -42,11 +42,11 @@
                         <img src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             alt="" class="w-120 h-120 rounded-circle border border-white" />
                         <div>
-                            <h4 class="mb-8"><?=$studentData['firstname']?> <?=$studentData['middlename']?> <?=$studentData['lastname']?></h4>
+                            <h4 class="mb-8"><?=$studentData['firstname']?> <?=$studentData['lastname']?></h4>
                             <div class="setting-profile__infos flex-align flex-wrap gap-16">
                                 <div class="flex-align gap-6">
                                     <span class="text-gray-600 d-flex text-lg"><i class="ph ph-student"></i></span>
-                                    <span class="text-gray-600 d-flex text-15">Grade <?=$studentData['class_name']?><?=$studentData['section_name']?></span>
+                                    <span class="text-gray-600 d-flex text-15">Grade 10A</span>
                                 </div>
                                 <div class="flex-align gap-6">
                                     <span class="text-gray-600 d-flex text-lg"><i

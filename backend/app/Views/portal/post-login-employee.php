@@ -3,11 +3,38 @@
 
 <script>
 // =========================== CONFIGURATION ===========================
-const baseUrl = "<?=base_url()?>";
+const baseUrl = "<?= base_url() ?>";
 const baseUrlOfApp = window.location.href.split("post-login-employee/")[0] + "post-login-employee/";
 const restOfBaseUrl = window.location.href.split("post-login-employee/")[1];
 
-// Global state management
+// =========================== AUTH BOOTSTRAP ===========================
+const Auth = (function() {
+    const token =
+        localStorage.getItem('authToken') ||
+        (typeof Cookies !== 'undefined' ? Cookies.get('authToken') : null);
+
+    return {
+        token,
+        isAuthenticated: !!token
+    };
+})();
+
+// 🔒 HARD FAIL EARLY (prevents half-loaded SPA)
+if (!Auth.isAuthenticated) {
+    window.location.href = baseUrl + "pre-login/";
+    throw new Error('Authentication required');
+}
+
+// =========================== GLOBAL AJAX AUTH ===========================
+$.ajaxSetup({
+    beforeSend: function(xhr) {
+        if (Auth.token) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + Auth.token);
+        }
+    }
+});
+
+// =========================== GLOBAL STATE ===========================
 const AppState = {
     activePlugins: {},
     pluginInstances: {},
@@ -16,7 +43,7 @@ const AppState = {
     navigationQueue: []
 };
 
-// Global variables for calendar
+// =========================== CALENDAR GLOBALS ===========================
 let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
@@ -144,11 +171,9 @@ const customConfigs = {
 };
 
 // =========================== NAVIGATION ===========================
-
 function navigateTo(route, push = true) {
-    // Prevent navigation during an existing navigation
+
     if (AppState.isNavigating) {
-        console.log('Navigation already in progress, queuing:', route);
         AppState.navigationQueue.push({
             route,
             push
@@ -158,85 +183,76 @@ function navigateTo(route, push = true) {
 
     AppState.isNavigating = true;
 
-    var storage = window.localStorage;
-    var token = storage.getItem("authToken");
-    var tokenCookie = Cookies.get("authToken");
-    var authToken = token || tokenCookie;
-
-    if (!authToken) {
-        console.error('No auth token found');
-        window.location.href = baseUrl + "pre-login/";
-        return;
-    }
-
-    // Show loading indicator
     $('.preloader').show();
-
-    // Clean up current plugins before navigation
     cleanupAllPlugins();
 
     $.ajax({
         url: baseUrlOfApp + route,
         method: "POST",
-        headers: {
-            'Authorization': 'Bearer ' + authToken
-        },
-        timeout: 15000, // 15 second timeout
+        timeout: 15000,
+
         success: function(data) {
-            try {
-                // Insert new content
-                $("#app").html(data);
+            $("#app").html(data);
+            AppState.currentRoute = route;
 
-                // Update current route
-                AppState.currentRoute = route;
+            setTimeout(() => {
+                initializePluginsForRoute(route);
+                bindGlobalEventListeners();
 
-                // Small delay to ensure DOM is ready
-                setTimeout(() => {
-                    // Initialize plugins for this route
-                    initializePluginsForRoute(route);
-
-                    // Re-bind global event listeners
-                    bindGlobalEventListeners();
-
-                    // Update browser history
-                    if (push) {
-                        let newUrl = baseUrlOfApp + route;
-                        if (route === "") newUrl = baseUrlOfApp;
-                        history.pushState({
-                            route: route
-                        }, "", newUrl);
-                    }
-
-                    console.log(`Navigation complete: ${route}`);
-                }, 100);
-
-            } catch (error) {
-                console.error('Error rendering page:', error);
-                showErrorMessage('Failed to load page content');
-            }
+                if (push) {
+                    let newUrl = baseUrlOfApp + route;
+                    if (route === "") newUrl = baseUrlOfApp;
+                    history.pushState({
+                        route
+                    }, "", newUrl);
+                }
+            }, 100);
         },
-        error: function(xhr, status, error) {
-            console.error('Navigation error:', status, error);
 
+        error: function(xhr) {
             if (xhr.status === 401 || xhr.status === 403) {
-                // Authentication error
                 logout();
             } else {
                 showErrorMessage('Error loading page. Please try again.');
             }
         },
+
         complete: function() {
             $('.preloader').hide();
             AppState.isNavigating = false;
 
-            // Process queued navigation if any
-            if (AppState.navigationQueue.length > 0) {
+            if (AppState.navigationQueue.length) {
                 const next = AppState.navigationQueue.shift();
                 setTimeout(() => navigateTo(next.route, next.push), 100);
             }
         }
     });
 }
+
+// =========================== GLOBAL AJAX 401 HANDLER ===========================
+$(document).ajaxError(function(event, xhr) {
+    if (xhr.status === 401) {
+        logout();
+    }
+});
+
+// =========================== LOGOUT ===========================
+function logout() {
+    cleanupAllPlugins();
+
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('loginType');
+
+    Cookies.remove('authToken', {
+        path: '/'
+    });
+    Cookies.remove('loginType', {
+        path: '/'
+    });
+
+    window.location.href = baseUrl + "pre-login/";
+}
+
 
 // =========================== PLUGIN MANAGEMENT ===========================
 
@@ -988,75 +1004,89 @@ function showErrorMessage(message) {
     }
 }
 
-function logout() {
-    console.log('Logging out...');
-    cleanupAllPlugins();
-    Cookies.remove('authToken');
-    localStorage.removeItem('authToken');
-    window.location.href = baseUrl + "pre-login";
-}
-
 // =========================== INITIALIZATION ===========================
-
 $(document).ready(function() {
-    console.log('SPA Initializing...');
 
-    var storage = window.localStorage;
-    var token = storage.getItem("authToken");
-    var tokenCookie = Cookies.get("authToken");
+    navigateTo(restOfBaseUrl, false);
 
-    if (!token && !tokenCookie) {
-        console.log('No auth token found, redirecting to login');
-        window.location.href = baseUrl + "pre-login/";
-        return;
-    }
-
-    let path = restOfBaseUrl || "";
-    navigateTo(path, false);
-
-    // Inactivity timer (10 minutes)
+    // Inactivity timer (10 mins)
     let inactivityTimer;
 
     function resetInactivityTimer() {
         clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(logout, 600000); // 10 minutes
+        inactivityTimer = setTimeout(logout, 600000);
     }
 
-    ['load', 'mousemove', 'keypress', 'scroll', 'click', 'touchstart'].forEach(event => {
-        window.addEventListener(event, resetInactivityTimer);
-    });
+    ['load', 'mousemove', 'keypress', 'scroll', 'click', 'touchstart']
+    .forEach(event => window.addEventListener(event, resetInactivityTimer));
 
     resetInactivityTimer();
-
-    console.log('SPA Initialized successfully');
 });
 
-// Handle browser back/forward
+// =========================== HISTORY HANDLING ===========================
 window.onpopstate = function(event) {
     if (event.state && event.state.route !== undefined) {
         navigateTo(event.state.route, false);
     }
 };
 
-// Handle page visibility change
+// =========================== VISIBILITY ===========================
 document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        console.log('Page hidden');
-    } else {
-        console.log('Page visible');
-        // Optionally refresh data when page becomes visible
+    if (!document.hidden) {
+        // Optional refresh logic
     }
 });
 
-// Global error handler
-window.addEventListener('error', function(e) {
-    console.error('Global error:', e.error);
-});
-
-// Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', function(e) {
-    console.error('Unhandled promise rejection:', e.reason);
-});
+// =========================== ERROR HANDLERS ===========================
+window.addEventListener('error', e => console.error(e.error));
+window.addEventListener('unhandledrejection', e => console.error(e.reason));
 
 console.log('SPA script loaded');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+    if (!window.Capacitor) return;
+
+    const {
+        App
+    } = await import('@capacitor/app');
+
+    let lastBack = 0;
+
+    App.addListener('backButton', () => {
+
+        // SPA navigation available → go back in history
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+
+        // Home screen → double back to exit
+        const now = Date.now();
+
+        if (now - lastBack < 2000) {
+            App.exitApp();
+        } else {
+            lastBack = now;
+            showToast('Press back again to exit');
+        }
+
+    });
+
+    async function showToast(msg) {
+        try {
+            const {
+                Toast
+            } = await import('@capacitor/toast');
+            Toast.show({
+                text: msg,
+                duration: 'short'
+            });
+        } catch (e) {
+            console.log(msg);
+        }
+    }
+
+});
 </script>
