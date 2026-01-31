@@ -14,8 +14,6 @@ use App\Controllers\Data\AdminModulePages\AdmissionController;
 
 class AdminModuleController extends BaseController
 {
-
-
     protected $adminRoleManagementController;
     protected $classesController;
     protected $sectionsController;
@@ -147,15 +145,29 @@ class AdminModuleController extends BaseController
 
     public function employee_details($employeeId)
     {
-        $employeeData = $this->employeeManagementController->getEmployeeDetails($employeeId);
         
+        $employeeData = $this->employeeManagementController->getEmployeeDetails($employeeId);
         if (!$employeeData) {
             return redirect()->to('admin/employee-list')->with('error', 'Employee not found');
         }
+            
+        $classesData = $this->classesController->getAll();
+        $sectionList = $this->sectionsController->getAll();
+        $employeeList = $this->classTeacherManagementController->getAllEmployees();
+        $subjectsData = $this->subjectsController->getAll();
+        $roleDetails = $this->adminRoleManagementController->getOne($employeeData['employee']['role_id']);
+        $passToView = [
+            'classes' => $classesData,
+            'sections' => $sectionList,
+            'teachers' => $employeeList,
+            'subjects' => $subjectsData,
+            'employeeDetails' => $employeeData, 
+            'roleDetails' => $roleDetails
+        ];
         
         return view('templates/sidebar')
             . view('templates/topbar')
-            . view('pages/admin-module-pages/employee-details', ['employeeDetails' => $employeeData]);
+            . view('pages/admin-module-pages/employee-details', $passToView);
     }
 
     // Edit employee details AJAX function

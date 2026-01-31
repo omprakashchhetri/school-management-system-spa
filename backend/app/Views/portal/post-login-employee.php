@@ -52,7 +52,7 @@ let month = date.getMonth();
 
 const pluginConfigs = {
     dataTable: {
-        selector: 'table.display, .datatable, #assignmentTable, #reportCardTable',
+        selector: 'table.display, .datatable, #assignmentTable, #reportCardTable, #documentsTable',
         routes: ['admin/dashboard', 'students', 'assignments', 'reports', '*'],
         init: initDataTable,
         destroy: destroyDataTable,

@@ -10,9 +10,9 @@ class PostLoginController extends BaseController
         return view('templates/post-login');
     }
     public function student_post_login() {
-        return view('templates/header')
+        return view('templates/header-student')
             .   view('portal/post-login-student')
-            .   view('templates/footer');
+            .   view('templates/footer-student');
     }
     public function employee_post_login() {
         return view('templates/header')

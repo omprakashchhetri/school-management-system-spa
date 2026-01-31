@@ -10,7 +10,7 @@
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
                 </li>
                 <li>
-                    <span class="text-main-600 fw-normal text-15">Assignments</span>
+                    <span class="text-main-600 fw-normal text-15">Students</span>
                 </li>
             </ul>
         </div>
@@ -18,19 +18,11 @@
 
         <!-- Breadcrumb Right Start -->
         <div class="flex-align gap-8 flex-wrap">
-            <div class="position-relative text-gray-500 flex-align gap-4 text-13">
-                <span class="text-inherit">Sort by: </span>
-                <div
-                    class="flex-align text-gray-500 text-13 border border-gray-100 rounded-4 ps-20 focus-border-main-600 bg-white">
-                    <span class="text-lg"><i class="ph ph-funnel-simple"></i></span>
-                    <select class="form-control ps-8 pe-20 py-16 border-0 text-inherit rounded-4 text-center">
-                        <option value="1" selected>Popular</option>
-                        <option value="1">Latest</option>
-                        <option value="1">Trending</option>
-                        <option value="1">Matches</option>
-                    </select>
-                </div>
-            </div>
+            <button type="button" class="btn btn-main text-sm btn-sm px-24 py-12" data-bs-toggle="modal"
+                data-bs-target="#addStudentModal">
+                <i class="ph ph-plus me-8"></i>
+                Add Student
+            </button>
             <div
                 class="flex-align text-gray-500 text-13 border border-gray-100 rounded-4 ps-20 focus-border-main-600 bg-white">
                 <span class="text-lg"><i class="ph ph-layout"></i></span>
@@ -45,9 +37,44 @@
         <!-- Breadcrumb Right End -->
     </div>
 
+    <!-- Filters Section -->
+    <div class="card mb-24">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Class</label>
+                    <select class="form-select" id="filterClass">
+                        <option value="">All Classes</option>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Section</label>
+                    <select class="form-select" id="filterSection">
+                        <option value="">All Sections</option>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-10">
+                        <button type="button" class="btn py-10 btn-main w-100" id="applyFilterBtn">
+                            <i class="ph ph-funnel me-8"></i>
+                            Apply Filter
+                        </button>
+                        <button type="button" class="btn py-10 btn-outline-main w-100" id="resetFilterBtn">
+                            <i class="ph ph-x me-8"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card overflow-hidden">
         <div class="card-body p-0">
-            <table id="assignmentTable" class="table table-striped">
+            <table id="studentTable" class="table table-striped">
                 <thead>
                     <tr>
                         <th class="fixed-width">
@@ -56,438 +83,230 @@
                                     id="selectAll" />
                             </div>
                         </th>
-                        <th class="h6 text-gray-300">Students</th>
-                        <th class="h6 text-gray-300">Lesson</th>
-                        <th class="h6 text-gray-300">Deadline</th>
-                        <th class="h6 text-gray-300">Sent</th>
-                        <th class="h6 text-gray-300">Status</th>
+                        <th class="h6 text-gray-300">Student Name</th>
+                        <th class="h6 text-gray-300">Roll No</th>
+                        <th class="h6 text-gray-300">Class</th>
+                        <th class="h6 text-gray-300">Section</th>
+                        <th class="h6 text-gray-300">Email</th>
+                        <th class="h6 text-gray-300">Contact</th>
                         <th class="h6 text-gray-300">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Jane Cooper</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Web & Mobile Design</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-teal-50 text-teal-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-teal-600 rounded-circle flex-shrink-0"></span>
-                                Send
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Graphics Design</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Feb 18, 2025</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-warning-50 text-warning-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-warning-600 rounded-circle flex-shrink-0"></span>
-                                Checking
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Leslie Alexander</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Figma</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Feb 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-purple-50 text-purple-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-purple-600 rounded-circle flex-shrink-0"></span>
-                                Assigned
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Creating Web Design</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">June 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">June 21, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-danger-50 text-danger-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-danger-600 rounded-circle flex-shrink-0"></span>
-                                Decline
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Complete Wordpress Course</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">June 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">July 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-green-50 text-green-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-green-600 rounded-circle flex-shrink-0"></span>
-                                Accepted
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img2.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Guy Hawkins</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Webflow Essentials Course</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Aug 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Jacob Jones</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Beginners Guide to Design</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Sep 22, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-pink-50 text-pink-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-pink-600 rounded-circle flex-shrink-0"></span>
-                                Not Submitted
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">AngularJS Crash Course
-                            </span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Oct 19, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img3.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Jenny Wilson</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Complete Wordpress Course</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Sep 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img4.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Sunny Maria</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Responsive Web Design</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Oct 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img5.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Eleanor Pena</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Theme Development</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Oct 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Dec 20, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8">
-                                <img src="<?=base_url()?>assets/images/thumbs/student-img1.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Albert Flores</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Complete Python Bootcamp</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Dec 18, 2024</span>
-                        </td>
-                        <td>
-                            <span
-                                class="text-13 py-2 px-8 bg-success-50 text-success-600 d-inline-flex align-items-center gap-8 rounded-pill">
-                                <span class="w-6 h-6 bg-success-600 rounded-circle flex-shrink-0"></span>
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
+                    <!-- Data will be populated via DataTables -->
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Admission No *</label>
+                            <input type="text" class="form-control" id="admission_no" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Class *</label>
+                            <select class="form-select" id="related_class" required>
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Section *</label>
+                            <select class="form-select" id="related_section" required>
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstname" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="middlename">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastname">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status *</label>
+                            <select id="status" class="form-control" required>
+                                <option value="">Select Status</option>
+                                <option value="Admitted">Admitted</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="On Leave">On Leave</option>
+                                <option value="Suspended">Suspended</option>
+                                <option value="Dropped Out">Dropped Out</option>
+                                <option value="Transferred">Transferred</option>
+                                <option value="Graduated">Graduated</option>
+                                <option value="Terminated">Terminated</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Blood Group</label>
+                            <select class="form-select" id="blood_group">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Student Email</label>
+                            <input type="email" class="form-control" id="student_email">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Student Contact</label>
+                            <input type="text" class="form-control" id="student_contact_no">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Father Name</label>
+                            <input type="text" class="form-control" id="father_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Father Contact</label>
+                            <input type="text" class="form-control" id="father_contact_no">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mother Name</label>
+                            <input type="text" class="form-control" id="mother_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mother Contact</label>
+                            <input type="text" class="form-control" id="mother_contact_no">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-main" id="saveStudentBtn">Save Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStudentModalLabel">Edit Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="edit_firstname" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="edit_middlename">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select id="edit_status" name="status" class="form-control" required>
+                                <option value="">Select Status</option>
+                                <option value="Admitted">Admitted</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="On Leave">On Leave</option>
+                                <option value="Suspended">Suspended</option>
+                                <option value="Dropped Out">Dropped Out</option>
+                                <option value="Transferred">Transferred</option>
+                                <option value="Graduated">Graduated</option>
+                                <option value="Terminated">Terminated</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select" id="edit_gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="edit_lastname">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Roll No *</label>
+                            <input type="text" class="form-control" id="edit_roll_no" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Blood Group</label>
+                            <select class="form-select" id="edit_blood_group">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Class *</label>
+                            <select class="form-select" id="edit_related_class" required>
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Section *</label>
+                            <select class="form-select" id="edit_related_section" required>
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Student Email</label>
+                            <input type="email" class="form-control" id="edit_student_email">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Student Contact</label>
+                            <input type="text" class="form-control" id="edit_student_contact_no">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-main" id="updateStudentBtn">Update Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="<?= base_url('assets/plugins/sweetalert/sweetalert2@11.js') ?>"></script>
+<script src="<?= base_url('assets/js/student-list.js') ?>"></script>

@@ -1,6 +1,29 @@
 $(document).ready(function () {
   const baseUrl = jQuery("#globalBaseUrl").val();
-  const employeeId = window.location.pathname.split("/").pop();
+  const employeeId = jQuery("#employeeId").val();
+  const page = jQuery("#pageType").val() || "details";
+  let route = "admin/employee-details/" + employeeId;
+  if (page == "profile") {
+    route = "employee/profile";
+  }
+
+  // Unbind all events first to prevent multiplication
+  $("#profileImageUpload").off("change");
+  $("#coverImageUpload").off("change");
+  $("#editPersonalBtn").off("click");
+  $("#editProfessionalBtn").off("click");
+  $(".btn-cancel-personal").off("click");
+  $(".btn-cancel-professional").off("click");
+  $("#personalInfoForm").off("submit");
+  $("#professionalInfoForm").off("submit");
+  $("#uploadDocumentBtn").off("click");
+  $("#uploadDocumentModal").off("hidden.bs.modal");
+  $(document).off("click", ".delete-document-js");
+  $(document).off("click", ".update-status-js");
+  $(document).off("click", "#saveSubjectAllocationBtn");
+  $(document).off("click", ".edit-subject-allocation-js");
+  $(document).off("click", "#updateSubjectAllocationBtn");
+  $(document).off("click", ".delete-subject-allocation-js");
 
   // Profile Image Upload
   $("#profileImageUpload").on("change", function (e) {
@@ -67,7 +90,6 @@ $(document).ready(function () {
             text: response.message,
             confirmButtonColor: "#487FFF",
           }).then(() => {
-            // Update the image with the new URL
             $("#profileImageDisplay").attr("src", response.url);
           });
         } else if (response.error) {
@@ -80,7 +102,6 @@ $(document).ready(function () {
                 : response.error,
             confirmButtonColor: "#487FFF",
           });
-          // Reset the file input
           $("#profileImageUpload").val("");
         }
       },
@@ -91,7 +112,6 @@ $(document).ready(function () {
           text: "An error occurred while uploading the image",
           confirmButtonColor: "#487FFF",
         });
-        // Reset the file input
         $("#profileImageUpload").val("");
       },
     });
@@ -165,7 +185,6 @@ $(document).ready(function () {
             text: response.message,
             confirmButtonColor: "#487FFF",
           }).then(() => {
-            // Update the cover image with the new URL
             $("#coverImagePreview").css(
               "background-image",
               "url(" + response.url + ")",
@@ -181,7 +200,6 @@ $(document).ready(function () {
                 : response.error,
             confirmButtonColor: "#487FFF",
           });
-          // Reset the file input
           $("#coverImageUpload").val("");
         }
       },
@@ -192,7 +210,6 @@ $(document).ready(function () {
           text: "An error occurred while uploading the image",
           confirmButtonColor: "#487FFF",
         });
-        // Reset the file input
         $("#coverImageUpload").val("");
       },
     });
@@ -200,43 +217,31 @@ $(document).ready(function () {
 
   // Edit Mode Toggle for Personal Information
   $("#editPersonalBtn").on("click", function () {
-    // Enable all input fields except those that should always be readonly
     $("#personalInfoForm input").each(function () {
-      // Remove readonly attribute
       $(this).prop("readonly", false);
-      // Switch from plaintext to normal form control
       $(this).removeClass("form-control-plaintext").addClass("form-control");
     });
-
-    // Show save/cancel buttons
     $(".personal-form-actions").show();
-
-    // Hide edit button
     $(this).hide();
   });
 
   // Edit Mode Toggle for Professional Information
   $("#editProfessionalBtn").on("click", function () {
-    // Enable select field
     $("#professionalInfoForm select").prop("disabled", false);
-
-    // Show save/cancel buttons
     $(".professional-form-actions").show();
-
-    // Hide edit button
     $(this).hide();
   });
 
   // Cancel Personal Info Edit
   $(".btn-cancel-personal").on("click", function (e) {
     e.preventDefault();
-    location.reload(); // Reload to reset everything to original state
+    navigateTo(route, false);
   });
 
   // Cancel Professional Info Edit
   $(".btn-cancel-professional").on("click", function (e) {
     e.preventDefault();
-    location.reload(); // Reload to reset everything to original state
+    navigateTo(route, false);
   });
 
   // Handle Personal Information Form Submit
@@ -265,7 +270,6 @@ $(document).ready(function () {
       data: formData,
       dataType: "json",
       beforeSend: function () {
-        // Disable submit button to prevent double submission
         $('#personalInfoForm button[type="submit"]')
           .prop("disabled", true)
           .html(
@@ -280,7 +284,7 @@ $(document).ready(function () {
             text: response.message,
             confirmButtonColor: "#487FFF",
           }).then(() => {
-            location.reload(); // Reload to show updated data in readonly mode
+            navigateTo(route, false);
           });
         } else if (response.error) {
           Swal.fire({
@@ -300,7 +304,6 @@ $(document).ready(function () {
         });
       },
       complete: function () {
-        // Re-enable submit button
         $('#personalInfoForm button[type="submit"]')
           .prop("disabled", false)
           .text("Save Changes");
@@ -323,7 +326,6 @@ $(document).ready(function () {
       data: formData,
       dataType: "json",
       beforeSend: function () {
-        // Disable submit button to prevent double submission
         $('#professionalInfoForm button[type="submit"]')
           .prop("disabled", true)
           .html(
@@ -338,7 +340,7 @@ $(document).ready(function () {
             text: response.message,
             confirmButtonColor: "#487FFF",
           }).then(() => {
-            location.reload(); // Reload to show updated role
+            navigateTo(route, false);
           });
         } else if (response.error) {
           Swal.fire({
@@ -358,7 +360,6 @@ $(document).ready(function () {
         });
       },
       complete: function () {
-        // Re-enable submit button
         $('#professionalInfoForm button[type="submit"]')
           .prop("disabled", false)
           .text("Save Changes");
@@ -367,19 +368,16 @@ $(document).ready(function () {
   });
 
   // Initialize - Make fields readonly on page load
-  // This runs after the page loads to ensure readonly state
   function initializeReadonlyState() {
     $("#personalInfoForm input").each(function () {
       $(this).prop("readonly", true);
       $(this).removeClass("form-control").addClass("form-control-plaintext");
     });
-
     $("#professionalInfoForm select").prop("disabled", true);
     $(".personal-form-actions").hide();
     $(".professional-form-actions").hide();
   }
 
-  // Call initialization
   initializeReadonlyState();
 
   // Upload Document
@@ -438,7 +436,7 @@ $(document).ready(function () {
             confirmButtonColor: "#487FFF",
           }).then(() => {
             $("#uploadDocumentModal").modal("hide");
-            location.reload(); // Reload to show new document
+            navigateTo(route);
           });
         } else if (response.error) {
           Swal.fire({
@@ -473,7 +471,7 @@ $(document).ready(function () {
     $("#uploadDocumentForm")[0].reset();
   });
 
-  // Delete Document
+  // Delete Document (using event delegation)
   $(document).on("click", ".delete-document-js", function () {
     const documentId = $(this).data("document-id");
     const row = $('tr[data-document-id="' + documentId + '"]');
@@ -503,9 +501,8 @@ $(document).ready(function () {
               }).then(() => {
                 row.fadeOut(300, function () {
                   $(this).remove();
-                  // Check if table is empty
                   if ($("#documentsTable tbody tr").length === 0) {
-                    location.reload();
+                    navigateTo(route, false);
                   }
                 });
               });
@@ -531,7 +528,7 @@ $(document).ready(function () {
     });
   });
 
-  // Update Document Status
+  // Update Document Status (using event delegation)
   $(document).on("click", ".update-status-js", function () {
     const documentId = $(this).data("document-id");
     const status = $(this).data("status");
@@ -547,7 +544,6 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.message) {
-          // Update status badge
           let statusClass = "warning";
           let statusText = "Pending";
 
@@ -592,6 +588,174 @@ $(document).ready(function () {
           confirmButtonColor: "#487FFF",
         });
       },
+    });
+  });
+
+  // Add Subject Allocation (using event delegation)
+  $(document).on("click", "#saveSubjectAllocationBtn", function () {
+    let classVal = $("#classSubAllo").val();
+    let section = $("#sectionSubAllo").val();
+    let teacher = $("#teacherSubAllo").val();
+    let subject = $("#subjectSubAllo").val();
+
+    if (!classVal || !section || !teacher || !subject) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "All fields are required.",
+        confirmButtonColor: "#487FFF",
+      });
+      return;
+    }
+
+    $.ajax({
+      url: baseUrl + "post-login-employee/admin/add-subject-allocation",
+      type: "POST",
+      data: { class: classVal, section, teacher, subject },
+      beforeSend: function () {
+        Swal.fire({
+          title: "Adding...",
+          text: "Please wait",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+      },
+      success: function (response) {
+        $("#addSubjectAllocationModal").modal("hide");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Subject allocation added successfully",
+          confirmButtonColor: "#487FFF",
+          timer: 2000,
+        }).then(() => {
+          navigateTo(route, false);
+        });
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error while adding subject allocation.",
+          confirmButtonColor: "#487FFF",
+        });
+      },
+    });
+  });
+
+  // Open Edit Modal for Subject Allocation (using event delegation)
+  $(document).on("click", ".edit-subject-allocation-js", function () {
+    let id = $(this).data("id");
+    let classVal = $(this).data("class");
+    let section = $(this).data("section");
+    let teacher = $(this).data("teacher");
+    let subject = $(this).data("subject");
+
+    $("#editSubjectAllocationModal").data("record-id", id);
+    $("#edit_class").val(classVal);
+    $("#edit_section").val(section);
+    $("#edit_teacher").val(teacher);
+    $("#edit_subject").val(subject);
+
+    $("#editSubjectAllocationModal").modal("show");
+  });
+
+  // Update Subject Allocation (using event delegation)
+  $(document).on("click", "#updateSubjectAllocationBtn", function () {
+    let id = $("#editSubjectAllocationModal").data("record-id");
+    let classVal = $("#edit_class").val();
+    let section = $("#edit_section").val();
+    let teacher = $("#edit_teacher").val();
+    let subject = $("#edit_subject").val();
+
+    $.ajax({
+      url: baseUrl + "post-login-employee/admin/edit-subject-allocation",
+      type: "POST",
+      data: { id, class: classVal, section, teacher, subject },
+      beforeSend: function () {
+        Swal.fire({
+          title: "Updating...",
+          text: "Please wait",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+      },
+      success: function (response) {
+        $("#editSubjectAllocationModal").modal("hide");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Subject allocation updated successfully",
+          confirmButtonColor: "#487FFF",
+          timer: 2000,
+        }).then(() => {
+          navigateTo(route, false);
+        });
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error while updating subject allocation.",
+          confirmButtonColor: "#487FFF",
+        });
+      },
+    });
+  });
+
+  // Delete Subject Allocation (using event delegation)
+  $(document).on("click", ".delete-subject-allocation-js", function () {
+    let id = $(this).data("id");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#487FFF",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: baseUrl + "post-login-employee/admin/delete-subject-allocation",
+          type: "POST",
+          data: { id: id },
+          beforeSend: function () {
+            Swal.fire({
+              title: "Deleting...",
+              text: "Please wait",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+          },
+          success: function (response) {
+            Swal.fire({
+              icon: "success",
+              title: "Deleted!",
+              text: "Subject allocation has been deleted.",
+              confirmButtonColor: "#487FFF",
+              timer: 2000,
+            }).then(() => {
+              navigateTo(route, false);
+            });
+          },
+          error: function () {
+            Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: "Error while deleting subject allocation.",
+              confirmButtonColor: "#487FFF",
+            });
+          },
+        });
+      }
     });
   });
 });

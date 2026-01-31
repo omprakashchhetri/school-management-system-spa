@@ -19,7 +19,7 @@
         <div class="p-20 pt-10">
             <ul class="sidebar-menu">
                 <li class="sidebar-menu__item">
-                    <a href="" class="nav_js sidebar-menu__link">
+                    <a href="dashboard" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-squares-four"></i></span>
                         <span class="text">Student Dashboard</span>
                     </a>

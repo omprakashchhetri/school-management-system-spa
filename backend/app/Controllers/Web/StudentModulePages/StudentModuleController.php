@@ -26,7 +26,7 @@ class StudentModuleController extends BaseController
 
     public function profile(): string {
 
-        $studentId = $this->request->user->data->data->id;
+        $studentId = $this->request->user->id;
         $studentData = $this->studentsController->getStudentById($studentId);
         
 
