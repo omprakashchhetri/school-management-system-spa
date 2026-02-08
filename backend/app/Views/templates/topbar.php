@@ -27,7 +27,7 @@
                                 </div>
                                 <div class="row g-3">
                                     <?php foreach ($roleToolPermissions['tools'] as $tool): ?>
-                                        <?php
+                                    <?php
                                         
                                         // Permission check
                                         if ($tool['can_view'] != 1)
@@ -48,28 +48,26 @@
                                         $color = !empty($details['color']) ? $details['color'] : 'text-gray-400';
                                         ?>
 
-                                        <div class="col-12"><!-- use col-md-4 for View All -->
-                                            <div class="nav_js cursor-pointer d-flex justify-content-start align-items-center p-8 gap-5 border rounded-10
+                                    <div class="col-12">
+                                        <!-- use col-md-4 for View All -->
+                                        <div class="nav_js cursor-pointer d-flex justify-content-start align-items-center p-8 gap-5 border rounded-10
                    text-secondary-light hover-bg-main-50 h-100 hover-text-primary transition-2"
-                                                data-route="<?= htmlspecialchars($details['base_route']); ?>">
+                                            data-route="<?= htmlspecialchars($details['base_route']); ?>">
 
-                                                <span class="px-10 py-7 rounded-circle bg-light">
-                                                    <i
-                                                        class="ph <?= htmlspecialchars($icon); ?> text-3xl <?= htmlspecialchars($color); ?>"></i>
-                                                </span>
+                                            <span class="px-10 py-7 rounded-circle bg-light">
+                                                <i
+                                                    class="ph <?= htmlspecialchars($icon); ?> text-3xl <?= htmlspecialchars($color); ?>"></i>
+                                            </span>
 
-                                                <span class="fw-medium text-13">
-                                                    <?= htmlspecialchars($details['tool_name']); ?>
-                                                </span>
+                                            <span class="fw-medium text-13">
+                                                <?= htmlspecialchars($details['tool_name']); ?>
+                                            </span>
 
-                                            </div>
                                         </div>
+                                    </div>
 
                                     <?php endforeach; ?>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -78,7 +76,7 @@
             <!-- Module Dropdown End -->
 
 
-            <form action="index.html#" class="w-350 d-sm-block d-none">
+            <form action="index.html#" class="w-350 d-none">
                 <div class="position-relative">
                     <button type="submit" class="input-icon text-xl d-flex text-gray-100 pointer-event-none"><i
                             class="ph ph-magnifying-glass"></i></button>

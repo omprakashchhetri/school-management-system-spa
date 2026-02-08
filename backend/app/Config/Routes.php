@@ -88,7 +88,7 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('class-teacher-list','Web\AdminModulePages\AdminModuleController::class_teacher_list');
         
         $routes->post('subject-list','Web\AdminModulePages\AdminModuleController::subject_list');
-        $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_allocation');        
+        $routes->post('subject-allocation','Web\AdminModulePages\AdminModuleController::subject_allocation'); 
         
         $routes->post('section-list','Web\AdminModulePages\AdminModuleController::section_list');
         $routes->post('payment-gateways','Web\AdminModulePages\AdminModuleController::payment_gateways');
@@ -109,6 +109,8 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('add-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::addSyllabus');
         $routes->post('edit-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::editSyllabus');
         $routes->post('delete-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::deleteSyllabus');
+        $routes->post('create-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::add_edit_class_routine');
+        $routes->post('class-routine', 'Web\AcademicModulePages\SyllabusModuleController::class_routine');
     });
 
     $routes->group('attendance', function($routes){
@@ -139,6 +141,7 @@ $routes->group('post-login-employee', function($routes) {
         $routes->post('get-classes', 'Web\DashboardController::get_classes');
         $routes->post('get-sections', 'Web\DashboardController::get_sections');
     });
+    
 
     $routes->post('admission-create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
     $routes->get('admin/admission/create', 'Web\AdminModulePages\AdminModuleController::createAdmission');
@@ -153,6 +156,8 @@ $routes->group('post-login-employee', function($routes) {
     // Dropdown data
     $routes->post('get-classes', 'Web\AdminModulePages\AdminModuleController::getClasses');
     $routes->post('get-sections', 'Web\AdminModulePages\AdminModuleController::getSections');
+    // Subject List for Dropdowns
+    $routes->post('get-subject-list', 'Web\AdminModulePages\AdminModuleController::getSubjectList');
 
 
 
@@ -162,10 +167,48 @@ $routes->group('post-login-employee', function($routes) {
     
     $routes->post('report-card', 'Web\StudentModulePages\StudentModuleController::report_card');
 
+    
+    // ========================================
+    // EXAMINATION MODULE ROUTES
+    // ========================================
+    
     // Examination Routes
     $routes->group('examination', function($routes) {
         $routes->post('create-routine', 'Web\ExaminationModulePages\ExaminationModuleController::create_exam_routine');
+        // List all exams
+        $routes->post('exam-list', 'Web\ExaminationModulePages\ExaminationModuleController::exam_list');
+                
+        // View exam details
+        $routes->post('exam-details/(:num)', 'Web\ExaminationModulePages\ExaminationModuleController::exam_details/$1');
+        
+        // Edit exam routine
+        $routes->post('edit-exam-routine/(:num)', 'Web\ExaminationModulePages\ExaminationModuleController::edit_exam_routine/$1');
     });
+   
+    // Data/API Routes (AJAX handlers)
+    $routes->group('data/examination', ['namespace' => 'App\Controllers\Data\ExaminationModulePages'], function($routes) {
+        // Get all exams
+        $routes->post('get-all-exams', 'ExaminationController::getAllExams');
+        
+        // Get one exam basic info
+        $routes->post('get-one-exam', 'ExaminationController::getOneExam');
+        
+        // Get exam details with items, classes, and subjects (for details page)
+        $routes->post('get-exam-details', 'ExaminationController::getExamDetails');
+        
+        // Get exam items for an exam
+        $routes->post('get-exam-items', 'ExaminationController::getExamItems');
+        
+        // Add new exam (without items)
+        $routes->post('add-exam', 'ExaminationController::addExam');
+        
+        // Save exam routine (create/update items for an exam)
+        $routes->post('save-exam-routine', 'ExaminationController::saveExamRoutine');
+        
+        // Delete exam
+        $routes->post('delete-exam', 'ExaminationController::deleteExam');
+    });
+
 });
 
 // For api

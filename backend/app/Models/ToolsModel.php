@@ -12,7 +12,7 @@ class ToolsModel extends Model
     protected $DBGroup = 'default';
     protected $table = 'tools';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

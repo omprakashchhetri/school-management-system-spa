@@ -316,6 +316,10 @@ class AdminModuleController extends BaseController
         return json_encode($this->sectionsController->delete($sectionId));
     }
 
+    public function getSubjectList() {        
+        return json_encode($this->subjectsController->getAll());
+    }
+
     public function addSubject() {
         $details = $this->request->getPost();
         return json_encode($this->subjectsController->add($details));
@@ -330,6 +334,7 @@ class AdminModuleController extends BaseController
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->subjectsController->delete($SubjectId));
     }
+    
     
     public function getClassTeacherList(){
         $postData = $this->request->getPost();

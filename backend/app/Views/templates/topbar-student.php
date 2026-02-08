@@ -8,7 +8,7 @@
             <!-- Toggle Button End -->
 
 
-            <form action="index.html#" class="w-350 d-sm-block d-none">
+            <form action="index.html#" class="w-350 d-none">
                 <div class="position-relative">
                     <button type="submit" class="input-icon text-xl d-flex text-gray-100 pointer-event-none"><i
                             class="ph ph-magnifying-glass"></i></button>
