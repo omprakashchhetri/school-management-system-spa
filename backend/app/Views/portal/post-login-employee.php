@@ -225,6 +225,7 @@
                     const next = AppState.navigationQueue.shift();
                     // setTimeout(() => navigateTo(next.route, next.push), 100);
                 }
+                console.log(AppState);
             }
         });
     }

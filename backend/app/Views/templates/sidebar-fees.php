@@ -24,6 +24,12 @@
                         <span class="text">Fees Slabs List</span>
                     </a>
                 </li>
+                <li class="sidebar-menu__item">
+                    <a href="fees/fees-payments" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-users-three"></i></span>
+                        <span class="text">Fees Payments</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

@@ -7,8 +7,7 @@
         <div class="breadcrumb mb-24">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="index.html"
-                       class="text-gray-200 fw-normal text-15 hover-text-main-600">
+                    <a href="index.html" class="text-gray-200 fw-normal text-15 hover-text-main-600">
                         Home
                     </a>
                 </li>
@@ -25,11 +24,16 @@
             </ul>
         </div>
 
+        <button id="generateFeesBtn" class="btn btn-success text-sm px-24 rounded-pill py-12">
+            <i class="ph ph-gear"></i>
+            Generate Fees
+        </button>
+
+
         <!-- Add Fees Slab Button -->
         <button type="button"
             class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2"
-            data-bs-toggle="modal"
-            data-bs-target="#addFeesSlabModal">
+            data-bs-toggle="modal" data-bs-target="#addFeesSlabModal">
             <i class="ph ph-plus me-4"></i>
             Add Fees Slab
         </button>
@@ -44,13 +48,15 @@
                     <tr>
                         <th class="fixed-width">
                             <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4"
-                                       type="checkbox"
-                                       id="selectAllFeesSlabs" />
+                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox"
+                                    id="selectAllFeesSlabs" />
                             </div>
                         </th>
                         <th class="h6 text-gray-300">Class</th>
                         <th class="h6 text-gray-300">Total Amount</th>
+                        <th class="h6 text-gray-300">Fees Periodicity</th>
+                        <th class="h6 text-gray-300">Late Fee</th>
+                        <th class="h6 text-gray-300">Late Fee Periodicity</th>
                         <th class="h6 text-gray-300">Actions</th>
                     </tr>
                 </thead>
@@ -64,11 +70,7 @@
     <!-- ===============================
          Add Fees Slab Modal
     ================================ -->
-    <div class="modal fade"
-         id="addFeesSlabModal"
-         tabindex="-1"
-         aria-labelledby="addFeesSlabLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="addFeesSlabModal" tabindex="-1" aria-labelledby="addFeesSlabLabel" aria-hidden="true">
 
         <div class="modal-dialog modal-md modal-dialog-top">
             <div class="modal-content radius-16 bg-base">
@@ -77,9 +79,7 @@
                     <h5 class="modal-title" id="addFeesSlabLabel">
                         Add Fees Slab
                     </h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
                     </button>
                 </div>
 
@@ -102,16 +102,40 @@
                         <!-- Total Amount -->
                         <div class="col-12 mb-3">
                             <label class="form-label">Total Amount</label>
-                            <input type="number"
-                                   id="total_amount"
-                                   class="form-control"
-                                   placeholder="Enter total amount">
+                            <input type="number" id="total_amount" class="form-control"
+                                placeholder="Enter total amount">
+                        </div>
+
+                        <!-- Late Fee -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Late Fee</label>
+                            <input type="number" id="late_fee" class="form-control" placeholder="Enter Late Fee">
+                        </div>
+
+                        <!-- Fees Periodicity -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Fees Periodicity</label>
+                            <select id="fees_periodicity" class="form-select">
+                                <option value="">Select Periodicity</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+
+                        <!-- Late Fee Periodicity -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Late Fee Periodicity</label>
+                            <select id="late_fee_periodicity" class="form-select">
+                                <option value="">Select Periodicity</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
                         </div>
 
                         <div class="d-flex justify-content-center mt-3">
-                            <button type="button"
-                                    id="saveFeesSlabBtn"
-                                    class="btn btn-primary px-4">
+                            <button type="button" id="saveFeesSlabBtn" class="btn btn-primary px-4">
                                 Save
                             </button>
                         </div>
@@ -126,11 +150,7 @@
     <!-- ===============================
          Edit Fees Slab Modal
     ================================ -->
-    <div class="modal fade"
-         id="editFeesSlabModal"
-         tabindex="-1"
-         aria-labelledby="editFeesSlabLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="editFeesSlabModal" tabindex="-1" aria-labelledby="editFeesSlabLabel" aria-hidden="true">
 
         <div class="modal-dialog modal-md modal-dialog-top">
             <div class="modal-content radius-16 bg-base">
@@ -139,9 +159,7 @@
                     <h5 class="modal-title" id="editFeesSlabLabel">
                         Edit Fees Slab
                     </h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
                     </button>
                 </div>
 
@@ -151,7 +169,7 @@
                         <!-- Class -->
                         <div class="col-12 mb-3">
                             <label class="form-label">Class</label>
-                            <select id="edit_class_id" class="form-select">
+                            <select id="edit_class_id" class="form-select" disabled>
                                 <option value="">Select Class</option>
                                 <?php foreach ($classes as $c): ?>
                                     <option value="<?= $c['id'] ?>">
@@ -164,15 +182,39 @@
                         <!-- Total Amount -->
                         <div class="col-12 mb-3">
                             <label class="form-label">Total Amount</label>
-                            <input type="number"
-                                   id="edit_total_amount"
-                                   class="form-control">
+                            <input type="number" id="edit_total_amount" class="form-control">
+                        </div>
+
+                        <!-- Late Fee -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Late Fee</label>
+                            <input type="number" id="edit_late_fee" class="form-control">
+                        </div>
+
+                        <!-- Fees Periodicity -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Fees Periodicity</label>
+                            <select id="edit_fees_periodicity" class="form-select">
+                                <option value="">Select Periodicity</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+
+                        <!-- Late Fee Periodicity -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Late Fee Periodicity</label>
+                            <select id="edit_late_fee_periodicity" class="form-select">
+                                <option value="">Select Periodicity</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
                         </div>
 
                         <div class="d-flex justify-content-center mt-3">
-                            <button type="button"
-                                    id="updateFeesSlabBtn"
-                                    class="btn btn-primary px-4">
+                            <button type="button" id="updateFeesSlabBtn" class="btn btn-primary px-4">
                                 Update
                             </button>
                         </div>
@@ -184,6 +226,64 @@
         </div>
     </div>
 
+</div>
+
+<div class="modal fade" id="generateFeesModal">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Generate Fees</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label>Month</label>
+                    <select id="feesMonth" class="form-control">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Year</label>
+                    <input type="number" id="feesYear" class="form-control" value="<?= date('Y') ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label>Due Date</label>
+                    <input type="date" id="feesDueDate" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label>Late Fee Start Date</label>
+                    <input type="date" id="lateFeeStartDate" class="form-control">
+                </div>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="runFeesGeneration" class="btn btn-primary">
+                    Generate
+                </button>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <!-- Page Script -->
