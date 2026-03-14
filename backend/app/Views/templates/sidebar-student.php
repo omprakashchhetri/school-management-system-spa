@@ -31,9 +31,27 @@
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
+                    <a href="attendance" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-files"></i></span>
+                        <span class="text">Attendance</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
                     <a href="documents" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-files"></i></span>
                         <span class="text">Documents</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="assignments" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-files"></i></span>
+                        <span class="text">Assignments</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="fees" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-currency-inr"></i></span>
+                        <span class="text">Fees</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
@@ -42,16 +60,11 @@
                         <span class="text">Subjects</span>
                     </a>
                 </li>
+                
                 <li class="sidebar-menu__item">
-                    <a href="fee-payments" class="nav_js sidebar-menu__link">
-                        <span class="icon"><i class="ph ph-currency-inr"></i></span>
-                        <span class="text">Fee Payment</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu__item">
-                    <a href="report-cards" class="nav_js sidebar-menu__link">
+                    <a href="marksheets" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-clipboard-text"></i></span>
-                        <span class="text">Report Cards</span>
+                        <span class="text">Marksheets</span>
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
