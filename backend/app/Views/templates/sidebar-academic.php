@@ -24,6 +24,18 @@
                         <span class="text">Syllabus List</span>
                     </a>
                 </li>
+                <li class="sidebar-menu__item">
+                    <a href="academic/class-routine" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-calendar-blank"></i></span>
+                        <span class="text">Class Routine</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="examination/exam-list" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-exam"></i></span>
+                        <span class="text">Exam List</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

@@ -23,6 +23,7 @@ class ClassesController extends BaseController
     {
         return $this->classesModel
             ->where('deleted_at', null)
+            ->orderBy('class_name', 'ASC')
             ->findAll();
     }
 

@@ -90,5 +90,18 @@ class SyllabusModuleController extends BaseController
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->syllabusManagementController->deleteSyllabus($SubjectId));
     }
+
+     public function add_edit_class_routine() {
+        return view('templates/sidebar-academic')
+            .  view('templates/topbar')
+            .  view('pages/academic-module-pages/create-class-routine')
+        ;
+    }
     
+    public function class_routine() {
+        return view('templates/sidebar-academic')
+            .  view('templates/topbar')
+            .  view('pages/academic-module-pages/class-routine')
+        ;
+    }
 }
