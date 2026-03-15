@@ -23,6 +23,12 @@ $routes->group('post-login-student', function ($routes) {
     $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('profile', 'Web\StudentModulePages\StudentModuleController::profile');
+    $routes->post('attendance', 'Web\StudentModulePages\StudentModuleController::attendance');
+    $routes->post('assignments', 'Web\StudentModulePages\StudentModuleController::assignments');
+    $routes->post('assignment/(:num)', 'Web\StudentModulePages\StudentModuleController::assignment/$1');
+    $routes->post('fees', 'Web\StudentModulePages\StudentModuleController::fees');
+    $routes->post('marksheets', 'Web\StudentModulePages\StudentModuleController::marksheets');
+    $routes->post('marksheet/(:num)', 'Web\StudentModulePages\StudentModuleController::marksheet/$1');
     $routes->post('documents', 'Web\StudentModulePages\StudentModuleController::document_list');
 });
 
