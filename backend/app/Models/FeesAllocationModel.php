@@ -4,13 +4,13 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 /**
- * Model: FeesPaymentsModel
+ * Model: FeesSlabsModel
  * Auto-generated from SQL DDL
  */
-class FeesPaymentsModel extends Model
+class FeesAllocationModel extends Model
 {
     protected $DBGroup = 'default';
-    protected $table = 'fees_payments';
+    protected $table = 'fees_allocation';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $insertID = 0;
@@ -19,11 +19,10 @@ class FeesPaymentsModel extends Model
     protected $protectFields = true;
     protected $allowedFields = [
             'id',
-            'student_id',
-            'paid_amount',
-            'status',
-            'payment_mode',
-            'payment_date_time',
+            'related_generated_fee',
+            'amount',
+            'related_discount',
+            'related_payment',
             'created_at',
             'updated_at',
             'deleted_at',
