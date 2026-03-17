@@ -25,13 +25,13 @@ class FeesManagementController extends BaseController
 
     public function __construct()
     {
-        $this->feesSlabModel = new FeesSlabsModel();
+        $this->feesSlabModel       = new FeesSlabsModel();
         $this->feesGenerationModel = new FeesGenerationModel();
-        $this->feesPaymentsModel = new FeesPaymentsModel();
+        $this->feesPaymentsModel   = new FeesPaymentsModel();
         $this->feesAllocationModel = new FeesAllocationModel();
-        $this->feesDiscountModel = new FeesDiscountModel();
-        $this->studentsModel = new StudentsModel();
-        $this->sectionsModel = new SectionsModel();
+        $this->feesDiscountModel   = new FeesDiscountModel();
+        $this->studentsModel       = new StudentsModel();
+        $this->sectionsModel       = new SectionsModel();
     }
 
 
@@ -40,9 +40,9 @@ class FeesManagementController extends BaseController
     ===================================================== */
     public function getFeesSlabList(array $postData)
     {
-        $draw = intval($postData['draw'] ?? 1);
-        $start = intval($postData['start'] ?? 0);
-        $length = intval($postData['length'] ?? 10);
+        $draw        = intval($postData['draw']   ?? 1);
+        $start       = intval($postData['start']  ?? 0);
+        $length      = intval($postData['length'] ?? 10);
         $searchValue = $postData['search']['value'] ?? '';
 
         $builder = $this->feesSlabModel->builder()
@@ -58,7 +58,6 @@ class FeesManagementController extends BaseController
             ->join('classes c', 'c.id = fees_slabs.class', 'left')
             ->where('fees_slabs.deleted_at', null);
 
-        /* ---------- Search ---------- */
         if (!empty($searchValue)) {
             $builder->groupStart()
                 ->like('c.class_name', $searchValue)
@@ -66,42 +65,28 @@ class FeesManagementController extends BaseController
                 ->groupEnd();
         }
 
-        /* ---------- Order ---------- */
         if (!empty($postData['order'])) {
-
-            $columns = [
-                'fees_slabs.id',
-                'c.class_name',
-                'fees_slabs.total_amount',
-            ];
-
+            $columns  = ['fees_slabs.id', 'c.class_name', 'fees_slabs.total_amount'];
             $colIndex = $postData['order'][0]['column'];
-            $dir = $postData['order'][0]['dir'];
-
+            $dir      = $postData['order'][0]['dir'];
             if (isset($columns[$colIndex])) {
                 $builder->orderBy($columns[$colIndex], $dir);
             }
-
         } else {
             $builder->orderBy('fees_slabs.id', 'DESC');
         }
 
-        /* ---------- Pagination ---------- */
         if ($length != -1) {
             $builder->limit($length, $start);
         }
 
-        $records = $builder->get()->getResultArray();
+        $records       = $builder->get()->getResultArray();
         $totalFiltered = $builder->countAllResults(false);
-        $totalRecords = $this->feesSlabModel
-            ->where('deleted_at', null)
-            ->countAllResults();
+        $totalRecords  = $this->feesSlabModel->where('deleted_at', null)->countAllResults();
 
-        /* ---------- Format Data ---------- */
         $data = [];
 
         foreach ($records as $row) {
-
             $data[] = [
                 'checkbox' => '<input type="checkbox" class="form-check-input" value="' . $row['id'] . '">',
 
@@ -126,7 +111,6 @@ class FeesManagementController extends BaseController
                         data-late-fee-periodicity="' . $row['late_fee_periodicity'] . '">
                         Edit
                     </button>
-
                     <button
                         class="delete-fees-slab-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill"
                         data-id="' . $row['id'] . '">
@@ -137,10 +121,10 @@ class FeesManagementController extends BaseController
         }
 
         return service('response')->setJSON([
-            'draw' => $draw,
-            'recordsTotal' => $totalRecords,
+            'draw'            => $draw,
+            'recordsTotal'    => $totalRecords,
             'recordsFiltered' => $totalFiltered,
-            'data' => $data,
+            'data'            => $data,
         ]);
     }
 
@@ -170,10 +154,10 @@ class FeesManagementController extends BaseController
         }
 
         $this->feesSlabModel->insert([
-            'class' => $data['class'],
-            'total_amount' => $data['total_amount'],
-            'late_fee' => $data['late_fee'],
-            'fees_periodicity' => $data['fees_periodicity'],
+            'class'                => $data['class'],
+            'total_amount'         => $data['total_amount'],
+            'late_fee'             => $data['late_fee'],
+            'fees_periodicity'     => $data['fees_periodicity'],
             'late_fee_periodicity' => $data['late_fee_periodicity'],
         ]);
 
@@ -219,10 +203,10 @@ class FeesManagementController extends BaseController
         }
 
         $this->feesSlabModel->update($id, [
-            'class' => $data['class'],
-            'total_amount' => $data['total_amount'],
-            'late_fee' => $data['late_fee'],
-            'fees_periodicity' => $data['fees_periodicity'],
+            'class'                => $data['class'],
+            'total_amount'         => $data['total_amount'],
+            'late_fee'             => $data['late_fee'],
+            'fees_periodicity'     => $data['fees_periodicity'],
             'late_fee_periodicity' => $data['late_fee_periodicity'],
         ]);
 
@@ -255,8 +239,6 @@ class FeesManagementController extends BaseController
 
     /* =====================================================
        GET SECTIONS BY CLASS
-       FIX: Was fetching ALL sections regardless of class.
-            Now filters by class_id correctly.
     ===================================================== */
     public function getSectionsByClass($classId)
     {
@@ -293,9 +275,6 @@ class FeesManagementController extends BaseController
 
     /* =====================================================
        GET STUDENT FEES LEDGER
-       FIX: Replaced N+1 query loop with 3 bulk queries.
-            Was: 1 + (2 × N) queries for N fee records.
-            Now: always exactly 3 queries.
     ===================================================== */
     public function getStudentFeesLedger($studentId)
     {
@@ -303,25 +282,21 @@ class FeesManagementController extends BaseController
             return ['ledger' => []];
         }
 
-        /* --------------------------------
-           1. Fetch generated fees + class
-        -------------------------------- */
-
+        /* 1. Fetch generated fees + student's class */
         $generatedFees = $this->feesGenerationModel
             ->select('
-            fees_generation.id,
-            fees_generation.month,
-            fees_generation.year,
-            fees_generation.amount,
-            fees_generation.due_date,
-            fees_generation.late_fee_start_date,
-            students.related_class
-        ')
+                fees_generation.id,
+                fees_generation.month,
+                fees_generation.year,
+                fees_generation.amount,
+                fees_generation.due_date,
+                fees_generation.late_fee_start_date,
+                students.related_class
+            ')
             ->join('students', 'students.id = fees_generation.student_id', 'left')
             ->where('fees_generation.student_id', $studentId)
             ->where('fees_generation.deleted_at', null)
-            ->orderBy('fees_generation.year', 'ASC')
-            ->orderBy('fees_generation.month', 'ASC')
+            ->orderBy('fees_generation.due_date', 'ASC')
             ->findAll();
 
         if (empty($generatedFees)) {
@@ -330,10 +305,7 @@ class FeesManagementController extends BaseController
 
         $generatedIds = array_column($generatedFees, 'id');
 
-        /* --------------------------------
-           2. Bulk fetch discounts
-        -------------------------------- */
-
+        /* 2. Bulk fetch discounts */
         $discountRows = $this->feesDiscountModel
             ->select('generated_fee')
             ->selectSum('discount_amount', 'total_discount')
@@ -344,10 +316,7 @@ class FeesManagementController extends BaseController
 
         $discountMap = array_column($discountRows, 'total_discount', 'generated_fee');
 
-        /* --------------------------------
-           3. Bulk fetch payments
-        -------------------------------- */
-
+        /* 3. Bulk fetch payments */
         $paidRows = $this->feesAllocationModel
             ->select('related_generated_fee')
             ->selectSum('amount', 'total_paid')
@@ -358,99 +327,72 @@ class FeesManagementController extends BaseController
 
         $paidMap = array_column($paidRows, 'total_paid', 'related_generated_fee');
 
-        /* --------------------------------
-           4. Fetch slabs for late fee rules
-        -------------------------------- */
-
+        /* 4. Fetch slabs for late fee rules */
         $classIds = array_unique(array_column($generatedFees, 'related_class'));
 
-        $slabs = $this->feesSlabModel
-            ->whereIn('class', $classIds)
-            ->where('deleted_at', null)
-            ->findAll();
-
+        $slabs   = $this->feesSlabModel->whereIn('class', $classIds)->where('deleted_at', null)->findAll();
         $slabMap = array_column($slabs, null, 'class');
 
-        /* --------------------------------
-           5. Build Ledger
-        -------------------------------- */
-
+        /* 5. Build ledger */
         $ledger = [];
 
         foreach ($generatedFees as $fee) {
 
-            $id = $fee['id'];
-
+            $id             = $fee['id'];
             $discountAmount = $discountMap[$id] ?? 0;
-            $paidAmount = $paidMap[$id] ?? 0;
+            $paidAmount     = $paidMap[$id]     ?? 0;
+            $lateFeeAmount  = 0;
+            $daysLate       = 0;
 
-            $lateFeeAmount = 0;
-            $daysLate = 0;
-
-            $today = strtotime(date('Y-m-d'));
+            $today     = strtotime(date('Y-m-d'));
             $lateStart = strtotime($fee['late_fee_start_date']);
 
             if ($today > $lateStart) {
-
                 $daysLate = floor(($today - $lateStart) / 86400);
-
-                $slab = $slabMap[$fee['related_class']] ?? null;
+                $slab     = $slabMap[$fee['related_class']] ?? null;
 
                 if ($slab) {
-
                     if ($slab['late_fee_periodicity'] === 'daily') {
-
                         $lateFeeAmount = $daysLate * $slab['late_fee'];
-
                     }
-
                     if ($slab['late_fee_periodicity'] === 'monthly') {
-
                         $lateFeeAmount = $slab['late_fee'];
-
                     }
-
                 }
-
             }
 
-            $balance = max(
-                0,
-                $fee['amount'] + $lateFeeAmount - $discountAmount - $paidAmount
-            );
+            $balance = max(0, $fee['amount'] + $lateFeeAmount - $discountAmount - $paidAmount);
 
             $ledger[] = [
-
                 'generated_fee_id' => $id,
-                'month' => $fee['month'],
-                'year' => $fee['year'],
-                'amount' => $fee['amount'],
-                'late_fee' => $lateFeeAmount,
-                'discount' => $discountAmount,
-                'paid' => $paidAmount,
-                'balance' => $balance,
-                'days_late' => $daysLate
-
+                'month'            => $fee['month'],
+                'year'             => $fee['year'],
+                'amount'           => $fee['amount'],
+                'late_fee'         => $lateFeeAmount,
+                'discount'         => $discountAmount,
+                'paid'             => $paidAmount,
+                'balance'          => $balance,
+                'days_late'        => $daysLate,
             ];
-
         }
 
         return ['ledger' => $ledger];
     }
 
 
-
     /* =====================================================
        RECORD PAYMENT
-       FIX: Replaced N+1 query loop with 3 bulk queries
-            for balance calculation before the FIFO loop.
-            Was: 1 insert + 1 fetch + (2 × N) queries.
-            Now: 1 insert + 3 queries + N allocation inserts.
+
+       After the FIFO allocation loop, any amount that
+       couldn't be allocated (because all fees are paid)
+       is stored as `advance_credit` on the payment record.
+       It will be automatically applied when the next
+       fee is generated for this student.
     ===================================================== */
     public function recordPayment(array $data)
     {
-        $studentId = $data['student_id'] ?? null;
-        $amount = $data['amount'] ?? 0;
+        $studentId   = $data['student_id']  ?? null;
+        $amount      = $data['amount']       ?? 0;
         $paymentMode = $data['payment_mode'] ?? null;
         $paymentDate = $data['payment_date'] ?? null;
 
@@ -460,23 +402,25 @@ class FeesManagementController extends BaseController
 
         /* 1. Insert the payment record */
         $paymentId = $this->feesPaymentsModel->insert([
-            'student_id' => $studentId,
-            'paid_amount' => $amount,
-            'status' => 'completed',
-            'payment_mode' => $paymentMode,
+            'student_id'        => $studentId,
+            'paid_amount'       => $amount,
+            'status'            => 'completed',
+            'payment_mode'      => $paymentMode,
             'payment_date_time' => $paymentDate,
+            'advance_credit'    => 0,
         ]);
 
         /* 2. Fetch all generated fees for this student (FIFO order) */
         $generatedFees = $this->feesGenerationModel
             ->where('student_id', $studentId)
             ->where('deleted_at', null)
-            ->orderBy('year', 'ASC')
-            ->orderBy('month', 'ASC')
+            ->orderBy('due_date', 'ASC')
             ->findAll();
 
         if (empty($generatedFees)) {
-            return ['message' => 'Payment recorded successfully'];
+            /* No fees at all — entire amount is advance credit */
+            $this->feesPaymentsModel->update($paymentId, ['advance_credit' => $amount]);
+            return ['message' => 'Payment recorded as advance credit'];
         }
 
         $generatedIds = array_column($generatedFees, 'id');
@@ -503,7 +447,7 @@ class FeesManagementController extends BaseController
 
         $paidMap = array_column($paidRows, 'total_paid', 'related_generated_fee');
 
-        /* 5. FIFO allocation loop — no DB queries inside, only inserts */
+        /* 5. FIFO allocation loop — no DB reads inside, only inserts */
         $remainingAmount = $amount;
 
         foreach ($generatedFees as $fee) {
@@ -512,10 +456,10 @@ class FeesManagementController extends BaseController
                 break;
             }
 
-            $id = $fee['id'];
+            $id             = $fee['id'];
             $discountAmount = $discountMap[$id] ?? 0;
-            $paidAmount = $paidMap[$id] ?? 0;
-            $balance = $fee['amount'] - $discountAmount - $paidAmount;
+            $paidAmount     = $paidMap[$id]     ?? 0;
+            $balance        = $fee['amount'] - $discountAmount - $paidAmount;
 
             if ($balance <= 0) {
                 continue;
@@ -525,30 +469,45 @@ class FeesManagementController extends BaseController
 
             $this->feesAllocationModel->insert([
                 'related_generated_fee' => $id,
-                'related_payment' => $paymentId,
-                'related_discount' => 0,
-                'amount' => $allocate,
+                'related_payment'       => $paymentId,
+                'related_discount'      => 0,
+                'amount'                => $allocate,
             ]);
 
             $remainingAmount -= $allocate;
         }
 
+        /* 6. Store any unallocated amount as advance credit */
+        if ($remainingAmount > 0) {
+            $this->feesPaymentsModel->update($paymentId, [
+                'advance_credit' => $remainingAmount,
+            ]);
+        }
+
         return ['message' => 'Payment recorded successfully'];
     }
 
+
+    /* =====================================================
+       GENERATE FEES
+
+       After inserting each fee record:
+         1. Student's `discount` is saved into fees_discount.
+         2. Any advance credit the student has (from previous
+            overpayments) is automatically applied to the
+            new fee — oldest payment first — and the consumed
+            credit is deducted from fees_payments.
+    ===================================================== */
     public function generateFees(array $data)
     {
-
-        $month = $data['month'] ?? null;
-        $year = $data['year'] ?? null;
-        $dueDate = $data['due_date'] ?? null;
+        $month     = $data['month']               ?? null;
+        $year      = $data['year']                ?? null;
+        $dueDate   = $data['due_date']            ?? null;
         $lateStart = $data['late_fee_start_date'] ?? null;
-
 
         if (!$month || !$year || !$dueDate || !$lateStart) {
             return ['error' => 'Month, year, due date and late fee start date required'];
         }
-
 
         $students = $this->studentsModel
             ->where('deleted_at', null)
@@ -561,7 +520,7 @@ class FeesManagementController extends BaseController
         foreach ($students as $student) {
 
             $studentId = $student['id'];
-            $classId = $student['related_class'];
+            $classId   = $student['related_class'];
 
             $slab = $this->feesSlabModel
                 ->where('class', $classId)
@@ -583,20 +542,64 @@ class FeesManagementController extends BaseController
                 continue;
             }
 
-            $this->feesGenerationModel->insert([
-                'student_id' => $studentId,
-                'month' => $month,
-                'year' => $year,
-                'amount' => $slab['total_amount'],
-                'due_date' => $dueDate,
-                'late_fee_start_date' => $lateStart
+            /* Insert the generated fee record */
+            $generatedId = $this->feesGenerationModel->insert([
+                'student_id'          => $studentId,
+                'month'               => $month,
+                'year'                => $year,
+                'amount'              => $slab['total_amount'],
+                'due_date'            => $dueDate,
+                'late_fee_start_date' => $lateStart,
             ]);
 
+            /* Apply discount if the student has one */
+            if (!empty($student['discount']) && $student['discount'] > 0) {
+                $this->feesDiscountModel->insert([
+                    'generated_fee'   => $generatedId,
+                    'discount_amount' => $student['discount'],
+                ]);
+            }
 
+            /* Apply any existing advance credit to this new fee */
+            $advancePayments = $this->feesPaymentsModel
+                ->where('student_id', $studentId)
+                ->where('advance_credit >', 0)
+                ->orderBy('payment_date_time', 'ASC')
+                ->findAll();
+
+            if (empty($advancePayments)) {
+                continue;
+            }
+
+            /* Net balance after discount */
+            $discountAmount = $student['discount'] ?? 0;
+            $feeBalance     = $slab['total_amount'] - $discountAmount;
+
+            foreach ($advancePayments as $advPayment) {
+
+                if ($feeBalance <= 0) {
+                    break;
+                }
+
+                $available = $advPayment['advance_credit'];
+                $allocate  = min($available, $feeBalance);
+
+                $this->feesAllocationModel->insert([
+                    'related_generated_fee' => $generatedId,
+                    'related_payment'       => $advPayment['id'],
+                    'related_discount'      => 0,
+                    'amount'                => $allocate,
+                ]);
+
+                /* Deduct consumed credit from the payment */
+                $this->feesPaymentsModel->update($advPayment['id'], [
+                    'advance_credit' => $available - $allocate,
+                ]);
+
+                $feeBalance -= $allocate;
+            }
         }
 
         return ['message' => 'Fees generated successfully'];
-
     }
-
 }
