@@ -24,6 +24,7 @@ class FeesPaymentsModel extends Model
             'status',
             'payment_mode',
             'payment_date_time',
+            'advance_credit',
             'created_at',
             'updated_at',
             'deleted_at',
