@@ -15,6 +15,10 @@ $routes->set404Override(function () {
 $routes->get('/', 'Web\DashboardController::pre_login');
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 $routes->get('forgot-password', 'Web\DashboardController::forgot_password');
+// ── Public Fee Receipt (no login required) ──────────────────
+$routes->get('fees/receipt/(:num)', 'Web\FeesModulePages\FeesModuleController::feeReceipt/$1');
+// Also support query string: /fees/receipt?payment_id=6
+$routes->get('fees/receipt', 'Web\FeesModulePages\FeesModuleController::feeReceipt');
 $routes->post('login', 'Web\DashboardController::login');
 
 // For api
@@ -137,6 +141,8 @@ $routes->group('post-login-employee', function ($routes) {
         $routes->post('get-fees-slab-list', 'Web\FeesModulePages\FeesModuleController::getFeesSlabList');
         $routes->post('add-fees-slab', 'Web\FeesModulePages\FeesModuleController::addFeesSlab');
         $routes->post('edit-fees-slab', 'Web\FeesModulePages\FeesModuleController::editFeesSlab');
+        $routes->post('fees-generation-list', 'Web\FeesModulePages\FeesModuleController::feesGenerationList');
+        $routes->post('get-fees-generation-list', 'Web\FeesModulePages\FeesModuleController::getFeesGenerationList');
         $routes->post('delete-fees-slab', 'Web\FeesModulePages\FeesModuleController::deleteFeesSlab');
 
         /* -------------------------------

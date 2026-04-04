@@ -1,269 +1,289 @@
 jQuery(document).ready(function () {
+  const baseUrl = jQuery("#globalBaseUrl").val();
 
-	const baseUrl = jQuery('#globalBaseUrl').val();
+  // Hold the DataTable instance so we can destroy & reinit cleanly
+  let ledgerTable = null;
 
+  /* -----------------------------------------
+	   Init (or reinit) the ledger DataTable.
+	   Called every time a new student is selected.
+	   Destroying first prevents event bubbling
+	   from stale instances.
+	----------------------------------------- */
+  function initLedgerTable(data) {
+    // Destroy existing instance before reinit
+    if (ledgerTable !== null) {
+      ledgerTable.destroy();
+      ledgerTable = null;
+      $("#feesLedgerBody").empty();
+    }
 
-	/* -----------------------------------------
+    ledgerTable = $("#feesLedgerTable").DataTable({
+      data: data,
+      columns: [
+        { data: "month" },
+        { data: "year" },
+        {
+          data: "amount",
+          render: (val) => "₹ " + parseFloat(val).toFixed(2),
+        },
+        {
+          data: null,
+          render: (row) => {
+            let text = "₹ " + parseFloat(row.late_fee).toFixed(2);
+            if (row.days_late > 0) {
+              text += ` <small class="text-muted">(${row.days_late} days)</small>`;
+            }
+            return `<span class="text-danger">${text}</span>`;
+          },
+        },
+        {
+          data: "discount",
+          render: (val) =>
+            `<span class="text-success">₹ ${parseFloat(val).toFixed(2)}</span>`,
+        },
+        {
+          data: "paid",
+          render: (val) =>
+            `<span class="text-primary">₹ ${parseFloat(val).toFixed(2)}</span>`,
+        },
+        {
+          data: "balance",
+          render: (val) =>
+            `<span class="fw-bold text-danger">₹ ${parseFloat(val).toFixed(2)}</span>`,
+        },
+        {
+          data: null,
+          render: (row) => {
+            if (row.balance > 0) {
+              return '<span class="badge bg-warning text-dark">Pending</span>';
+            }
+            const receiptUrl = row.payment_id
+              ? `${baseUrl}fees/receipt/${row.payment_id}`
+              : "#";
+            return `
+                    <div class="d-flex align-items-center gap-8">
+                        <span class="badge bg-success">Paid</span>
+                        <a href="${receiptUrl}" target="_blank"
+                           title="View Receipt"
+                           class="text-main-600 d-flex align-items-center gap-4 text-sm">
+                            <i class="ph ph-receipt"></i> Receipt
+                        </a>
+                    </div>
+                `;
+          },
+        },
+      ],
+      order: [[0, "asc"]],
+      pageLength: 10,
+      language: {
+        emptyTable: "No fees generated for this student.",
+        zeroRecords: "No matching fee records found.",
+      },
+      columnDefs: [{ orderable: false, targets: [3, 4, 5, 6, 7] }],
+    });
+  }
+
+  /* -----------------------------------------
+	   Show empty state without a DataTable
+	   (used when student is deselected)
+	----------------------------------------- */
+  function clearLedger() {
+    if (ledgerTable !== null) {
+      ledgerTable.destroy();
+      ledgerTable = null;
+    }
+
+    $("#feesLedgerBody").html(`
+			<tr>
+				<td colspan="8" class="text-center text-muted py-20">
+					Select a student to view ledger
+				</td>
+			</tr>
+		`);
+  }
+
+  /* -----------------------------------------
 	   Load Sections when Class changes
 	----------------------------------------- */
-	$(document)
-		.off('change', '#classSelect')
-		.on('change', '#classSelect', function () {
+  $(document)
+    .off("change", "#classSelect")
+    .on("change", "#classSelect", function () {
+      const classId = $(this).val();
 
-			const classId = $(this).val();
+      $("#sectionSelect").html('<option value="">Select Section</option>');
+      $("#studentSelect").html('<option value="">Select Student</option>');
+      clearLedger();
 
-			$('#sectionSelect').html('<option value="">Select Section</option>');
-			$('#studentSelect').html('<option value="">Select Student</option>');
-			$('#feesLedgerBody').html('');
+      if (!classId) return;
 
-			if (!classId) return;
+      $.ajax({
+        url: baseUrl + "post-login-employee/fees/get-sections-by-class",
+        type: "POST",
+        dataType: "json",
+        data: { class_id: classId },
 
-			$.ajax({
-				url: baseUrl + 'post-login-employee/fees/get-sections-by-class',
-				type: 'POST',
-				dataType: 'json',
-				data: { class_id: classId },
+        success: function (res) {
+          if (!res.sections) return;
 
-				success: function (res) {
+          let options = '<option value="">Select Section</option>';
 
-					if (!res.sections) return;
+          res.sections.forEach(function (sec) {
+            options += `<option value="${sec.id}">${sec.section_label}</option>`;
+          });
 
-					let options = '<option value="">Select Section</option>';
+          $("#sectionSelect").html(options);
+        },
+      });
+    });
 
-					res.sections.forEach(function (sec) {
-						options += `<option value="${sec.id}">${sec.section_label}</option>`;
-					});
-
-					$('#sectionSelect').html(options);
-				}
-			});
-
-		});
-
-
-
-	/* -----------------------------------------
+  /* -----------------------------------------
 	   Load Students when Section changes
 	----------------------------------------- */
-	$(document)
-		.off('change', '#sectionSelect')
-		.on('change', '#sectionSelect', function () {
+  $(document)
+    .off("change", "#sectionSelect")
+    .on("change", "#sectionSelect", function () {
+      const classId = $("#classSelect").val();
+      const sectionId = $(this).val();
 
-			const classId = $('#classSelect').val();
-			const sectionId = $(this).val();
+      $("#studentSelect").html('<option value="">Select Student</option>');
+      clearLedger();
 
-			$('#studentSelect').html('<option value="">Select Student</option>');
-			$('#feesLedgerBody').html('');
+      if (!classId || !sectionId) return;
 
-			if (!classId || !sectionId) return;
+      $.ajax({
+        url: baseUrl + "post-login-employee/fees/get-students-by-class-section",
+        type: "POST",
+        dataType: "json",
+        data: {
+          class_id: classId,
+          section_id: sectionId,
+        },
 
-			$.ajax({
-				url: baseUrl + 'post-login-employee/fees/get-students-by-class-section',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					class_id: classId,
-					section_id: sectionId
-				},
+        success: function (res) {
+          if (!res.students) return;
 
-				success: function (res) {
+          let options = '<option value="">Select Student</option>';
 
-					if (!res.students) return;
+          res.students.forEach(function (student) {
+            options += `<option value="${student.id}">${student.roll_no} - ${student.name}</option>`;
+          });
 
-					let options = '<option value="">Select Student</option>';
+          $("#studentSelect").html(options);
+        },
+      });
+    });
 
-					res.students.forEach(function (student) {
-						options += `<option value="${student.id}">${student.roll_no} - ${student.name}</option>`;
-					});
-
-					$('#studentSelect').html(options);
-				}
-			});
-
-		});
-
-
-
-	/* -----------------------------------------
-	   Fetch Student Ledger
+  /* -----------------------------------------
+	   Fetch Ledger when Student changes
 	----------------------------------------- */
-	$(document)
-		.off('change', '#studentSelect')
-		.on('change', '#studentSelect', function () {
+  $(document)
+    .off("change", "#studentSelect")
+    .on("change", "#studentSelect", function () {
+      const studentId = $(this).val();
 
-			const studentId = $(this).val();
+      if (!studentId) {
+        clearLedger();
+        return;
+      }
 
-			if (!studentId) {
-				$('#feesLedgerBody').html('');
-				return;
-			}
+      fetchLedger(studentId);
+    });
 
-			fetchLedger(studentId);
-
-		});
-
-
-
-	/* -----------------------------------------
+  /* -----------------------------------------
 	   Fetch Ledger Function
 	----------------------------------------- */
-	function fetchLedger(studentId) {
+  function fetchLedger(studentId) {
+    $.ajax({
+      url: baseUrl + "post-login-employee/fees/get-student-fees-ledger",
+      type: "POST",
+      dataType: "json",
+      data: { student_id: studentId },
 
-		$.ajax({
+      success: function (res) {
+        if (!res.ledger || res.ledger.length === 0) {
+          clearLedger();
+          return;
+        }
 
-			url: baseUrl + 'post-login-employee/fees/get-student-fees-ledger',
-			type: 'POST',
-			dataType: 'json',
-			data: {
-				student_id: studentId
-			},
+        initLedgerTable(res.ledger);
+      },
 
-			success: function (res) {
+      error: function () {
+        clearLedger();
+      },
+    });
+  }
 
-				if (!res.ledger || res.ledger.length === 0) {
-
-					$('#feesLedgerBody').html(`
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-20">
-                                No fees generated for this student
-                            </td>
-                        </tr>
-                    `);
-
-					return;
-				}
-
-				renderLedger(res.ledger);
-			}
-
-		});
-
-	}
-
-
-
-	/* -----------------------------------------
-	   Render Ledger Table
-	----------------------------------------- */
-	function renderLedger(ledger) {
-
-		let html = '';
-
-		ledger.forEach(function (row) {
-
-			let status = row.balance > 0
-				? '<span class="badge bg-warning">Pending</span>'
-				: '<span class="badge bg-success">Paid</span>';
-
-			html += `
-            <tr>
-                <td class="text-gray-700">${row.month}</td>
-
-                <td class="text-gray-700">${row.year}</td>
-
-                <td class="text-gray-700">
-                    ₹ ${row.amount}
-                </td>
-
-                <td class="text-danger">
-                    ₹ ${row.late_fee}
-                    ${row.days_late > 0 ? `(${row.days_late} days)` : ''}
-                </td>
-
-                <td class="text-success">
-                    ₹ ${row.discount}
-                </td>
-
-                <td class="text-primary">
-                    ₹ ${row.paid}
-                </td>
-
-                <td class="fw-bold text-danger">
-                    ₹ ${row.balance}
-                </td>
-
-                <td>
-                    ${status}
-                </td>
-
-            </tr>
-        `;
-		});
-
-		$('#feesLedgerBody').html(html);
-	}
-
-
-
-
-	/* -----------------------------------------
+  /* -----------------------------------------
 	   Record Payment
 	----------------------------------------- */
-	$(document)
-		.off('click', '#recordPaymentBtn')
-		.on('click', '#recordPaymentBtn', function () {
+  $(document)
+    .off("click", "#recordPaymentBtn")
+    .on("click", "#recordPaymentBtn", function () {
+      const studentId = $("#studentSelect").val();
+      const amount = $("#paymentAmount").val();
+      const mode = $("#paymentMode").val();
+      const date = $("#paymentDate").val();
 
-			const studentId = $('#studentSelect').val();
-			const amount = $('#paymentAmount').val();
-			const mode = $('#paymentMode').val();
-			const date = $('#paymentDate').val();
+      if (!studentId) {
+        alert("Please select a student.");
+        return;
+      }
+      if (!amount || amount <= 0) {
+        alert("Enter a valid payment amount.");
+        return;
+      }
+      if (!mode) {
+        alert("Select a payment mode.");
+        return;
+      }
+      if (!date) {
+        alert("Select a payment date.");
+        return;
+      }
 
-			if (!studentId) {
-				alert('Please select a student');
-				return;
-			}
+      const $btn = $(this);
+      $btn
+        .prop("disabled", true)
+        .html('<i class="ph ph-spinner me-4"></i> Processing...');
 
-			if (!amount || amount <= 0) {
-				alert('Enter valid payment amount');
-				return;
-			}
+      $.ajax({
+        url: baseUrl + "post-login-employee/fees/record-payment",
+        type: "POST",
+        dataType: "json",
+        data: {
+          student_id: studentId,
+          amount: amount,
+          payment_mode: mode,
+          payment_date: date,
+        },
 
-			if (!mode) {
-				alert('Select payment mode');
-				return;
-			}
+        success: function (res) {
+          if (res.error) {
+            alert(res.error);
+            return;
+          }
 
-			if (!date) {
-				alert('Select payment date');
-				return;
-			}
+          alert("Payment recorded successfully.");
 
+          $("#paymentAmount").val("");
+          $("#paymentMode").val("");
+          $("#paymentDate").val("");
 
-			$.ajax({
+          // Refresh ledger for the same student
+          fetchLedger(studentId);
+        },
 
-				url: baseUrl + 'post-login-employee/fees/record-payment',
-				type: 'POST',
-				dataType: 'json',
+        error: function () {
+          alert("Error recording payment. Please try again.");
+        },
 
-				data: {
-					student_id: studentId,
-					amount: amount,
-					payment_mode: mode,
-					payment_date: date
-				},
-
-				success: function (res) {
-
-					if (res.error) {
-						alert(res.error);
-						return;
-					}
-
-					alert('Payment recorded successfully');
-
-					$('#paymentAmount').val('');
-					$('#paymentMode').val('');
-					$('#paymentDate').val('');
-
-					fetchLedger(studentId);
-				},
-
-				error: function () {
-					alert('Error recording payment');
-				}
-
-			});
-
-		});
-
+        complete: function () {
+          $btn
+            .prop("disabled", false)
+            .html('<i class="ph ph-floppy-disk me-4"></i> Record Payment');
+        },
+      });
+    });
 });

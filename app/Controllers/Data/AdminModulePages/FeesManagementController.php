@@ -316,7 +316,7 @@ class FeesManagementController extends BaseController
 
         $discountMap = array_column($discountRows, 'total_discount', 'generated_fee');
 
-        /* 3. Bulk fetch payments */
+        /* 3. Bulk fetch payments — add payment_id to the map */
         $paidRows = $this->feesAllocationModel
             ->select('related_generated_fee')
             ->selectSum('amount', 'total_paid')
@@ -326,6 +326,22 @@ class FeesManagementController extends BaseController
             ->findAll();
 
         $paidMap = array_column($paidRows, 'total_paid', 'related_generated_fee');
+
+        // Fetch the most recent payment_id per generated fee
+        $paymentIdRows = $this->feesAllocationModel
+            ->select('related_generated_fee, related_payment')
+            ->whereIn('related_generated_fee', $generatedIds)
+            ->where('deleted_at', null)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        // Keep only the first (most recent) payment_id per generated fee
+        $paymentIdMap = [];
+        foreach ($paymentIdRows as $r) {
+            if (!isset($paymentIdMap[$r['related_generated_fee']])) {
+                $paymentIdMap[$r['related_generated_fee']] = $r['related_payment'];
+            }
+        }
 
         /* 4. Fetch slabs for late fee rules */
         $classIds = array_unique(array_column($generatedFees, 'related_class'));
@@ -373,6 +389,7 @@ class FeesManagementController extends BaseController
                 'paid'             => $paidAmount,
                 'balance'          => $balance,
                 'days_late'        => $daysLate,
+                'payment_id'       => $paymentIdMap[$id] ?? null,  // ← add this
             ];
         }
 
@@ -400,7 +417,6 @@ class FeesManagementController extends BaseController
             return ['error' => 'Missing required fields'];
         }
 
-        /* 1. Insert the payment record */
         $paymentId = $this->feesPaymentsModel->insert([
             'student_id'        => $studentId,
             'paid_amount'       => $amount,
@@ -410,7 +426,6 @@ class FeesManagementController extends BaseController
             'advance_credit'    => 0,
         ]);
 
-        /* 2. Fetch all generated fees for this student (FIFO order) */
         $generatedFees = $this->feesGenerationModel
             ->where('student_id', $studentId)
             ->where('deleted_at', null)
@@ -418,14 +433,12 @@ class FeesManagementController extends BaseController
             ->findAll();
 
         if (empty($generatedFees)) {
-            /* No fees at all — entire amount is advance credit */
             $this->feesPaymentsModel->update($paymentId, ['advance_credit' => $amount]);
             return ['message' => 'Payment recorded as advance credit'];
         }
 
         $generatedIds = array_column($generatedFees, 'id');
 
-        /* 3. Bulk fetch all discounts keyed by generated_fee id */
         $discountRows = $this->feesDiscountModel
             ->select('generated_fee')
             ->selectSum('discount_amount', 'total_discount')
@@ -436,7 +449,6 @@ class FeesManagementController extends BaseController
 
         $discountMap = array_column($discountRows, 'total_discount', 'generated_fee');
 
-        /* 4. Bulk fetch all previously paid amounts keyed by related_generated_fee id */
         $paidRows = $this->feesAllocationModel
             ->select('related_generated_fee')
             ->selectSum('amount', 'total_paid')
@@ -447,23 +459,47 @@ class FeesManagementController extends BaseController
 
         $paidMap = array_column($paidRows, 'total_paid', 'related_generated_fee');
 
-        /* 5. FIFO allocation loop — no DB reads inside, only inserts */
+        // ── Fetch slab once for late fee calculation ──────────────
+        $student = $this->studentsModel->find($studentId);
+        $slab    = $this->feesSlabModel
+            ->where('class', $student['related_class'])
+            ->where('deleted_at', null)
+            ->first();
+
+        $paymentTimestamp = strtotime($paymentDate);
+        // ──────────────────────────────────────────────────────────
+
         $remainingAmount = $amount;
 
         foreach ($generatedFees as $fee) {
 
-            if ($remainingAmount <= 0) {
-                break;
-            }
+            if ($remainingAmount <= 0) break;
 
             $id             = $fee['id'];
-            $discountAmount = $discountMap[$id] ?? 0;
-            $paidAmount     = $paidMap[$id]     ?? 0;
-            $balance        = $fee['amount'] - $discountAmount - $paidAmount;
+            $discountAmount = (float) ($discountMap[$id] ?? 0);
+            $paidAmount     = (float) ($paidMap[$id]     ?? 0);
 
-            if ($balance <= 0) {
-                continue;
+            // ── Calculate late fee at the moment of this payment ──
+            $lateFeeAmount = 0;
+
+            if ($slab && !empty($fee['late_fee_start_date'])) {
+                $lateStart = strtotime($fee['late_fee_start_date']);
+
+                if ($paymentTimestamp > $lateStart) {
+                    $daysLate = floor(($paymentTimestamp - $lateStart) / 86400);
+
+                    if ($slab['late_fee_periodicity'] === 'daily') {
+                        $lateFeeAmount = $daysLate * (float) $slab['late_fee'];
+                    } elseif ($slab['late_fee_periodicity'] === 'monthly') {
+                        $lateFeeAmount = (float) $slab['late_fee'];
+                    }
+                }
             }
+            // ──────────────────────────────────────────────────────
+
+            $balance = $fee['amount'] + $lateFeeAmount - $discountAmount - $paidAmount;
+
+            if ($balance <= 0) continue;
 
             $allocate = min($remainingAmount, $balance);
 
@@ -477,7 +513,6 @@ class FeesManagementController extends BaseController
             $remainingAmount -= $allocate;
         }
 
-        /* 6. Store any unallocated amount as advance credit */
         if ($remainingAmount > 0) {
             $this->feesPaymentsModel->update($paymentId, [
                 'advance_credit' => $remainingAmount,
@@ -601,5 +636,259 @@ class FeesManagementController extends BaseController
         }
 
         return ['message' => 'Fees generated successfully'];
+    }
+
+    /* =====================================================
+    GET RECEIPT DATA
+    Builds all data the fee_receipt view needs for
+    a given fees_payments.id
+    ===================================================== */
+    public function getReceiptData(int $paymentId): array
+    {
+        // 1. Fetch the payment row
+        $payment = $this->feesPaymentsModel
+            ->where('id', $paymentId)
+            ->where('deleted_at', null)
+            ->first();
+
+        if (!$payment) {
+            return ['error' => 'Receipt not found.'];
+        }
+
+        // 2. Fetch student with class name + section label
+        $db      = \Config\Database::connect();
+        $student = $db->table('students s')
+            ->select('s.*, c.class_name, sec.section_label')
+            ->join('classes c',   'c.id   = s.related_class',   'left')
+            ->join('sections sec', 'sec.id = s.related_section', 'left')
+            ->where('s.id', $payment['student_id'])
+            ->where('s.deleted_at', null)
+            ->get()->getRowArray();
+
+        if (!$student) {
+            return ['error' => 'Student record not found.'];
+        }
+
+        // 3. Fetch all fees_allocation rows for this payment
+        $allocationRows = $this->feesAllocationModel
+            ->where('related_payment', $paymentId)
+            ->where('deleted_at', null)
+            ->findAll();
+
+        if (empty($allocationRows)) {
+            return ['error' => 'No fee allocations found for this payment.'];
+        }
+
+        $generatedIds = array_column($allocationRows, 'related_generated_fee');
+
+        // 4. Bulk fetch generated fees (month/year/amount/due_date)
+        $generatedFees = $this->feesGenerationModel
+            ->whereIn('id', $generatedIds)
+            ->where('deleted_at', null)
+            ->findAll();
+
+        $generatedMap = array_column($generatedFees, null, 'id');
+
+        // 5. Bulk fetch discounts keyed by generated_fee id
+        $discountRows = $this->feesDiscountModel
+            ->select('generated_fee')
+            ->selectSum('discount_amount', 'total_discount')
+            ->whereIn('generated_fee', $generatedIds)
+            ->where('deleted_at', null)
+            ->groupBy('generated_fee')
+            ->findAll();
+
+        $discountMap = array_column($discountRows, 'total_discount', 'generated_fee');
+
+        // 6. Fetch slab for late fee calculation
+        $slab = $this->feesSlabModel
+            ->where('class', $student['related_class'])
+            ->where('deleted_at', null)
+            ->first();
+
+        // 7. Build allocation rows with calculated late fees
+        $allocations    = [];
+        $totalBase      = 0;
+        $totalDiscount  = 0;
+        $totalLateFee   = 0;
+
+        foreach ($allocationRows as $alloc) {
+            $genId    = $alloc['related_generated_fee'];
+            $gen      = $generatedMap[$genId] ?? null;
+
+            if (!$gen) {
+                continue;
+            }
+
+            $baseAmount     = (float) $gen['amount'];
+            $discountAmount = (float) ($discountMap[$genId] ?? 0);
+            $lateFeeAmount  = 0;
+
+            // Late fee: calculate based on slab periodicity vs payment date
+            if ($slab && !empty($gen['late_fee_start_date'])) {
+                $lateStart   = strtotime($gen['late_fee_start_date']);
+                $paymentTime = strtotime($payment['payment_date_time']);
+
+                if ($paymentTime > $lateStart) {
+                    $daysLate = floor(($paymentTime - $lateStart) / 86400);
+
+                    if ($slab['late_fee_periodicity'] === 'daily') {
+                        $lateFeeAmount = $daysLate * (float) $slab['late_fee'];
+                    } elseif ($slab['late_fee_periodicity'] === 'monthly') {
+                        $lateFeeAmount = (float) $slab['late_fee'];
+                    }
+                }
+            }
+
+            $allocations[] = [
+                'month'           => $gen['month'],
+                'year'            => $gen['year'],
+                'due_date'        => $gen['due_date'],
+                'base_amount'     => $baseAmount,
+                'discount_amount' => $discountAmount,
+                'late_fee_amount' => $lateFeeAmount,
+                'paid_amount'     => (float) $alloc['amount'],
+            ];
+
+            $totalBase     += $baseAmount;
+            $totalDiscount += $discountAmount;
+            $totalLateFee  += $lateFeeAmount;
+        }
+
+        return [
+            'payment'     => $payment,
+            'student'     => $student,
+            'allocations' => $allocations,
+            'totals'      => [
+                'total_base'     => $totalBase,
+                'total_discount' => $totalDiscount,
+                'total_late_fee' => $totalLateFee,
+                'total_paid'     => (float) $payment['paid_amount'],
+            ],
+        ];
+    }
+
+    /* =====================================================
+    FEES GENERATION DATATABLE
+    ===================================================== */
+    public function getFeesGenerationList(array $postData)
+    {
+        $draw        = intval($postData['draw']          ?? 1);
+        $start       = intval($postData['start']         ?? 0);
+        $length      = intval($postData['length']        ?? 10);
+        $searchValue =        $postData['search']['value'] ?? '';
+
+        // Filters sent from the page
+        $filterClass   = $postData['filter_class']   ?? '';
+        $filterSection = $postData['filter_section'] ?? '';
+        $filterMonth   = $postData['filter_month']   ?? '';
+        $filterYear    = $postData['filter_year']    ?? '';
+
+        $db      = \Config\Database::connect();
+        $builder = $db->table('fees_generation fg')
+            ->select('
+                fg.id,
+                fg.month,
+                fg.year,
+                fg.amount,
+                fg.due_date,
+                fg.late_fee_start_date,
+                fg.status,
+                s.id          AS student_id,
+                s.roll_no,
+                s.firstname,
+                s.lastname,
+                c.class_name,
+                sec.section_label
+            ')
+            ->join('students s',   's.id   = fg.student_id',    'left')
+            ->join('classes c',    'c.id   = s.related_class',  'left')
+            ->join('sections sec', 'sec.id = s.related_section','left')
+            ->where('fg.deleted_at', null)
+            ->where('s.deleted_at',  null);
+
+        if (!empty($filterClass)) {
+            $builder->where('s.related_class', $filterClass);
+        }
+
+        if (!empty($filterSection)) {
+            $builder->where('s.related_section', $filterSection);
+        }
+
+        if (!empty($filterMonth)) {
+            $builder->where('fg.month', $filterMonth);
+        }
+
+        if (!empty($filterYear)) {
+            $builder->where('fg.year', $filterYear);
+        }
+
+        if (!empty($searchValue)) {
+            $builder->groupStart()
+                ->like('s.firstname',  $searchValue)
+                ->orLike('s.lastname', $searchValue)
+                ->orLike('s.roll_no',  $searchValue)
+                ->orLike('fg.month',   $searchValue)
+                ->orLike('fg.year',    $searchValue)
+                ->groupEnd();
+        }
+
+        // Count before pagination
+        $totalFiltered = $builder->countAllResults(false);
+
+        // Total without filters
+        $totalRecords = $db->table('fees_generation')
+            ->where('deleted_at', null)
+            ->countAllResults();
+
+        $builder->orderBy('fg.due_date', 'DESC');
+
+        if ($length != -1) {
+            $builder->limit($length, $start);
+        }
+
+        $records = $builder->get()->getResultArray();
+
+        $data = [];
+
+        foreach ($records as $row) {
+
+            $statusBadge = match (strtolower($row['status'] ?? '')) {
+                'paid'    => '<span class="badge bg-success">Paid</span>',
+                'partial' => '<span class="badge bg-warning text-dark">Partial</span>',
+                default   => '<span class="badge bg-danger">Pending</span>',
+            };
+
+            $data[] = [
+                'checkbox' => '<input type="checkbox" class="form-check-input" value="' . $row['id'] . '">',
+
+                'student' => '
+                    <span class="fw-medium text-gray-700">'
+                        . esc($row['firstname'] . ' ' . $row['lastname'])
+                    . '</span>
+                    <br>
+                    <small class="text-muted">' . esc($row['roll_no']) . '</small>
+                ',
+
+                'class_section' => esc($row['class_name']) . ' – ' . esc($row['section_label']),
+
+                'period' => esc($row['month']) . ' ' . esc($row['year']),
+
+                'amount' => '₹ ' . number_format($row['amount'], 2),
+
+                'due_date' => date('d M Y', strtotime($row['due_date'])),
+
+                'late_fee_start_date' => date('d M Y', strtotime($row['late_fee_start_date'])),
+
+                'status' => $statusBadge,
+            ];
+        }
+
+        return service('response')->setJSON([
+            'draw'            => $draw,
+            'recordsTotal'    => $totalRecords,
+            'recordsFiltered' => $totalFiltered,
+            'data'            => $data,
+        ]);
     }
 }

@@ -92,9 +92,9 @@
                             <select id="class_id" class="form-select">
                                 <option value="">Select Class</option>
                                 <?php foreach ($classes as $c): ?>
-                                    <option value="<?= $c['id'] ?>">
-                                        <?= $c['class_name'] ?>
-                                    </option>
+                                <option value="<?= $c['id'] ?>">
+                                    <?= $c['class_name'] ?>
+                                </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -172,9 +172,9 @@
                             <select id="edit_class_id" class="form-select" disabled>
                                 <option value="">Select Class</option>
                                 <?php foreach ($classes as $c): ?>
-                                    <option value="<?= $c['id'] ?>">
-                                        <?= $c['class_name'] ?>
-                                    </option>
+                                <option value="<?= $c['id'] ?>">
+                                    <?= $c['class_name'] ?>
+                                </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -265,12 +265,12 @@
 
                 <div class="mb-3">
                     <label>Due Date</label>
-                    <input type="date" id="feesDueDate" class="form-control">
+                    <input type="date" id="feesDueDate" class="form-control" value="<?= date('Y-m') . '-05' ?>">
                 </div>
 
                 <div class="mb-3">
                     <label>Late Fee Start Date</label>
-                    <input type="date" id="lateFeeStartDate" class="form-control">
+                    <input type="date" id="lateFeeStartDate" class="form-control" value="<?= date('Y-m') . '-06' ?>">
                 </div>
 
 

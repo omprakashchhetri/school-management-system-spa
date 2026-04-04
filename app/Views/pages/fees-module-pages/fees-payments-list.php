@@ -64,9 +64,9 @@
 
                         <?php foreach ($classes as $class): ?>
 
-                            <option value="<?= $class['id'] ?>">
-                                <?= $class['class_name'] ?>
-                            </option>
+                        <option value="<?= $class['id'] ?>">
+                            <?= $class['class_name'] ?>
+                        </option>
 
                         <?php endforeach; ?>
 
@@ -111,42 +111,44 @@
         </div>
 
         <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="feesLedgerTable" class="table table-striped">
 
-            <table id="feesLedgerTable" class="table table-striped">
+                    <thead>
+                        <tr>
 
-                <thead>
-                    <tr>
+                            <th class="h6 text-gray-300">Month</th>
 
-                        <th class="h6 text-gray-300">Month</th>
+                            <th class="h6 text-gray-300">Year</th>
 
-                        <th class="h6 text-gray-300">Year</th>
+                            <th class="h6 text-gray-300">Fee Amount</th>
 
-                        <th class="h6 text-gray-300">Fee Amount</th>
+                            <th class="h6 text-gray-300">Late Fee</th>
 
-                        <th class="h6 text-gray-300">Late Fee</th>
+                            <th class="h6 text-gray-300">Discount</th>
 
-                        <th class="h6 text-gray-300">Discount</th>
+                            <th class="h6 text-gray-300">Paid</th>
 
-                        <th class="h6 text-gray-300">Paid</th>
+                            <th class="h6 text-gray-300">Balance</th>
 
-                        <th class="h6 text-gray-300">Balance</th>
+                            <th class="h6 text-gray-300">Status</th>
 
-                        <th class="h6 text-gray-300">Status</th>
+                        </tr>
+                    </thead>
 
-                    </tr>
-                </thead>
+                    <tbody id="feesLedgerBody">
 
-                <tbody id="feesLedgerBody">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-20">
+                                Select a student to view ledger
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-20">
-                            Select a student to view ledger
-                        </td>
-                    </tr>
+                    </tbody>
 
-                </tbody>
+                </table>
+            </div>
 
-            </table>
 
         </div>
 

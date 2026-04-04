@@ -186,6 +186,56 @@ class FeesModuleController extends BaseController
             $this->feesManagementController->generateFees($data)
         );
     }
+    
+    /* =====================================================
+    FEE RECEIPT PAGE (Public)
+    Access: /fees/receipt/6  OR  /fees/receipt?payment_id=6
+    ===================================================== */
+    public function feeReceipt($paymentId = null)
+    {
+        // Accept from URI segment or query string
+        $paymentId = $paymentId ?? $this->request->getGet('payment_id');
 
+        if (!$paymentId || !is_numeric($paymentId)) {
+            return redirect()->to('/')->with('error', 'Invalid receipt reference.');
+        }
+
+        $result = $this->feesManagementController->getReceiptData((int) $paymentId);
+
+        if (isset($result['error'])) {
+            return redirect()->to('/')->with('error', $result['error']);
+        }
+
+        return view('pages/fees-module-pages/fee_receipt', $result);
+    }
+
+    /* =====================================================
+    FEES GENERATION LIST PAGE
+    ===================================================== */
+    public function feesGenerationList()
+    {
+        $classesData = $this->classesController->getAll();
+        $sectionList = $this->sectionsController->getAll();
+
+        $passToView = [
+            'classes'  => $classesData,
+            'sections' => $sectionList,
+        ];
+
+        return view('templates/sidebar-fees')
+            . view('templates/topbar')
+            . view('pages/fees-module-pages/fees-generation-list', $passToView);
+    }
+
+
+    /* =====================================================
+    FEES GENERATION DATATABLE
+    ===================================================== */
+    public function getFeesGenerationList()
+    {
+        $postData = $this->request->getPost();
+
+        return $this->feesManagementController->getFeesGenerationList($postData);
+    }
 
 }

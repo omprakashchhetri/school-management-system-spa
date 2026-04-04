@@ -25,6 +25,12 @@
                     </a>
                 </li>
                 <li class="sidebar-menu__item">
+                    <a href="fees/fees-generation-list" class="nav_js sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-users-three"></i></span>
+                        <span class="text">Fees Generation List</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
                     <a href="fees/fees-payments" class="nav_js sidebar-menu__link">
                         <span class="icon"><i class="ph ph-users-three"></i></span>
                         <span class="text">Fees Payments</span>
