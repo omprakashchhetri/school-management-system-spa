@@ -13,13 +13,13 @@
     <!-- Core Css -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/main.css" />
     <style>
-        .dashboard-main-wrapper {
-            margin: 0;
-        }
+    .dashboard-main-wrapper {
+        margin: 0;
+    }
 
-        .mx-auto {
-            margin: auto;
-        }
+    .mx-auto {
+        margin: auto;
+    }
     </style>
 
     <title>404 - Page Not Found</title>
@@ -48,50 +48,53 @@
         <div class="dark-transparent sidebartoggler"></div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-            console.log('[Capacitor] boot');
+        console.log('[Capacitor] boot');
 
-            if (!window.Capacitor) {
-                console.warn('[Capacitor] Capacitor missing');
+        if (!window.Capacitor) {
+            console.warn('[Capacitor] Capacitor missing');
+            return;
+        }
+
+        console.log('[Capacitor] version', window.Capacitor.getPlatform?.());
+
+        const Plugins = window.Capacitor.Plugins || {};
+        const App = Plugins.App;
+        const Toast = Plugins.Toast;
+
+        console.log('[Capacitor] Plugins available:', Object.keys(Plugins));
+
+        if (!App) {
+            console.error('[Capacitor] App plugin NOT available');
+            return;
+        }
+
+        console.log('[Capacitor] App plugin OK');
+
+        let lastBack = 0;
+
+        App.addListener('backButton', () => {
+            console.log('[Capacitor] HARDWARE BACK');
+
+            if (window.history.length > 1) {
+                window.history.back();
                 return;
             }
 
-            console.log('[Capacitor] version', window.Capacitor.getPlatform?.());
-
-            const Plugins = window.Capacitor.Plugins || {};
-            const App = Plugins.App;
-            const Toast = Plugins.Toast;
-
-            console.log('[Capacitor] Plugins available:', Object.keys(Plugins));
-
-            if (!App) {
-                console.error('[Capacitor] App plugin NOT available');
-                return;
+            const now = Date.now();
+            if (now - lastBack < 2000) {
+                App.exitApp();
+            } else {
+                lastBack = now;
+                Toast?.show({
+                    text: 'Press back again to exit',
+                    duration: 'short'
+                });
             }
-
-            console.log('[Capacitor] App plugin OK');
-
-            let lastBack = 0;
-
-            App.addListener('backButton', () => {
-                console.log('[Capacitor] HARDWARE BACK');
-
-                if (window.history.length > 1) {
-                    window.history.back();
-                    return;
-                }
-
-                const now = Date.now();
-                if (now - lastBack < 2000) {
-                    App.exitApp();
-                } else {
-                    lastBack = now;
-                    Toast?.show({ text: 'Press back again to exit', duration: 'short' });
-                }
-            });
-
         });
+
+    });
     </script>
 </body>
 

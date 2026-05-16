@@ -82,6 +82,59 @@ class StudentModuleController extends BaseController
             . view('templates/footer-student');
     }
 
+     /**
+     * Student profile / details page.
+     * Passes all tab data in one shot so every tab is immediately usable.
+     */
+    public function student_details($studentId): string|ResponseInterface
+    {
+
+        // ── Core student record ───────────────────────────────────────────
+        $studentData = $this->studentsController->getStudentById($studentId);
+
+        if (empty($studentData)) {
+            return redirect()->to('/student/login');
+        }
+
+        // ── Attendance ────────────────────────────────────────────────────
+        $attendance = $this->studentsController->getStudentAttendance($studentId, 10);
+        $attendanceSummary = $this->studentsController->getStudentAttendanceSummary($studentId);
+
+        // ── Fees ──────────────────────────────────────────────────────────
+        $fees = $this->studentsController->getStudentFees($studentId, 10);
+        $advanceBalance = $this->studentsController->getStudentAdvanceBalance($studentId);
+
+        // ── Assignments ───────────────────────────────────────────────────
+        $assignments = $this->studentsController->getStudentAssignments($studentId, 10);
+        $assignmentStats = $this->studentsController->getStudentAssignmentStats($studentId);
+        $assignmentSubjects = $this->studentsController->getAssignmentSubjects($studentId);
+
+        // ── Marks (flat) & Marksheets (grouped by exam) ───────────────────
+        $marks = $this->studentsController->getStudentMarks($studentId, 10);
+        $marksByExam = $this->studentsController->getStudentMarksByExam($studentId);
+
+        // ── Documents ─────────────────────────────────────────────────────
+        $documents = $this->studentsController->getStudentDocuments($studentId, 10);
+
+        return view('templates/header')
+            . view('templates/sidebar')
+            . view('templates/topbar')
+            . view('pages/student-module-pages/student-details', [
+                'studentData' => $studentData,
+                'attendance' => $attendance,
+                'attendanceSummary' => $attendanceSummary,
+                'fees' => $fees,
+                'assignments' => $assignments,
+                'assignmentStats' => $assignmentStats,
+                'assignmentSubjects' => $assignmentSubjects,
+                'marks' => $marks,
+                'marksByExam' => $marksByExam,
+                'documents' => $documents,
+                'advanceBalance' => $advanceBalance,
+            ])
+            . view('templates/footer');
+    }
+
     // ─────────────────────────────────────────────
     // ATTENDANCE PAGE
     // ─────────────────────────────────────────────

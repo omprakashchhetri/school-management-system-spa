@@ -26,6 +26,10 @@ class DashboardController extends BaseController
         return view('pages/login');
     }
 
+    public function privacy_policy(): string
+    {
+        return view('pages/privacy-policy');
+    }
     
     public function pre_login(): string
     {

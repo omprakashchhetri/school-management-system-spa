@@ -21,6 +21,9 @@ $routes->get('fees/receipt/(:num)', 'Web\FeesModulePages\FeesModuleController::f
 $routes->get('fees/receipt', 'Web\FeesModulePages\FeesModuleController::feeReceipt');
 $routes->post('login', 'Web\DashboardController::login');
 
+$routes->get('privacy-policy', 'Web\DashboardController::privacy_policy');
+
+
 // For api
 $routes->post('api/login', 'Web\Auth::index');
 
@@ -106,6 +109,9 @@ $routes->group('post-login-employee', function ($routes) {
 
         $routes->post('section-list', 'Web\AdminModulePages\AdminModuleController::section_list');
         $routes->post('payment-gateways', 'Web\AdminModulePages\AdminModuleController::payment_gateways');
+
+        // Student Details Page
+        $routes->post('student-details/(:segment)', 'Web\StudentModulePages\StudentModuleController::student_details/$1');
 
     });
 

@@ -511,7 +511,7 @@ class SISController extends BaseController
         $sectionId = $postData['section_id'] ?? '';
 
         $builder = $this->studentsModel->builder()
-            ->select('students.id, students.firstname, students.gender, students.middlename, students.lastname, students.roll_no, 
+            ->select('students.id, students.firstname, students.gender, students.status, students.middlename, students.lastname, students.roll_no, 
                       students.related_class, students.related_section, students.student_email, 
                       students.student_contact_no, students.profile_image, students.blood_group,
                       c.class_name, s.section_label')
@@ -615,6 +615,8 @@ class SISController extends BaseController
                                     data-section="'.$row->related_section.'" 
                                     data-email="'.$row->student_email.'" 
                                     data-contact="'.$row->student_contact_no.'" 
+                                    data-status="'.$row->status.'" 
+                                    data-gender="'.$row->gender.'" 
                                     class="edit-student-js bg-warning-50 text-warning-600 py-2 px-14 rounded-pill">
                                         Edit
                                     </button>

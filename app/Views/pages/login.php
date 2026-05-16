@@ -73,6 +73,9 @@
                     <small class="text-muted">Developed By</small>
                     <img class="max-w-100" src="<?=base_url()?>assets/images/logo/logo-echo.png" alt="">
                 </div>
+                <p class="text-center" style="font-size: 12px;">
+                    <a href="<?= base_url('privacy-policy') ?>">Privacy Policy</a>
+                </p>
             </form>
         </div>
     </div>
