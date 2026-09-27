@@ -76,9 +76,7 @@ $sd = $studentData; // shorthand
         <ul class="flex-align gap-4">
             <li><a href="dashboard" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a></li>
             <li><span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span></li>
-            <li><a href="profile" class="text-gray-200 fw-normal text-15 hover-text-main-600">Students</a></li>
-            <li><span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span></li>
-            <li><span class="text-main-600 fw-normal text-15">Student Details</span></li>
+            <li><span class="text-main-600 fw-normal text-15">My Profile</span></li>
         </ul>
     </div>
 
@@ -815,8 +813,6 @@ $sd = $studentData; // shorthand
 
 </div><!-- /.dashboard-body -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(function () {
     // ── Cover image preview ────────────────────────────────────────────────

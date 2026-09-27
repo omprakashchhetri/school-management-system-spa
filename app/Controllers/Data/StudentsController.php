@@ -848,9 +848,15 @@ class StudentsController extends BaseController
     {
         $rows = $this->getStudentMarksByExam($studentId);
 
+        $examFilter = $this->request->getGet('exam_id');
+
         $list = [];
 
         foreach($rows as $examId=>$exam){
+
+            if ($examFilter && $examFilter !== 'all' && (string) $examId !== (string) $examFilter) {
+                continue;
+            }
 
             $list[] = [
                 'exam_id'=>$examId,
