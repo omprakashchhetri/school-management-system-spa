@@ -1,8 +1,7 @@
 <!-- Page Main Wrapper -->
 <div id="app"></div>
 
-<!-- Bootstrap Bundle Js -->
-<script src="<?= base_url() ?>assets/js/boostrap.bundle.min.js"></script>
+<!-- Bootstrap Bundle Js is already loaded once by templates/header-student -->
 <!-- Phosphor Js -->
 <script src="<?= base_url() ?>assets/js/phosphor-icon.js"></script>
 <!-- File Upload -->
