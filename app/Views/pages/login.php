@@ -33,10 +33,10 @@
                     </div>
                 </div>
                 <div class="mb-24">
-                    <label for="email" class="form-id-label form-label mb-8 h6">Student Id</label>
+                    <label for="email" class="form-id-label form-label mb-8 h6">Email or Contact Number</label>
                     <div class="position-relative">
                         <input type="text" name="email" class="form-control py-11 ps-40" id="email"
-                            placeholder="Type your username" required>
+                            placeholder="Enter your email or contact number" required>
                         <span class="position-absolute top-50 translate-middle-y ms-16 text-gray-600 d-flex"><i
                                 class="ph ph-user"></i></span>
                     </div>

@@ -1,19 +1,6 @@
 jQuery(document).ready(function () {
   var baseUrl = jQuery("#baseUrl").val();
   var storage = window.localStorage;
-  function updateRoleUI() {
-    let selected = $('input[name="type"]:checked').val();
-    console.log(selected);
-    if (selected === "student") {
-      jQuery(".form-id-label").text("Student Id");
-    } else {
-      jQuery(".form-id-label").text("Teacher Id");
-    }
-  }
-
-  // Listen for changes on the radio buttons
-  jQuery('input[name="type"]').on("change", updateRoleUI);
-
   function showLoginError(message) {
     if (typeof Swal !== "undefined") {
       Swal.fire({
@@ -27,8 +14,6 @@ jQuery(document).ready(function () {
     }
   }
 
-  // Initialize on page load
-  updateRoleUI();
   jQuery("#loginForm").on("submit", function (e) {
     e.preventDefault();
     var type = $("input[name='type']:checked").val();
@@ -54,31 +39,42 @@ jQuery(document).ready(function () {
 
         const token = response.token;
         const loginType = type.trim();
+        const remember = jQuery("#remember").is(":checked");
 
         /* -----------------------------------------
 				   1. Store token in localStorage (primary for SPA)
+				   Only when "Remember Me" is checked — localStorage
+				   never expires on its own, so writing it unconditionally
+				   would keep the session alive after the browser closes
+				   regardless of the checkbox.
 				----------------------------------------- */
-        try {
-          localStorage.setItem("authToken", token);
-          localStorage.setItem("loginType", loginType);
-        } catch (e) {
-          console.warn("localStorage unavailable", e);
+        if (remember) {
+          try {
+            localStorage.setItem("authToken", token);
+            localStorage.setItem("loginType", loginType);
+          } catch (e) {
+            console.warn("localStorage unavailable", e);
+          }
+        } else {
+          try {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("loginType");
+          } catch (e) {
+            console.warn("localStorage unavailable", e);
+          }
         }
 
         /* -----------------------------------------
 				   2. Store token in cookie (browser reload fallback)
+				   Remembered → persists 7 days. Not remembered → a
+				   session cookie that clears when the browser closes.
 				----------------------------------------- */
-        Cookies.set("authToken", token, {
-          expires: 7, // 🔑 persistent
-          path: "/",
-          sameSite: "Lax",
-        });
+        const cookieOptions = remember
+          ? { expires: 7, path: "/", sameSite: "Lax" }
+          : { path: "/", sameSite: "Lax" };
 
-        Cookies.set("loginType", loginType, {
-          expires: 7,
-          path: "/",
-          sameSite: "Lax",
-        });
+        Cookies.set("authToken", token, cookieOptions);
+        Cookies.set("loginType", loginType, cookieOptions);
 
         /* -----------------------------------------
 				   3. VERIFY persistence (important!)

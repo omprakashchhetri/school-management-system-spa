@@ -69,6 +69,56 @@ final class AuthLoginTest extends CIUnitTestCase
         $this->assertArrayNotHasKey('token', $json);
     }
 
+    public function testLoginFailsWithMissingCredentials(): void
+    {
+        $result = $this->withBodyFormat('form')->post('api/login', [
+            'email'    => '',
+            'password' => '',
+            'type'     => 'student',
+        ]);
+
+        $result->assertOK();
+        $json = json_decode($result->response()->getBody(), true);
+
+        $this->assertSame(0, $json['status']);
+        $this->assertSame('Please enter your email/ID and password.', $json['message']);
+    }
+
+    public function testLoginFailsWithInvalidType(): void
+    {
+        $result = $this->withBodyFormat('form')->post('api/login', [
+            'email'    => 'admin@example.test',
+            'password' => 'DemoPass!123',
+            'type'     => 'bogus',
+        ]);
+
+        $result->assertOK();
+        $json = json_decode($result->response()->getBody(), true);
+
+        $this->assertSame(0, $json['status']);
+        $this->assertArrayNotHasKey('token', $json);
+    }
+
+    public function testSuspendedStudentCannotLogIn(): void
+    {
+        $studentsModel = model('StudentsModel');
+        $student       = $studentsModel->where('student_email', 'student@example.test')->first();
+        $studentsModel->update($student['id'], ['status' => 'Suspended']);
+
+        $result = $this->withBodyFormat('form')->post('api/login', [
+            'email'    => 'student@example.test',
+            'password' => 'DemoPass!123',
+            'type'     => 'student',
+        ]);
+
+        $result->assertOK();
+        $json = json_decode($result->response()->getBody(), true);
+
+        $this->assertSame(0, $json['status']);
+        $this->assertArrayNotHasKey('token', $json);
+        $this->assertStringContainsString('inactive', $json['message']);
+    }
+
     public function testProtectedRouteRejectsRequestWithoutToken(): void
     {
         $result = $this->post('post-login-employee/admin/dashboard');

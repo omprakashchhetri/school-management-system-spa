@@ -26,7 +26,7 @@ class EmployeesController extends BaseController
         if (!$employeeDetails || !$this->verifyAndUpgradePassword($password, $employeeDetails, $this->employeesModel)) {
             return json_encode([
                 'status'  => 0,
-                'message' => 'Account Not Found',
+                'message' => 'Invalid email/contact number or password.',
             ]);
         }
     

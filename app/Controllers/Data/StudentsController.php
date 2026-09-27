@@ -38,7 +38,15 @@ class StudentsController extends BaseController
         if (!$studentDetails || !$this->verifyAndUpgradePassword($studentPassword, $studentDetails, $this->studentsModel)) {
             return json_encode([
                 'status'  => 0,
-                'message' => 'Account Not Found',
+                'message' => 'Invalid email/contact number or password.',
+            ]);
+        }
+
+        $inactiveStatuses = ['Suspended', 'Dropped Out', 'Transferred', 'Terminated', 'Archived'];
+        if (in_array($studentDetails['status'] ?? '', $inactiveStatuses, true)) {
+            return json_encode([
+                'status'  => 0,
+                'message' => 'Your account is inactive. Please contact the school administration.',
             ]);
         }
 
