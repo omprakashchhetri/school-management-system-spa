@@ -610,17 +610,20 @@ $sd = $studentData; // shorthand
                                 </td>
                                 <td>
                                     <?php if ($asn['status'] === 'submitted'): ?>
-                                        <button class="btn btn-info py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-eye me-4"></i>View
-                                        </button>
+                                        </a>
                                     <?php elseif ($asn['status'] === 'overdue'): ?>
-                                        <button class="btn btn-danger py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-danger py-4 px-10 text-13">
                                             <i class="ph ph-upload me-4"></i>Submit Now
-                                        </button>
+                                        </a>
                                     <?php else: ?>
-                                        <button class="btn btn-main py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-main py-4 px-10 text-13">
                                             <i class="ph ph-upload me-4"></i>Submit
-                                        </button>
+                                        </a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -671,9 +674,10 @@ $sd = $studentData; // shorthand
                                         </span>
                                         <?php endif; ?>
                                     </div>
-                                    <button class="btn btn-outline-main rounded-pill py-6 px-12 text-13">
-                                        <i class="ph ph-download me-6"></i>Download Marksheet
-                                    </button>
+                                    <a href="<?= base_url('post-login-student/marksheet/' . $examId) ?>"
+                                        class="btn btn-outline-main rounded-pill py-6 px-12 text-13">
+                                        <i class="ph ph-eye me-6"></i>View Marksheet
+                                    </a>
                                 </div>
                             </div>
 

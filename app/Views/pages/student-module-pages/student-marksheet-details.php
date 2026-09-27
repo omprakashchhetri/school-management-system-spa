@@ -53,10 +53,6 @@ $profileImg = !empty($sd['profile_image'])
                 <i class="ph ph-printer"></i> Print
             </button>
 
-            <button class="btn bg-main-50 text-main-600 py-2 px-14 rounded-pill">
-                <i class="ph ph-download-simple"></i> PDF
-            </button>
-
         </div>
 
     </div>
