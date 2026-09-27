@@ -43,7 +43,8 @@ class StudentModuleController extends BaseController
             fn ($row) => $row['day'] === $today
         ));
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-dashboard', [
                 'studentData' => $studentData,
@@ -96,7 +97,8 @@ class StudentModuleController extends BaseController
         // ── Documents ─────────────────────────────────────────────────────
         $documents = $this->studentsController->getStudentDocuments($studentId, 10);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-details', [
                 'studentData' => $studentData,
@@ -183,7 +185,8 @@ class StudentModuleController extends BaseController
 
         $summary = $this->studentsController->getStudentAttendanceSummary($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-attendance-list', [
                 'attendance' => $attendance,
@@ -207,7 +210,8 @@ class StudentModuleController extends BaseController
 
         $documentStats = $this->studentsController->getStudentDocumentStats($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/document-list', [
                 'documents' => $documents,
@@ -254,7 +258,8 @@ class StudentModuleController extends BaseController
         $subjects = $this->studentsController
             ->getAssignmentSubjects($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-assignment-list', [
                 'assignments' => $assignments,
@@ -284,7 +289,8 @@ class StudentModuleController extends BaseController
             return redirect()->to('post-login-student/assignments');
         }
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-assignment-details', [
                 'assignment' => $assignment
@@ -324,7 +330,8 @@ class StudentModuleController extends BaseController
 
         $subjects = $this->studentsController->getStudentSubjects($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/subject-list', [
                 'subjects' => $subjects
@@ -351,7 +358,8 @@ class StudentModuleController extends BaseController
         $stats = $this->studentsController
             ->getStudentFeeStats($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-fee-list',[
                 'fees'=>$fees,
@@ -372,7 +380,8 @@ class StudentModuleController extends BaseController
         $stats = $this->studentsController
             ->getStudentMarksheetStats($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-marksheet-list',[
                 'marksheets'=>$marksheets,
@@ -401,7 +410,8 @@ class StudentModuleController extends BaseController
 
         $attendanceSummary = $this->studentsController->getStudentAttendanceSummary($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-marksheet-details', [
                 'studentData' => $studentData,
@@ -428,7 +438,8 @@ class StudentModuleController extends BaseController
 
         $schedule = $this->studentsController->getStudentSchedule($studentId);
 
-        return view('templates/sidebar-student')
+        return view('templates/header-student')
+            . view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/schedule', [
                 'schedule' => $schedule
