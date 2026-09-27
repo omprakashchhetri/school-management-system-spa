@@ -31,7 +31,6 @@ $routes->post('api/login', 'Web\Auth::index');
 // For student type
 $routes->group('post-login-student', function ($routes) {
     $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
-    $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('profile', 'Web\StudentModulePages\StudentModuleController::profile');
     $routes->post('attendance', 'Web\StudentModulePages\StudentModuleController::attendance');
