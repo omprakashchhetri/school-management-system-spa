@@ -26,7 +26,7 @@ $currentFilter = $request->getGet('fee_status') ?? 'all';
         <div class="breadcrumb mb-0">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="<?= base_url('student/dashboard') ?>"
+                    <a href="<?= base_url('post-login-student/dashboard') ?>"
                        class="text-gray-200 fw-normal text-15 hover-text-main-600">
                         Home
                     </a>

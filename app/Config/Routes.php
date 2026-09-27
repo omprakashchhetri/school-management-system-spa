@@ -37,6 +37,7 @@ $routes->group('post-login-student', function ($routes) {
     $routes->post('attendance', 'Web\StudentModulePages\StudentModuleController::attendance');
     $routes->post('assignments', 'Web\StudentModulePages\StudentModuleController::assignments');
     $routes->post('assignment/(:num)', 'Web\StudentModulePages\StudentModuleController::assignment/$1');
+    $routes->post('assignment-submit/(:num)', 'Web\StudentModulePages\StudentModuleController::assignment_submit/$1');
     $routes->post('fees', 'Web\StudentModulePages\StudentModuleController::fees');
     $routes->post('marksheets', 'Web\StudentModulePages\StudentModuleController::marksheets');
     $routes->post('marksheet/(:num)', 'Web\StudentModulePages\StudentModuleController::marksheet/$1');

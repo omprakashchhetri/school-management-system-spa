@@ -502,6 +502,75 @@ class StudentsController extends BaseController
             ->getRowArray();
     }
 
+    /**
+     * Stores the uploaded answer file for one assignment/student pair.
+     * Blocked if the student already has a submission for this
+     * assignment — matches the "Assignment Submitted" read-only view in
+     * student-assignment-details.php, which only shows the upload form
+     * when there's no existing submission.
+     */
+    public function submitAssignment($assignmentId, $studentId, $request)
+    {
+        $assignment = $this->db->table('assignments')
+            ->where('id', $assignmentId)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        if (!$assignment) {
+            return ['error' => 'Assignment not found'];
+        }
+
+        $existing = $this->db->table('assignment_submissions')
+            ->where('related_assignment', $assignmentId)
+            ->where('related_student', $studentId)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        if ($existing) {
+            return ['error' => 'You have already submitted this assignment'];
+        }
+
+        $validationRule = [
+            'assignment_file' => [
+                'label' => 'Answer File',
+                'rules' => 'uploaded[assignment_file]'
+                    . '|ext_in[assignment_file,pdf,doc,docx,jpg,jpeg,png]'
+                    . '|max_size[assignment_file,5120]',
+            ],
+        ];
+
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules($validationRule)->withRequest($request)->run()) {
+            return ['error' => implode(' ', $validation->getErrors())];
+        }
+
+        $file = $request->getFile('assignment_file');
+
+        if (!$file || !$file->isValid()) {
+            return ['error' => 'Invalid file upload'];
+        }
+
+        $newName   = 'submission_' . $assignmentId . '_' . $studentId . '_' . time() . '.' . $file->getExtension();
+        $uploadPath = FCPATH . 'uploads/assignments/';
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $file->move($uploadPath, $newName);
+
+        $this->db->table('assignment_submissions')->insert([
+            'related_assignment' => $assignmentId,
+            'related_student'    => $studentId,
+            'upload_answers'     => $newName,
+        ]);
+
+        return ['success' => true];
+    }
+
     // ─────────────────────────────────────────────
     //  MARKS  (flat list – for simple marks page)
     // ─────────────────────────────────────────────

@@ -35,9 +35,15 @@ function assignmentStatusBadge($status)
 $fileUrl = !empty($assignment['upload_answers'])
     ? base_url('uploads/assignments/' . $assignment['upload_answers'])
     : null;
+
+$submitError = service('request')->getGet('submit_error');
 ?>
 
 <div class="dashboard-body">
+
+    <?php if ($submitError): ?>
+        <div class="alert alert-danger mb-24"><?= esc($submitError) ?></div>
+    <?php endif; ?>
 
     <!-- Breadcrumb -->
 
@@ -46,7 +52,7 @@ $fileUrl = !empty($assignment['upload_answers'])
         <ul class="flex-align gap-4">
 
             <li>
-                <a href="<?= base_url('student/dashboard') ?>"
+                <a href="<?= base_url('post-login-student/dashboard') ?>"
                     class="text-gray-200 fw-normal text-15 hover-text-main-600">
                     Home
                 </a>
@@ -59,7 +65,7 @@ $fileUrl = !empty($assignment['upload_answers'])
             </li>
 
             <li>
-                <a href="<?= base_url('student/assignments') ?>"
+                <a href="<?= base_url('post-login-student/assignments') ?>"
                     class="text-gray-200 fw-normal text-15 hover-text-main-600">
                     Assignments
                 </a>
@@ -223,7 +229,7 @@ $fileUrl = !empty($assignment['upload_answers'])
 
                     <?php else: ?>
 
-                        <form action="<?= base_url('student/assignment-submit/' . $assignment['id']) ?>" method="POST"
+                        <form action="<?= base_url('post-login-student/assignment-submit/' . $assignment['id']) ?>" method="POST"
                             enctype="multipart/form-data">
 
                             <?= csrf_field() ?>

@@ -44,7 +44,7 @@ $rejected = $stats['rejected'] ?? 0;
         <div class="breadcrumb mb-0">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="<?= base_url('student/dashboard') ?>"
+                    <a href="<?= base_url('post-login-student/dashboard') ?>"
                        class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
                 </li>
                 <li><span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span></li>
@@ -250,7 +250,7 @@ $rejected = $stats['rejected'] ?? 0;
                 <h5 class="modal-title">Upload Document</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="<?= base_url('student/documents/upload') ?>" method="POST"
+            <form action="<?= base_url('post-login-student/documents/upload') ?>" method="POST"
                   enctype="multipart/form-data">
                 <?= csrf_field() ?>
                 <div class="modal-body">

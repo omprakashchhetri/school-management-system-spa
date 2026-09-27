@@ -284,6 +284,23 @@ class StudentModuleController extends BaseController
             . view('templates/footer-student');
     }
 
+    public function assignment_submit($assignmentId): ResponseInterface
+    {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $result = $this->studentsController->submitAssignment($assignmentId, $studentId, $this->request);
+
+        if (!empty($result['error'])) {
+            return redirect()->to('post-login-student/assignment/' . $assignmentId . '?submit_error=' . rawurlencode($result['error']));
+        }
+
+        return redirect()->to('post-login-student/assignment/' . $assignmentId);
+    }
+
 
     // ─────────────────────────────────────────────
     // SUBJECT LIST
