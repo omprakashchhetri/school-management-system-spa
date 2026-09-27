@@ -66,12 +66,16 @@ $rejected = $stats['rejected'] ?? 0;
             </div>
 
             <!-- Upload button -->
-            <!-- <button class="btn btn-main rounded-pill py-9 px-20 text-14"
+            <button type="button" class="btn btn-main rounded-pill py-9 px-20 text-14"
                     data-bs-toggle="modal" data-bs-target="#uploadDocModal">
                 <i class="ph ph-upload me-6"></i>Upload Document
-            </button> -->
+            </button>
         </div>
     </div>
+
+    <?php if ($uploadError = service('request')->getGet('upload_error')): ?>
+        <div class="alert alert-danger mb-24"><?= esc($uploadError) ?></div>
+    <?php endif; ?>
 
     <!-- ── Summary Cards ─────────────────────────────────────────── -->
     <div class="row gy-4 mb-24">

@@ -42,6 +42,7 @@ $routes->group('post-login-student', function ($routes) {
     $routes->post('marksheets', 'Web\StudentModulePages\StudentModuleController::marksheets');
     $routes->post('marksheet/(:num)', 'Web\StudentModulePages\StudentModuleController::marksheet/$1');
     $routes->post('documents', 'Web\StudentModulePages\StudentModuleController::document_list');
+    $routes->post('documents/upload', 'Web\StudentModulePages\StudentModuleController::document_upload');
     $routes->post('subjects', 'Web\StudentModulePages\StudentModuleController::subjects');
     $routes->post('schedule', 'Web\StudentModulePages\StudentModuleController::schedule');
 });

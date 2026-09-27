@@ -223,6 +223,23 @@ class StudentModuleController extends BaseController
             . view('templates/footer-student');
     }
 
+    public function document_upload(): ResponseInterface
+    {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $result = $this->studentsController->uploadStudentDocument($studentId, $this->request);
+
+        if (!empty($result['error'])) {
+            return redirect()->to('post-login-student/documents?upload_error=' . rawurlencode($result['error']));
+        }
+
+        return redirect()->to('post-login-student/documents');
+    }
+
     // ─────────────────────────────────────────────
     // ASSIGNMENT LIST PAGE
     // ─────────────────────────────────────────────

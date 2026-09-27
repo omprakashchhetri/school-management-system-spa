@@ -714,6 +714,58 @@ class StudentsController extends BaseController
         return $this->paginate($builder, $perPage, 'documents_page');
     }
 
+    /**
+     * Stores a self-uploaded document for the student (starts 'pending'
+     * until staff verify it) — mirrors AdmissionController::uploadStudentProfileImage()'s
+     * validation/move pattern.
+     */
+    public function uploadStudentDocument($studentId, $request)
+    {
+        $validationRule = [
+            'document_name' => [
+                'label' => 'Document Name',
+                'rules' => 'required|max_length[255]',
+            ],
+            'document_file' => [
+                'label' => 'File',
+                'rules' => 'uploaded[document_file]'
+                    . '|ext_in[document_file,pdf,doc,docx,jpg,jpeg,png]'
+                    . '|max_size[document_file,5120]',
+            ],
+        ];
+
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules($validationRule)->withRequest($request)->run()) {
+            return ['error' => implode(' ', $validation->getErrors())];
+        }
+
+        $file = $request->getFile('document_file');
+
+        if (!$file || !$file->isValid()) {
+            return ['error' => 'Invalid file upload'];
+        }
+
+        $newName    = 'document_' . $studentId . '_' . time() . '.' . $file->getExtension();
+        $uploadPath = FCPATH . 'uploads/documents/';
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $file->move($uploadPath, $newName);
+
+        $this->db->table('documents')->insert([
+            'document_name' => $request->getPost('document_name'),
+            'document_type' => $request->getPost('document_type'),
+            'status'        => 'pending',
+            'file'          => $newName,
+            'related_student' => $studentId,
+        ]);
+
+        return ['success' => true];
+    }
+
     // ─────────────────────────────────────────────
     //  PRIVATE HELPERS
     // ─────────────────────────────────────────────
