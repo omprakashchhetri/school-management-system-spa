@@ -15,12 +15,46 @@ class StudentModuleController extends BaseController
         $this->studentsController = new StudentsController();
     }
 
-    public function dashboard(): string
+    public function dashboard(): string|ResponseInterface
     {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $studentData = $this->studentsController->getStudentById($studentId);
+
+        if (empty($studentData)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $attendanceSummary = $this->studentsController->getStudentAttendanceSummary($studentId);
+        $attendanceMonthly = $this->studentsController->getStudentAttendanceMonthly($studentId, 6);
+
+        $assignments     = $this->studentsController->getStudentAssignments($studentId, 5);
+        $assignmentStats = $this->studentsController->getStudentAssignmentStats($studentId);
+
+        $feeStats = $this->studentsController->getStudentFeeStats($studentId);
+
+        $today         = date('l');
+        $todaySchedule = array_values(array_filter(
+            $this->studentsController->getStudentSchedule($studentId),
+            fn ($row) => $row['day'] === $today
+        ));
+
         return view('templates/header-student')
             . view('templates/sidebar-student')
             . view('templates/topbar-student')
-            . view('pages/student-module-pages/student-dashboard')
+            . view('pages/student-module-pages/student-dashboard', [
+                'studentData' => $studentData,
+                'attendanceSummary' => $attendanceSummary,
+                'attendanceMonthly' => $attendanceMonthly,
+                'assignments' => $assignments,
+                'assignmentStats' => $assignmentStats,
+                'feeStats' => $feeStats,
+                'todaySchedule' => $todaySchedule,
+            ])
             . view('templates/footer-student');
     }
 

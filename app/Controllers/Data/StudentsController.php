@@ -149,6 +149,53 @@ class StudentsController extends BaseController
         ];
     }
 
+    /**
+     * Present/absent counts per month for the last N months, for the
+     * dashboard's attendance trend chart. Mirrors the admin dashboard's
+     * feesChartLastSixMonths() month-bucketing approach.
+     */
+    public function getStudentAttendanceMonthly($studentId, $months = 6)
+    {
+        $buckets = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $buckets[] = date('Y-m', strtotime("-{$i} months"));
+        }
+
+        $rows = $this->db->table('student_attendance')
+            ->select("DATE_FORMAT(date, '%Y-%m') AS ym, status, COUNT(*) AS total", false)
+            ->where('student_id', $studentId)
+            ->where('deleted_at', null)
+            ->where('date >=', date('Y-m-01', strtotime('-' . ($months - 1) . ' months')))
+            ->groupBy('ym, status')
+            ->get()
+            ->getResultArray();
+
+        $present = array_fill_keys($buckets, 0);
+        $absent  = array_fill_keys($buckets, 0);
+
+        foreach ($rows as $row) {
+            if (!isset($present[$row['ym']])) {
+                continue;
+            }
+            if ($row['status'] === 'present') {
+                $present[$row['ym']] = (int) $row['total'];
+            } elseif ($row['status'] === 'absent') {
+                $absent[$row['ym']] = (int) $row['total'];
+            }
+        }
+
+        $categories = [];
+        foreach ($buckets as $ym) {
+            $categories[] = date('M', strtotime($ym . '-01'));
+        }
+
+        return [
+            'categories' => $categories,
+            'present'    => array_values($present),
+            'absent'     => array_values($absent),
+        ];
+    }
+
     // ─────────────────────────────────────────────
     //  FEES
     // ─────────────────────────────────────────────
