@@ -204,14 +204,11 @@ class StudentModuleController extends BaseController
 
         $studentId = (int) $this->request->user->id;
 
-        $studentsController = new \App\Controllers\Data\StudentsController();
-
         $sort = $this->request->getGet('doc_sort') ?? 'latest';
 
-        $documents = $studentsController->getStudentDocuments($studentId, 10, $sort);
+        $documents = $this->studentsController->getStudentDocuments($studentId, 10, $sort);
 
-        // NEW
-        $documentStats = $studentsController->getStudentDocumentStats($studentId);
+        $documentStats = $this->studentsController->getStudentDocumentStats($studentId);
 
         return view('templates/header-student')
             . view('templates/sidebar-student')
