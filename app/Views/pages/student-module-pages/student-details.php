@@ -372,12 +372,16 @@ $sd = $studentData; // shorthand
                                     <?= date('d M Y', strtotime($fee['created_at'])) ?>
                                 </td>
                                 <td>
-                                    <?php if (strtolower($status) === 'paid'): ?>
-                                        <button class="btn btn-info btn-sm py-4 px-10">
+                                    <?php if ($status === 'paid' && !empty($fee['payment_id'])): ?>
+                                        <a href="<?= base_url('fees/receipt/' . $fee['payment_id']) ?>" target="_blank"
+                                            class="btn btn-info btn-sm py-4 px-10">
                                             <i class="ph ph-download me-4"></i>Receipt
-                                        </button>
+                                        </a>
+                                    <?php elseif ($status === 'paid'): ?>
+                                        <span class="text-13 text-gray-400">Paid</span>
                                     <?php else: ?>
-                                        <button class="btn btn-main btn-sm py-4 px-10">
+                                        <button type="button" class="btn btn-main btn-sm py-4 px-10" disabled
+                                            title="Online payment isn't available yet — please pay at the school office.">
                                             <i class="ph ph-credit-card me-4"></i>Pay Now
                                         </button>
                                     <?php endif; ?>

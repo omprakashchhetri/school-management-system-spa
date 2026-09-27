@@ -228,7 +228,9 @@ class StudentsController extends BaseController
                     - IFNULL(st.discount,0)
                 )
                 - IFNULL(SUM(fa.amount),0)
-            ) AS due_amount
+            ) AS due_amount,
+
+            MAX(fa.related_payment) AS payment_id
         ");
 
         $builder->join('fees_allocation fa', 'fa.related_generated_fee = fg.id', 'left');
