@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "school-management-system-spa",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["spark", "serve", "--host", "localhost", "--port", "8080"],
+      "port": 8080
+    }
+  ]
+}

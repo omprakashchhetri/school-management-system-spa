@@ -647,6 +647,7 @@
         function bindGlobalEventListeners() {
             $(document).off("click", "#logoutBtn");
             $(document).off("click", "a.nav_js, .nav_js");
+            $(document).off("shown.bs.tab", '[data-bs-toggle="tab"], [data-bs-toggle="pill"]');
 
             $(document).on("click", "#logoutBtn", function (e) {
                 e.preventDefault();
@@ -661,6 +662,25 @@
                     if (route === "/") route = "";
                     navigateTo(route);
                 }
+            });
+
+            // A DataTable initialized while its Bootstrap tab/pill pane is still
+            // hidden (display:none) measures a near-zero container width and
+            // locks that in permanently (most visibly with `responsive: true`).
+            // Re-measure any DataTable inside a pane as soon as it's actually shown.
+            $(document).on("shown.bs.tab", '[data-bs-toggle="tab"], [data-bs-toggle="pill"]', function (e) {
+                const target = $(e.target).attr("data-bs-target") || $(e.target).attr("href");
+                if (!target) return;
+
+                $(target).find("table.dataTable").each(function () {
+                    if ($.fn.DataTable.isDataTable(this)) {
+                        const table = $(this).DataTable();
+                        table.columns.adjust();
+                        if (table.responsive && typeof table.responsive.recalc === 'function') {
+                            table.responsive.recalc();
+                        }
+                    }
+                });
             });
         }
 

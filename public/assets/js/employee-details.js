@@ -25,6 +25,20 @@ $(document).ready(function () {
   $(document).off("click", "#updateSubjectAllocationBtn");
   $(document).off("click", ".delete-subject-allocation-js");
 
+  // Dropdowns inside the (horizontally scrollable) documents table get
+  // clipped invisible by that scroll container even though Bootstrap still
+  // toggles them open — force Popper's "fixed" strategy so they render
+  // above the clipping container instead of inside it.
+  document.querySelectorAll('[data-bs-toggle="dropdown"][data-bs-strategy="fixed"]').forEach(function (el) {
+    if (!bootstrap.Dropdown.getInstance(el)) {
+      new bootstrap.Dropdown(el, {
+        popperConfig: function (defaultConfig) {
+          return Object.assign({}, defaultConfig, { strategy: "fixed" });
+        },
+      });
+    }
+  });
+
   // Profile Image Upload
   $("#profileImageUpload").on("change", function (e) {
     const file = e.target.files[0];

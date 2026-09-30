@@ -550,7 +550,8 @@ $profileImage = !empty($employee['profile_image'])
                                         </a>
                                         <div class="dropdown">
                                             <button class="btn btn-outline-main py-6 px-12 text-13 dropdown-toggle"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                type="button" data-bs-toggle="dropdown" data-bs-strategy="fixed"
+                                                aria-expanded="false">
                                                 Status
                                             </button>
                                             <ul class="dropdown-menu">
