@@ -486,9 +486,11 @@ $(document).ready(function () {
   });
 
   // Delete Document (using event delegation)
+  // The admin page renders documents as <tr data-document-id>, the
+  // employee profile page as <div data-document-id> cards — match both.
   $(document).on("click", ".delete-document-js", function () {
     const documentId = $(this).data("document-id");
-    const row = $('tr[data-document-id="' + documentId + '"]');
+    const row = $('[data-document-id="' + documentId + '"]');
 
     Swal.fire({
       title: "Are you sure?",
@@ -515,7 +517,7 @@ $(document).ready(function () {
               }).then(() => {
                 row.fadeOut(300, function () {
                   $(this).remove();
-                  if ($("#documentsTable tbody tr").length === 0) {
+                  if ($("[data-document-id]").length === 0) {
                     navigateTo(route, false);
                   }
                 });

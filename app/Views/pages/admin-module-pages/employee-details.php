@@ -3,8 +3,6 @@ $employee = $employeeDetails['employee'] ?? null;
 $subjectAllocations = $employeeDetails['subject_allocations'] ?? [];
 $classTeacherAssignments = $employeeDetails['class_teacher_assignments'] ?? [];
 $documents = $employeeDetails['documents'] ?? [];
-$attendanceRecords = $employeeDetails['attendance_records'] ?? [];
-$attendanceStats = $employeeDetails['attendance_stats'] ?? [];
 
 if (!$employee) {
     echo '<div class="alert alert-danger">Employee not found</div>';

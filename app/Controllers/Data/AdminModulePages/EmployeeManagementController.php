@@ -10,7 +10,6 @@ class EmployeeManagementController extends BaseController
     protected $subjectAllocationsModel;
     protected $classTeachersModel;
     protected $documentsModel;
-    protected $attendanceRecordsModel;
     protected $classesModel;
     protected $sectionsModel;
     protected $subjectsModel;
@@ -21,7 +20,6 @@ class EmployeeManagementController extends BaseController
         $this->subjectAllocationsModel = model('SubjectAllocationsModel');
         $this->classTeachersModel = model('ClassTeachersModel');
         $this->documentsModel = model('DocumentsModel');
-        $this->attendanceRecordsModel = model('AttendanceRecordsModel');
         $this->classesModel = model('ClassesModel');
         $this->sectionsModel = model('SectionsModel');
         $this->subjectsModel = model('SubjectsModel');
@@ -218,35 +216,11 @@ class EmployeeManagementController extends BaseController
             ->get()
             ->getResultArray();
 
-        // Get recent attendance records (last 30 days)
-        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        $attendanceRecords = $this->attendanceRecordsModel->builder()
-            ->select('attendance_records.*, c.class_name, s.section_label')
-            ->join('classes c', 'c.id = attendance_records.class_id', 'left')
-            ->join('sections s', 's.id = attendance_records.section_id', 'left')
-            ->where('attendance_records.taken_by', $employeeId)
-            ->where('attendance_records.date >=', $thirtyDaysAgo)
-            ->where('attendance_records.deleted_at', null)
-            ->orderBy('attendance_records.date', 'DESC')
-            ->limit(10)
-            ->get()
-            ->getResultArray();
-
-        // Calculate attendance statistics (mock for now - you can enhance this)
-        $attendanceStats = [
-            'present_days' => 22,
-            'absent_days' => 2,
-            'late_arrivals' => 1,
-            'attendance_rate' => 92
-        ];
-
         return [
             'employee' => $employee,
             'subject_allocations' => $subjectAllocations,
             'class_teacher_assignments' => $classTeacherAssignments,
             'documents' => $documents,
-            'attendance_records' => $attendanceRecords,
-            'attendance_stats' => $attendanceStats
         ];
     }
 
