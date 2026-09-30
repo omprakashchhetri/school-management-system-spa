@@ -10,7 +10,7 @@
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
                 </li>
                 <li>
-                    <span class="text-main-600 fw-normal text-15">Assignments</span>
+                    <span class="text-main-600 fw-normal text-15">Employees</span>
                 </li>
             </ul>
         </div>
@@ -46,37 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="fixed-width">
-                            <div class="form-check">
-                                <input class="form-check-input border-gray-200 rounded-4" type="checkbox" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="flex-align gap-8 nav_js" data-route="admin/employee-details/123">
-                                <img src="<?= base_url() ?>assets/images/thumbs/student-img1.png" alt=""
-                                    class="w-40 h-40 rounded-circle" />
-                                <span class="h6 mb-0 fw-medium text-gray-300">Jane Cooper</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">email@test.com</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">9876543210</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Teacher</span>
-                        </td>
-                        <td>
-                            <span class="h6 mb-0 fw-medium text-gray-300">Nov 18, 2024</span>
-                        </td>
-                        <td>
-                            <a href="assignment.html#"
-                                class="bg-main-50 text-main-600 py-2 px-14 rounded-pill hover-bg-main-600 hover-text-white">View
-                                More</a>
-                        </td>
-                    </tr>
+                    <!-- Rows are rendered client-side by employee-list.js (DataTables server-side processing). -->
                 </tbody>
             </table>
         </div>

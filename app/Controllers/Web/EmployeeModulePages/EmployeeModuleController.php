@@ -27,21 +27,15 @@ class EmployeeModuleController extends BaseController
     }
     
     public function list() {
-         
-        // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+
+        $roles = $this->adminRoleManagementController->getListOfRoles();
+
         return view('templates/sidebar-employee')
             .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-list')
+            .  view('pages/employee-module-pages/employee-list', ['roles' => $roles])
         ;
     }
 
-    public function employee_add_edit() {
-        return view('templates/sidebar-employee')
-            .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-list')
-        ;
-    }
-    
     public function employee_profile()
     {
         // Get employee ID from the authenticated user object

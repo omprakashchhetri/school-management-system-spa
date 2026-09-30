@@ -122,7 +122,6 @@ $routes->group('post-login-employee', function ($routes) {
         $routes->post('dashboard', 'Web\EmployeeModulePages\EmployeeModuleController::dashboard');
         $routes->post('list', 'Web\EmployeeModulePages\EmployeeModuleController::list');
         $routes->post('profile', 'Web\EmployeeModulePages\EmployeeModuleController::employee_profile');
-        $routes->post('add-edit', 'Web\EmployeeModulePages\EmployeeModuleController::add_edit');
     });
 
     $routes->group('academic', function ($routes) {

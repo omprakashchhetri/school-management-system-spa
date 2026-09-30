@@ -87,36 +87,36 @@ class EmployeeManagementController extends BaseController
         $data = [];
         foreach ($records as $row) {
             $fullName = trim($row->firstname . ' ' . $row->lastname);
-            $photo = !empty($row->profile_image) 
-                ? base_url('uploads/employees/'.$row->profile_image) 
+            $photo = !empty($row->profile_image)
+                ? base_url('uploads/employees/'.$row->profile_image)
                 : base_url('assets/images/thumbs/student-img1.png');
 
             $data[] = [
-                'checkbox'   => '<input type="checkbox" value="'.$row->id.'" class="form-check-input">',
-                'name'       => '<div class="flex-align gap-8 nav_js" data-route="admin/employee-details/'.$row->id.'">
-                                    <img src="'.$photo.'" alt="" class="w-40 h-40 rounded-circle" />
-                                    <span class="h6 mb-0 fw-medium text-gray-300">'.$fullName.'</span>
+                'checkbox'   => '<input type="checkbox" value="'.esc($row->id, 'attr').'" class="form-check-input">',
+                'name'       => '<div class="flex-align gap-8 nav_js" data-route="admin/employee-details/'.esc($row->id, 'attr').'">
+                                    <img src="'.esc($photo, 'attr').'" alt="" class="w-40 h-40 rounded-circle" />
+                                    <span class="h6 mb-0 fw-medium text-gray-300">'.esc($fullName).'</span>
                                 </div>',
-                'email'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->email1.'</span>',
-                'phone'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->contact_number1.'</span>',
-                'role'       => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->role_name.'</span>',
+                'email'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->email1).'</span>',
+                'phone'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->contact_number1).'</span>',
+                'role'       => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->role_name).'</span>',
                 'created_at' => '<span class="h6 mb-0 fw-medium text-gray-300">'.date("M d, Y", strtotime($row->created_at)).'</span>',
-                'actions'    => '<button 
-                                    data-id="'.$row->id.'" 
-                                    data-firstname="'.$row->firstname.'" 
-                                    data-lastname="'.$row->lastname.'" 
-                                    data-email="'.$row->email1.'" 
-                                    data-phone="'.$row->contact_number1.'" 
-                                    data-role="'.$row->role_id.'" 
+                'actions'    => '<button
+                                    data-id="'.esc($row->id, 'attr').'"
+                                    data-firstname="'.esc($row->firstname, 'attr').'"
+                                    data-lastname="'.esc($row->lastname, 'attr').'"
+                                    data-email="'.esc($row->email1, 'attr').'"
+                                    data-phone="'.esc($row->contact_number1, 'attr').'"
+                                    data-role="'.esc($row->role_id, 'attr').'"
                                     class="edit-employee-js bg-warning-50 text-warning-600 py-2 px-14 rounded-pill">
                                         Edit
                                     </button>
-                                    <button data-id="'.$row->id.'" 
+                                    <button data-id="'.esc($row->id, 'attr').'"
                                     class="delete-employee-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill">
                                         Delete
                                     </button>'
             ];
-            
+
         }
 
         return service('response')->setJSON([
