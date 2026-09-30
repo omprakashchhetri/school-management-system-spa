@@ -250,6 +250,115 @@ class EmployeeManagementController extends BaseController
         ];
     }
 
+    public function getEmployeeDashboard($employeeId)
+    {
+        $today = date('l');
+
+        $schedulesModel = model('SchedulesModel');
+        $todaySchedule = $schedulesModel->builder()
+            ->select('schedules.day, pts.label, pts.start_time, pts.end_time, sub.subject_name, c.class_name, s.section_label')
+            ->join('period_time_slots pts', 'pts.id = schedules.related_period', 'left')
+            ->join('subjects sub', 'sub.id = schedules.related_subject', 'left')
+            ->join('classes c', 'c.id = schedules.related_class', 'left')
+            ->join('sections s', 's.id = schedules.related_section', 'left')
+            ->where('schedules.related_teacher', $employeeId)
+            ->where('schedules.day', $today)
+            ->where('schedules.deleted_at', null)
+            ->orderBy('pts.start_time', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $now = date('H:i:s');
+        foreach ($todaySchedule as &$period) {
+            if (empty($period['start_time']) || empty($period['end_time'])) {
+                $period['status'] = 'Upcoming';
+            } elseif ($now > $period['end_time']) {
+                $period['status'] = 'Completed';
+            } elseif ($now >= $period['start_time']) {
+                $period['status'] = 'In Progress';
+            } else {
+                $period['status'] = 'Upcoming';
+            }
+        }
+        unset($period);
+
+        $subjectAllocations = $this->subjectAllocationsModel->builder()
+            ->select('subject_allocations.*, c.class_name, s.section_label, sub.subject_name')
+            ->join('classes c', 'c.id = subject_allocations.class', 'left')
+            ->join('sections s', 's.id = subject_allocations.section', 'left')
+            ->join('subjects sub', 'sub.id = subject_allocations.subject', 'left')
+            ->where('subject_allocations.teacher', $employeeId)
+            ->where('subject_allocations.deleted_at', null)
+            ->get()
+            ->getResultArray();
+
+        $studentsModel = model('StudentsModel');
+        $assignedClasses = [];
+        $subjectSummary = [];
+
+        foreach ($subjectAllocations as $alloc) {
+            $assignedClasses[$alloc['class'] . '-' . $alloc['section']] = true;
+
+            $subjectName = $alloc['subject_name'] ?? 'Unknown Subject';
+            if (!isset($subjectSummary[$subjectName])) {
+                $subjectSummary[$subjectName] = [
+                    'subject_name' => $subjectName,
+                    'classes' => [],
+                    'student_count' => 0,
+                    'periods_per_week' => 0,
+                ];
+            }
+
+            $classLabel = trim(($alloc['class_name'] ?? '') . ' ' . ($alloc['section_label'] ?? ''));
+            if ($classLabel !== '' && !in_array($classLabel, $subjectSummary[$subjectName]['classes'], true)) {
+                $subjectSummary[$subjectName]['classes'][] = $classLabel;
+            }
+
+            $subjectSummary[$subjectName]['student_count'] += $studentsModel->builder()
+                ->where('related_class', $alloc['class'])
+                ->where('related_section', $alloc['section'])
+                ->where('deleted_at', null)
+                ->countAllResults();
+
+            $subjectSummary[$subjectName]['periods_per_week'] += $schedulesModel->builder()
+                ->where('related_teacher', $employeeId)
+                ->where('related_subject', $alloc['subject'])
+                ->where('related_class', $alloc['class'])
+                ->where('related_section', $alloc['section'])
+                ->where('deleted_at', null)
+                ->countAllResults();
+        }
+
+        // "My Attendance" reflects app-level teacher_attendance records (punch-in/out);
+        // there's no UI yet to create them, so this is null (not a fabricated number)
+        // until that data actually exists for this employee.
+        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
+        $attendanceRows = model('TeacherAttendanceModel')->builder()
+            ->where('teacher_id', $employeeId)
+            ->where('date >=', $thirtyDaysAgo)
+            ->get()
+            ->getResultArray();
+        $totalDays = count($attendanceRows);
+        $presentDays = count(array_filter($attendanceRows, fn ($r) => strtolower($r['status']) === 'present'));
+        $attendanceRate = $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 1) : null;
+
+        $pendingDocuments = $this->documentsModel->builder()
+            ->where('related_teacher', $employeeId)
+            ->where('status', 'pending')
+            ->where('deleted_at', null)
+            ->countAllResults();
+
+        return [
+            'today' => $today,
+            'today_schedule' => $todaySchedule,
+            'classes_today_count' => count($todaySchedule),
+            'assigned_classes_count' => count($assignedClasses),
+            'subject_summary' => array_values($subjectSummary),
+            'attendance_rate' => $attendanceRate,
+            'pending_documents_count' => $pendingDocuments,
+        ];
+    }
+
     public function updateEmployeeDetails($data): array
     {
         $employeeId = $data['employee_id'] ?? null;

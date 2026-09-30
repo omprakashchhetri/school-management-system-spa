@@ -18,11 +18,16 @@ class EmployeeModuleController extends BaseController
     }
 
     public function dashboard() {
-         
-        // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $dashboardData = $this->employeeManagementController->getEmployeeDashboard($this->request->user->id);
+
         return view('templates/sidebar-employee')
             .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-dashboard')
+            .  view('pages/employee-module-pages/employee-dashboard', $dashboardData)
         ;
     }
     

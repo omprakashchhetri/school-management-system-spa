@@ -32,7 +32,7 @@
             },
             calendar: {
                 selector: '.display, .calendar-widget',
-                routes: ['admin/dashboard', 'calendar'],
+                routes: ['admin/dashboard', 'employee/dashboard', 'calendar'],
                 priority: 3
             },
             charts: {
