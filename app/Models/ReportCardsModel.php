@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class ReportCardsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'report_cards';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

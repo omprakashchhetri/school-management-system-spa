@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class FeesSlabsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'fees_slabs';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

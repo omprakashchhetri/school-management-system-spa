@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class DriversModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'drivers';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

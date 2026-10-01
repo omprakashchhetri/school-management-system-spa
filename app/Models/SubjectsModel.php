@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class SubjectsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'subjects';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true; 

@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class HolidaysModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'holidays';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class ToolsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'tools';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

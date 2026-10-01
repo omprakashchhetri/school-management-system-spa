@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class RolesModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'roles';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

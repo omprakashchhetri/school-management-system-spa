@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class DocumentsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'documents';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

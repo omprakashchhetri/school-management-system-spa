@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class PeriodTimeSlotsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'period_time_slots';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

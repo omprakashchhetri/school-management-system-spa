@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class VehiclesModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'vehicles';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class LessonPlansModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'lesson_plans';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

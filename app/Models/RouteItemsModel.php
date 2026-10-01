@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class RouteItemsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'route_items';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = false;

@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class ExamItemsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'exam_items';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

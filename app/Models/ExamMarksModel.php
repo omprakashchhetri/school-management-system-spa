@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class ExamMarksModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'exam_marks';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

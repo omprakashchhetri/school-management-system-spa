@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class AssignmentsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'assignments';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

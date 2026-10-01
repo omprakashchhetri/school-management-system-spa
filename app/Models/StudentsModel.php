@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class StudentsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'students';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
