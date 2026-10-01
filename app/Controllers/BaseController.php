@@ -147,6 +147,31 @@ abstract class BaseController extends Controller
     }
 
     /**
+     * Short-circuit a page-rendering (view-returning) action unless the
+     * caller is Admin. These pages are only ever reached through the AJAX
+     * router (public/assets/js/spa-router.js), which POSTs for a fragment
+     * and injects the raw response body via jQuery .html() — an HTTP
+     * redirect() doesn't work here: the browser's XHR silently follows it,
+     * the destination route only accepts POST so the follow-up GET lands
+     * on the app's `(:any)` catch-all instead, and the *entire* SPA shell
+     * HTML (another copy of the page, scripts and all) gets injected into
+     * the fragment container, leaving the UI stuck. Render the module
+     * tiles fragment directly instead (same content the user would see if
+     * they navigated there themselves) — no redirect round-trip needed.
+     * Returns null (proceed) when authorized.
+     */
+    protected function requireAdminPage()
+    {
+        if ($this->isAdmin()) {
+            return null;
+        }
+
+        return view('templates/sidebar')
+            . view('templates/topbar')
+            . view('pages/admin-module-pages/view-modules');
+    }
+
+    /**
      * Verify a login password against a stored value that may be either a
      * password_hash() hash (current format) or plaintext (legacy rows
      * created before hashing was introduced). On a successful legacy

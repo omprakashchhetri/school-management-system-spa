@@ -5,6 +5,7 @@ namespace App\Controllers\Web;
 use App\Controllers\BaseController;
 use App\Controllers\Data\SISModulePages\SISController;
 use App\Controllers\Data\AdminModulePages\DashboardStatsController;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class DashboardController extends BaseController
 {
@@ -17,8 +18,12 @@ class DashboardController extends BaseController
         $this->dashboardStatsController = new DashboardStatsController();
     }
 
-    public function dashboard(): string
+    public function dashboard(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/dashboard', $this->dashboardStatsController->getStats());
@@ -43,38 +48,58 @@ class DashboardController extends BaseController
         return view('portal/forgot-password');
     }
     
-    public function student_list(): string
+    public function student_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/student-list')
         ;
     }
 
-    public function employee_list(): string
+    public function employee_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/employee-list')
         ;
     }
-    
-    public function subject_list(): string
+
+    public function subject_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         return view('templates/sidebar')
             .  view('templates/topbar')
             .  view('pages/admin-module-pages/subject-list')
         ;
-    }  
-    
+    }
+
      public function get_student_list()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $postData = $this->request->getPost();
         return $this->sisController->getStudentList($postData);
     }
 
     public function add_student()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $data = $this->request->getPost();
         $result = $this->sisController->addStudent($data);
         return $this->response->setJSON($result);
@@ -82,6 +107,10 @@ class DashboardController extends BaseController
 
     public function edit_student()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $data = $this->request->getPost();
         $result = $this->sisController->editStudent($data);
         return $this->response->setJSON($result);
@@ -89,6 +118,10 @@ class DashboardController extends BaseController
 
     public function delete_student()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $id = $this->request->getPost('id');
         $result = $this->sisController->deleteStudent($id);
         return $this->response->setJSON($result);
@@ -98,18 +131,30 @@ class DashboardController extends BaseController
 
     public function get_classes()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $classes = $this->sisController->getClasses();
         return $this->response->setJSON($classes);
     }
 
     public function get_sections()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $sections = $this->sisController->getSections();
         return $this->response->setJSON($sections);
     }
 
     public function export_students()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $format = $this->request->getGet('format');
         $classId = $this->request->getGet('class_id');
         $sectionId = $this->request->getGet('section_id');

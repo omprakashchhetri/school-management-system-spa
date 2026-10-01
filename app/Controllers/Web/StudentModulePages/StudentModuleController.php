@@ -120,12 +120,20 @@ class StudentModuleController extends BaseController
      */
     public function student_details($studentId): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
 
         // ── Core student record ───────────────────────────────────────────
         $studentData = $this->studentsController->getStudentById($studentId);
 
         if (empty($studentData)) {
-            return redirect()->to('/pre-login');
+            // A redirect() doesn't survive the AJAX fragment round-trip here
+            // (see BaseController::requireAdminPage() for why) — fall back to
+            // a page that's always safely reachable instead.
+            return view('templates/sidebar')
+                . view('templates/topbar')
+                . view('pages/admin-module-pages/view-modules');
         }
 
         // ── Attendance ────────────────────────────────────────────────────
