@@ -23,6 +23,7 @@ class EmployeesModel extends Model
             'contact_number2',
             'email1',
             'email2',
+            'password',
             'role_id',
             'street',
             'city',
