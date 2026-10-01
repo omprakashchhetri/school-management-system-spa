@@ -11,7 +11,7 @@ class LessonPlansModel extends Model
 {
     protected $table = 'lesson_plans';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

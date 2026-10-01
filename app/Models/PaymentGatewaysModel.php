@@ -11,7 +11,7 @@ class PaymentGatewaysModel extends Model
 {
     protected $table = 'payment_gateways';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

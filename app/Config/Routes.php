@@ -134,6 +134,8 @@ $routes->group('post-login-employee', function ($routes) {
         $routes->post('delete-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::deleteSyllabus');
         $routes->post('create-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::add_edit_class_routine');
         $routes->post('class-routine', 'Web\AcademicModulePages\SyllabusModuleController::class_routine');
+        $routes->post('get-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::getClassRoutine');
+        $routes->post('save-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::saveClassRoutine');
     });
 
     $routes->group('attendance', function ($routes) {

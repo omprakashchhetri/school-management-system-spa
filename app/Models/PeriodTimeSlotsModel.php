@@ -11,7 +11,7 @@ class PeriodTimeSlotsModel extends Model
 {
     protected $table = 'period_time_slots';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
