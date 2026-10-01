@@ -17,12 +17,14 @@
         <!-- Breadcrumb End -->
 
         <!-- Breadcrumb Right Start -->
+        <?php if (!empty($isAdmin)): ?>
         <button type="button"
             class="btn btn-main text-sm btn-sm px-24 rounded-pill py-12 d-flex align-items-center gap-2"
             data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
             <i class="ph ph-plus me-4"></i>
             Add Employee
         </button>
+        <?php endif; ?>
         <!-- Breadcrumb Right End -->
     </div>
 
@@ -53,6 +55,7 @@
     </div>
 
 
+    <?php if (!empty($isAdmin)): ?>
     <!-- Add Employee Modal -->
     <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeLabel" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-top">
@@ -163,5 +166,6 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 <script src="<?= base_url() ?>assets/js/employee-list.js"></script>

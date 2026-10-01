@@ -26,7 +26,7 @@ class EmployeeManagementController extends BaseController
         $this->rolesModel = model('RolesModel');
     }
 
-    public function getEmployeeList($postData)
+    public function getEmployeeList($postData, $isAdmin = false)
     {
         $draw   = intval($postData['draw'] ?? 1);
         $start  = intval($postData['start'] ?? 0);
@@ -99,7 +99,7 @@ class EmployeeManagementController extends BaseController
                 'phone'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->contact_number1).'</span>',
                 'role'       => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->role_name).'</span>',
                 'created_at' => '<span class="h6 mb-0 fw-medium text-gray-300">'.date("M d, Y", strtotime($row->created_at)).'</span>',
-                'actions'    => '<button
+                'actions'    => $isAdmin ? '<button
                                     data-id="'.esc($row->id, 'attr').'"
                                     data-firstname="'.esc($row->firstname, 'attr').'"
                                     data-lastname="'.esc($row->lastname, 'attr').'"
@@ -112,7 +112,7 @@ class EmployeeManagementController extends BaseController
                                     <button data-id="'.esc($row->id, 'attr').'"
                                     class="delete-employee-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill">
                                         Delete
-                                    </button>'
+                                    </button>' : '<span class="text-gray-400 text-13">&mdash;</span>'
             ];
 
         }

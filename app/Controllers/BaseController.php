@@ -89,6 +89,64 @@ abstract class BaseController extends Controller
     }
 
     /**
+     * True if the logged-in employee's role is Admin.
+     */
+    protected function isAdmin(): bool
+    {
+        if (!isset($this->request->user) || $this->request->user->loginType !== 'employee') {
+            return false;
+        }
+
+        $roleId = $this->request->user->record['role_id'] ?? null;
+        if (!$roleId) {
+            return false;
+        }
+
+        $role = model('RolesModel')->find($roleId);
+
+        return $role && strtolower($role['role_name']) === 'admin';
+    }
+
+    /**
+     * True if the logged-in employee is an Admin, or is acting on their own
+     * employee record (self-service profile/document actions).
+     */
+    protected function isAdminOrSelf($employeeId): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return isset($this->request->user) && (int) $this->request->user->id === (int) $employeeId;
+    }
+
+    /**
+     * Short-circuit an AJAX action with a 403 unless the caller is Admin.
+     * Returns null (proceed) when authorized.
+     */
+    protected function requireAdmin()
+    {
+        if ($this->isAdmin()) {
+            return null;
+        }
+
+        return $this->response->setStatusCode(403)->setJSON(['error' => 'Admins only']);
+    }
+
+    /**
+     * Short-circuit an AJAX action with a 403 unless the caller is Admin or
+     * is acting on their own employee record.
+     */
+    protected function requireAdminOrSelf($employeeId)
+    {
+        if ($this->isAdminOrSelf($employeeId)) {
+            return null;
+        }
+
+        return $this->response->setStatusCode(403)->setJSON(['error' => 'Not authorized']);
+    }
+
+    /**
      * Verify a login password against a stored value that may be either a
      * password_hash() hash (current format) or plaintext (legacy rows
      * created before hashing was introduced). On a successful legacy

@@ -37,7 +37,10 @@ class EmployeeModuleController extends BaseController
 
         return view('templates/sidebar-employee')
             .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-list', ['roles' => $roles])
+            .  view('pages/employee-module-pages/employee-list', [
+                'roles' => $roles,
+                'isAdmin' => $this->isAdmin(),
+            ])
         ;
     }
 
