@@ -59,7 +59,7 @@ jQuery(document).ready(async function () {
       loadLogin();
       return;
     }
-    window.location.href(dashboardUrl);
+    window.location.href = dashboardUrl;
 
   } catch (err) {
     console.error("Auth check failed:", err);

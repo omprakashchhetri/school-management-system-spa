@@ -226,6 +226,7 @@
 
 <script>
 $(document).ready(function() {
+    const baseUrl = jQuery('#globalBaseUrl').val();
     const examId = <?= $examDetails['exam']['id'] ?? 0 ?>;
     let examData = null;
     let examItems = [];

@@ -9,10 +9,9 @@ use CodeIgniter\Model;
  */
 class TransportStudentRelModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'transport_student_rel';
     protected $primaryKey = 'id';
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $insertID = 0;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;

@@ -33,13 +33,20 @@ class StudentsController extends BaseController
                 ->where('student_email', $studentEmail)
                 ->orWhere('student_contact_no', $studentEmail)
             ->groupEnd()
-            ->where('password', $studentPassword)
             ->first();
 
-        if (!$studentDetails) {
+        if (!$studentDetails || !$this->verifyAndUpgradePassword($studentPassword, $studentDetails, $this->studentsModel)) {
             return json_encode([
                 'status'  => 0,
-                'message' => 'Account Not Found',
+                'message' => 'Invalid email/contact number or password.',
+            ]);
+        }
+
+        $inactiveStatuses = ['Suspended', 'Dropped Out', 'Transferred', 'Terminated', 'Archived'];
+        if (in_array($studentDetails['status'] ?? '', $inactiveStatuses, true)) {
+            return json_encode([
+                'status'  => 0,
+                'message' => 'Your account is inactive. Please contact the school administration.',
             ]);
         }
 
@@ -142,6 +149,53 @@ class StudentsController extends BaseController
         ];
     }
 
+    /**
+     * Present/absent counts per month for the last N months, for the
+     * dashboard's attendance trend chart. Mirrors the admin dashboard's
+     * feesChartLastSixMonths() month-bucketing approach.
+     */
+    public function getStudentAttendanceMonthly($studentId, $months = 6)
+    {
+        $buckets = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $buckets[] = date('Y-m', strtotime("-{$i} months"));
+        }
+
+        $rows = $this->db->table('student_attendance')
+            ->select("DATE_FORMAT(date, '%Y-%m') AS ym, status, COUNT(*) AS total", false)
+            ->where('student_id', $studentId)
+            ->where('deleted_at', null)
+            ->where('date >=', date('Y-m-01', strtotime('-' . ($months - 1) . ' months')))
+            ->groupBy('ym, status')
+            ->get()
+            ->getResultArray();
+
+        $present = array_fill_keys($buckets, 0);
+        $absent  = array_fill_keys($buckets, 0);
+
+        foreach ($rows as $row) {
+            if (!isset($present[$row['ym']])) {
+                continue;
+            }
+            if ($row['status'] === 'present') {
+                $present[$row['ym']] = (int) $row['total'];
+            } elseif ($row['status'] === 'absent') {
+                $absent[$row['ym']] = (int) $row['total'];
+            }
+        }
+
+        $categories = [];
+        foreach ($buckets as $ym) {
+            $categories[] = date('M', strtotime($ym . '-01'));
+        }
+
+        return [
+            'categories' => $categories,
+            'present'    => array_values($present),
+            'absent'     => array_values($absent),
+        ];
+    }
+
     // ─────────────────────────────────────────────
     //  FEES
     // ─────────────────────────────────────────────
@@ -174,7 +228,9 @@ class StudentsController extends BaseController
                     - IFNULL(st.discount,0)
                 )
                 - IFNULL(SUM(fa.amount),0)
-            ) AS due_amount
+            ) AS due_amount,
+
+            MAX(fa.related_payment) AS payment_id
         ");
 
         $builder->join('fees_allocation fa', 'fa.related_generated_fee = fg.id', 'left');
@@ -202,7 +258,11 @@ class StudentsController extends BaseController
             }
         }
 
-        $builder->groupBy('fg.id');
+        // Every non-aggregated column referenced in SELECT above has to be
+        // in GROUP BY under sql_mode=only_full_group_by (the MySQL 8
+        // default) — fg.id alone isn't enough, even though each of these
+        // is a single value per fg.id given the join conditions.
+        $builder->groupBy('fg.id, fg.month, fg.year, fg.amount, fg.due_date, fg.created_at, fd.discount_amount, st.discount');
 
         $builder->orderBy('fg.year', 'DESC');
         $builder->orderBy('fg.month', 'DESC');
@@ -228,7 +288,9 @@ class StudentsController extends BaseController
         ->join('fees_discount fd', 'fd.generated_fee = fg.id', 'left')
         ->join('students st', 'st.id = fg.student_id', 'left')
         ->where('fg.student_id', $studentId)
-        ->groupBy('fg.id')
+        // See getStudentFees() above: sql_mode=only_full_group_by needs
+        // every selected non-aggregated column listed here, not just fg.id.
+        ->groupBy('fg.id, fg.due_date, fg.amount, fd.discount_amount, st.discount')
         ->get()
         ->getResultArray();
 
@@ -414,7 +476,7 @@ class StudentsController extends BaseController
             ->where('a.related_class', $student['related_class'])
             ->where('a.related_section', $student['related_section'])
             ->where('a.deleted_at', null)
-            ->groupBy('sub.id')
+            ->groupBy('sub.id, sub.subject_name')
             ->orderBy('sub.subject_name', 'ASC')
             ->get()
             ->getResultArray();
@@ -440,6 +502,75 @@ class StudentsController extends BaseController
             ->where('a.id', $assignmentId)
             ->get()
             ->getRowArray();
+    }
+
+    /**
+     * Stores the uploaded answer file for one assignment/student pair.
+     * Blocked if the student already has a submission for this
+     * assignment — matches the "Assignment Submitted" read-only view in
+     * student-assignment-details.php, which only shows the upload form
+     * when there's no existing submission.
+     */
+    public function submitAssignment($assignmentId, $studentId, $request)
+    {
+        $assignment = $this->db->table('assignments')
+            ->where('id', $assignmentId)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        if (!$assignment) {
+            return ['error' => 'Assignment not found'];
+        }
+
+        $existing = $this->db->table('assignment_submissions')
+            ->where('related_assignment', $assignmentId)
+            ->where('related_student', $studentId)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        if ($existing) {
+            return ['error' => 'You have already submitted this assignment'];
+        }
+
+        $validationRule = [
+            'assignment_file' => [
+                'label' => 'Answer File',
+                'rules' => 'uploaded[assignment_file]'
+                    . '|ext_in[assignment_file,pdf,doc,docx,jpg,jpeg,png]'
+                    . '|max_size[assignment_file,5120]',
+            ],
+        ];
+
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules($validationRule)->withRequest($request)->run()) {
+            return ['error' => implode(' ', $validation->getErrors())];
+        }
+
+        $file = $request->getFile('assignment_file');
+
+        if (!$file || !$file->isValid()) {
+            return ['error' => 'Invalid file upload'];
+        }
+
+        $newName   = 'submission_' . $assignmentId . '_' . $studentId . '_' . time() . '.' . $file->getExtension();
+        $uploadPath = FCPATH . 'uploads/assignments/';
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $file->move($uploadPath, $newName);
+
+        $this->db->table('assignment_submissions')->insert([
+            'related_assignment' => $assignmentId,
+            'related_student'    => $studentId,
+            'upload_answers'     => $newName,
+        ]);
+
+        return ['success' => true];
     }
 
     // ─────────────────────────────────────────────
@@ -585,6 +716,58 @@ class StudentsController extends BaseController
         return $this->paginate($builder, $perPage, 'documents_page');
     }
 
+    /**
+     * Stores a self-uploaded document for the student (starts 'pending'
+     * until staff verify it) — mirrors AdmissionController::uploadStudentProfileImage()'s
+     * validation/move pattern.
+     */
+    public function uploadStudentDocument($studentId, $request)
+    {
+        $validationRule = [
+            'document_name' => [
+                'label' => 'Document Name',
+                'rules' => 'required|max_length[255]',
+            ],
+            'document_file' => [
+                'label' => 'File',
+                'rules' => 'uploaded[document_file]'
+                    . '|ext_in[document_file,pdf,doc,docx,jpg,jpeg,png]'
+                    . '|max_size[document_file,5120]',
+            ],
+        ];
+
+        $validation = \Config\Services::validation();
+
+        if (!$validation->setRules($validationRule)->withRequest($request)->run()) {
+            return ['error' => implode(' ', $validation->getErrors())];
+        }
+
+        $file = $request->getFile('document_file');
+
+        if (!$file || !$file->isValid()) {
+            return ['error' => 'Invalid file upload'];
+        }
+
+        $newName    = 'document_' . $studentId . '_' . time() . '.' . $file->getExtension();
+        $uploadPath = FCPATH . 'uploads/documents/';
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $file->move($uploadPath, $newName);
+
+        $this->db->table('documents')->insert([
+            'document_name' => $request->getPost('document_name'),
+            'document_type' => $request->getPost('document_type'),
+            'status'        => 'pending',
+            'file'          => $newName,
+            'related_student' => $studentId,
+        ]);
+
+        return ['success' => true];
+    }
+
     // ─────────────────────────────────────────────
     //  PRIVATE HELPERS
     // ─────────────────────────────────────────────
@@ -665,9 +848,15 @@ class StudentsController extends BaseController
     {
         $rows = $this->getStudentMarksByExam($studentId);
 
+        $examFilter = $this->request->getGet('exam_id');
+
         $list = [];
 
         foreach($rows as $examId=>$exam){
+
+            if ($examFilter && $examFilter !== 'all' && (string) $examId !== (string) $examFilter) {
+                continue;
+            }
 
             $list[] = [
                 'exam_id'=>$examId,

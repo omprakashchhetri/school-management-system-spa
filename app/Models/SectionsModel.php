@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class SectionsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'sections';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

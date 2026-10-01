@@ -15,12 +15,45 @@ class StudentModuleController extends BaseController
         $this->studentsController = new StudentsController();
     }
 
-    public function dashboard(): string
+    public function dashboard(): string|ResponseInterface
     {
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $studentData = $this->studentsController->getStudentById($studentId);
+
+        if (empty($studentData)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $attendanceSummary = $this->studentsController->getStudentAttendanceSummary($studentId);
+        $attendanceMonthly = $this->studentsController->getStudentAttendanceMonthly($studentId, 6);
+
+        $assignments     = $this->studentsController->getStudentAssignments($studentId, 5);
+        $assignmentStats = $this->studentsController->getStudentAssignmentStats($studentId);
+
+        $feeStats = $this->studentsController->getStudentFeeStats($studentId);
+
+        $today         = date('l');
+        $todaySchedule = array_values(array_filter(
+            $this->studentsController->getStudentSchedule($studentId),
+            fn ($row) => $row['day'] === $today
+        ));
+
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
-            . view('pages/student-module-pages/student-dashboard')
+            . view('pages/student-module-pages/student-dashboard', [
+                'studentData' => $studentData,
+                'attendanceSummary' => $attendanceSummary,
+                'attendanceMonthly' => $attendanceMonthly,
+                'assignments' => $assignments,
+                'assignmentStats' => $assignmentStats,
+                'feeStats' => $feeStats,
+                'todaySchedule' => $todaySchedule,
+            ])
             . view('templates/footer-student');
     }
 
@@ -31,7 +64,7 @@ class StudentModuleController extends BaseController
     public function profile(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
@@ -40,7 +73,7 @@ class StudentModuleController extends BaseController
         $studentData = $this->studentsController->getStudentById($studentId);
 
         if (empty($studentData)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         // ── Attendance ────────────────────────────────────────────────────
@@ -63,8 +96,7 @@ class StudentModuleController extends BaseController
         // ── Documents ─────────────────────────────────────────────────────
         $documents = $this->studentsController->getStudentDocuments($studentId, 10);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-details', [
                 'studentData' => $studentData,
@@ -88,12 +120,20 @@ class StudentModuleController extends BaseController
      */
     public function student_details($studentId): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
 
         // ── Core student record ───────────────────────────────────────────
         $studentData = $this->studentsController->getStudentById($studentId);
 
         if (empty($studentData)) {
-            return redirect()->to('/student/login');
+            // A redirect() doesn't survive the AJAX fragment round-trip here
+            // (see BaseController::requireAdminPage() for why) — fall back to
+            // a page that's always safely reachable instead.
+            return view('templates/sidebar')
+                . view('templates/topbar')
+                . view('pages/admin-module-pages/view-modules');
         }
 
         // ── Attendance ────────────────────────────────────────────────────
@@ -116,8 +156,7 @@ class StudentModuleController extends BaseController
         // ── Documents ─────────────────────────────────────────────────────
         $documents = $this->studentsController->getStudentDocuments($studentId, 10);
 
-        return view('templates/header')
-            . view('templates/sidebar')
+        return view('templates/sidebar')
             . view('templates/topbar')
             . view('pages/student-module-pages/student-details', [
                 'studentData' => $studentData,
@@ -142,7 +181,7 @@ class StudentModuleController extends BaseController
     public function attendance(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
@@ -151,8 +190,7 @@ class StudentModuleController extends BaseController
 
         $summary = $this->studentsController->getStudentAttendanceSummary($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-attendance-list', [
                 'attendance' => $attendance,
@@ -165,28 +203,41 @@ class StudentModuleController extends BaseController
     public function document_list(): string
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
 
-        $studentsController = new \App\Controllers\Data\StudentsController();
-
         $sort = $this->request->getGet('doc_sort') ?? 'latest';
 
-        $documents = $studentsController->getStudentDocuments($studentId, 10, $sort);
+        $documents = $this->studentsController->getStudentDocuments($studentId, 10, $sort);
 
-        // NEW
-        $documentStats = $studentsController->getStudentDocumentStats($studentId);
+        $documentStats = $this->studentsController->getStudentDocumentStats($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/document-list', [
                 'documents' => $documents,
                 'stats' => $documentStats
             ])
             . view('templates/footer-student');
+    }
+
+    public function document_upload(): ResponseInterface
+    {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $result = $this->studentsController->uploadStudentDocument($studentId, $this->request);
+
+        if (!empty($result['error'])) {
+            return redirect()->to('post-login-student/documents?upload_error=' . rawurlencode($result['error']));
+        }
+
+        return redirect()->to('post-login-student/documents');
     }
 
     // ─────────────────────────────────────────────
@@ -196,7 +247,7 @@ class StudentModuleController extends BaseController
     public function assignments(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
@@ -210,8 +261,7 @@ class StudentModuleController extends BaseController
         $subjects = $this->studentsController
             ->getAssignmentSubjects($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-assignment-list', [
                 'assignments' => $assignments,
@@ -229,7 +279,7 @@ class StudentModuleController extends BaseController
     public function assignment($assignmentId)
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
@@ -238,16 +288,32 @@ class StudentModuleController extends BaseController
             ->getAssignmentDetails($assignmentId, $studentId);
 
         if (!$assignment) {
-            return redirect()->to('assignments');
+            return redirect()->to('post-login-student/assignments');
         }
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-assignment-details', [
                 'assignment' => $assignment
             ])
             . view('templates/footer-student');
+    }
+
+    public function assignment_submit($assignmentId): ResponseInterface
+    {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $studentId = (int) $this->request->user->id;
+
+        $result = $this->studentsController->submitAssignment($assignmentId, $studentId, $this->request);
+
+        if (!empty($result['error'])) {
+            return redirect()->to('post-login-student/assignment/' . $assignmentId . '?submit_error=' . rawurlencode($result['error']));
+        }
+
+        return redirect()->to('post-login-student/assignment/' . $assignmentId);
     }
 
 
@@ -258,15 +324,14 @@ class StudentModuleController extends BaseController
     public function subjects(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
 
         $subjects = $this->studentsController->getStudentSubjects($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/subject-list', [
                 'subjects' => $subjects
@@ -282,7 +347,7 @@ class StudentModuleController extends BaseController
     public function fees(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int)$this->request->user->id;
@@ -293,8 +358,7 @@ class StudentModuleController extends BaseController
         $stats = $this->studentsController
             ->getStudentFeeStats($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-fee-list',[
                 'fees'=>$fees,
@@ -307,6 +371,10 @@ class StudentModuleController extends BaseController
 
     public function marksheets()
     {
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
         $studentId = (int)$this->request->user->id;
 
         $marksheets = $this->studentsController
@@ -315,8 +383,7 @@ class StudentModuleController extends BaseController
         $stats = $this->studentsController
             ->getStudentMarksheetStats($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-marksheet-list',[
                 'marksheets'=>$marksheets,
@@ -328,7 +395,7 @@ class StudentModuleController extends BaseController
     public function marksheet($examId)
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int)$this->request->user->id;
@@ -338,15 +405,14 @@ class StudentModuleController extends BaseController
         $marksByExam = $this->studentsController->getStudentMarksByExam($studentId);
 
         if (!isset($marksByExam[$examId])) {
-            return redirect()->to('/student/report-cards');
+            return redirect()->to('post-login-student/marksheets');
         }
 
         $exam = $marksByExam[$examId];
 
         $attendanceSummary = $this->studentsController->getStudentAttendanceSummary($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/student-marksheet-details', [
                 'studentData' => $studentData,
@@ -366,15 +432,14 @@ class StudentModuleController extends BaseController
     public function schedule(): string|ResponseInterface
     {
         if (!isset($this->request->user->id)) {
-            return redirect()->to('/student/login');
+            return redirect()->to('/pre-login');
         }
 
         $studentId = (int) $this->request->user->id;
 
         $schedule = $this->studentsController->getStudentSchedule($studentId);
 
-        return view('templates/header-student')
-            . view('templates/sidebar-student')
+        return view('templates/sidebar-student')
             . view('templates/topbar-student')
             . view('pages/student-module-pages/schedule', [
                 'schedule' => $schedule

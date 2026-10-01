@@ -3,8 +3,6 @@ $employee = $employeeDetails['employee'] ?? null;
 $subjectAllocations = $employeeDetails['subject_allocations'] ?? [];
 $classTeacherAssignments = $employeeDetails['class_teacher_assignments'] ?? [];
 $documents = $employeeDetails['documents'] ?? [];
-$attendanceRecords = $employeeDetails['attendance_records'] ?? [];
-$attendanceStats = $employeeDetails['attendance_stats'] ?? [];
 
 if (!$employee) {
     echo '<div class="alert alert-danger">Employee not found</div>';
@@ -46,6 +44,7 @@ $profileImage = !empty($employee['profile_image'])
     <div class="card overflow-hidden">
         <div class="card-body p-0">
             <div class="cover-img position-relative">
+                <?php if ($canManage): ?>
                 <label for="coverImageUpload"
                     class="btn border-gray-200 text-gray-200 fw-normal hover-bg-gray-400 rounded-pill py-4 px-14 position-absolute inset-block-start-0 inset-inline-end-0 mt-24 me-24"
                     style="cursor: pointer;">
@@ -53,6 +52,7 @@ $profileImage = !empty($employee['profile_image'])
                     Edit Cover
                 </label>
                 <input type="file" id="coverImageUpload" accept=".png, .jpg, .jpeg, .gif" style="display: none;" />
+                <?php endif; ?>
                 <div class="avatar-preview">
                     <div id="coverImagePreview" style="
                     background-image: url('<?=base_url()?>assets/images/thumbs/setting-cover-img.png');
@@ -71,6 +71,7 @@ $profileImage = !empty($employee['profile_image'])
                             <img src="<?= $profileImage ?>" alt="" id="profileImageDisplay"
                                 class="w-120 h-120 rounded-circle border border-white object-fit-cover"
                                 style="object-fit: cover;" />
+                            <?php if ($canManage): ?>
                             <label for="profileImageUpload"
                                 class="position-absolute bg-main-600 text-white rounded-circle d-flex align-items-center justify-content-center"
                                 style="
@@ -85,6 +86,7 @@ $profileImage = !empty($employee['profile_image'])
                             </label>
                             <input type="file" id="profileImageUpload" accept=".png, .jpg, .jpeg, .gif"
                                 style="display: none;" />
+                            <?php endif; ?>
                         </div>
                         <div>
                             <h4 class="mb-8" id="employeeFullName"><?= esc($fullName) ?></h4>
@@ -167,10 +169,12 @@ $profileImage = !empty($employee['profile_image'])
                             <h4 class="mb-4">Personal Information</h4>
                             <p class="text-gray-600 text-15">Employee personal details and contact information</p>
                         </div>
+                        <?php if ($canManage): ?>
                         <button type="button" id="editPersonalBtn" class="btn btn-outline-main rounded-pill py-9">
                             <i class="ph ph-pencil-simple me-8"></i>
                             Edit Personal Info
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -267,10 +271,12 @@ $profileImage = !empty($employee['profile_image'])
                             <h4 class="mb-4">Professional Information</h4>
                             <p class="text-gray-600 text-15">Employment details and qualifications</p>
                         </div>
+                        <?php if ($canManage): ?>
                         <button type="button" id="editProfessionalBtn" class="btn btn-outline-main rounded-pill py-9">
                             <i class="ph ph-pencil-simple me-8"></i>
                             Edit Professional Info
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -485,11 +491,13 @@ $profileImage = !empty($employee['profile_image'])
                             <h4 class="mb-4">Employee Documents</h4>
                             <p class="text-gray-600 text-15">Important documents and certificates</p>
                         </div>
+                        <?php if ($canManage): ?>
                         <button type="button" class="btn btn-main rounded-pill py-9" data-bs-toggle="modal"
                             data-bs-target="#uploadDocumentModal">
                             <i class="ph ph-upload me-8"></i>
                             Upload Document
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body p-0 overflow-x-auto">
@@ -548,9 +556,11 @@ $profileImage = !empty($employee['profile_image'])
                                             <i class="ph ph-download me-4"></i>
                                             Download
                                         </a>
+                                        <?php if ($isAdmin): ?>
                                         <div class="dropdown">
                                             <button class="btn btn-outline-main py-6 px-12 text-13 dropdown-toggle"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                type="button" data-bs-toggle="dropdown" data-bs-strategy="fixed"
+                                                aria-expanded="false">
                                                 Status
                                             </button>
                                             <ul class="dropdown-menu">
@@ -577,11 +587,14 @@ $profileImage = !empty($employee['profile_image'])
                                                 </li>
                                             </ul>
                                         </div>
+                                        <?php endif; ?>
+                                        <?php if ($canManage): ?>
                                         <button class="btn btn-danger py-6 px-12 text-13 delete-document-js"
                                             data-document-id="<?= $doc['id'] ?>">
                                             <i class="ph ph-trash me-4"></i>
                                             Delete
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

@@ -7,7 +7,7 @@
         <div class="breadcrumb mb-24">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="index.html" class="text-gray-200 fw-normal text-15 hover-text-main-600">
+                    <a href="/post-login-employee/admin/dashboard" class="text-gray-200 fw-normal text-15 hover-text-main-600">
                         Home
                     </a>
                 </li>

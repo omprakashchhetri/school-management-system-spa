@@ -11,7 +11,7 @@
             class="ph ph-x"></i></button>
     <!-- sidebar close btn -->
 
-    <a href="index.html"
+    <a href="/post-login-employee/admin/dashboard"
         class="sidebar__logo text-center p-20 position-sticky inset-block-start-0 bg-white w-100 z-1 pb-10">
         <img src="<?=base_url()?>assets/images/logo/logo.png" alt="Logo">
     </a>

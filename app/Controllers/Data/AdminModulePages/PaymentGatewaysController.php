@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Data;
+namespace App\Controllers\Data\AdminModulePages;
 
 use App\Controllers\BaseController;
 

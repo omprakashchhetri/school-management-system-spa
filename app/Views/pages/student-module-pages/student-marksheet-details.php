@@ -27,14 +27,14 @@ $profileImg = !empty($sd['profile_image'])
             <ul class="flex-align gap-4">
 
                 <li>
-                    <a href="<?= base_url('student/dashboard') ?>"
+                    <a href="<?= base_url('post-login-student/dashboard') ?>"
                         class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
                 </li>
 
                 <li><span class="text-gray-500 d-flex"><i class="ph ph-caret-right"></i></span></li>
 
                 <li>
-                    <a href="<?= base_url('student/report-cards') ?>"
+                    <a href="<?= base_url('post-login-student/marksheets') ?>"
                         class="text-gray-200 fw-normal text-15 hover-text-main-600">Marksheets</a>
                 </li>
 
@@ -51,10 +51,6 @@ $profileImg = !empty($sd['profile_image'])
 
             <button onclick="window.print()" class="btn bg-main-50 text-main-600 py-2 px-14 rounded-pill">
                 <i class="ph ph-printer"></i> Print
-            </button>
-
-            <button class="btn bg-main-50 text-main-600 py-2 px-14 rounded-pill">
-                <i class="ph ph-download-simple"></i> PDF
             </button>
 
         </div>
@@ -416,7 +412,7 @@ $profileImg = !empty($sd['profile_image'])
 
                                 <?php else: ?>
 
-                                    <a href="<?= base_url('student/marksheet/' . $id) ?>" class="btn btn-main btn-sm">View</a>
+                                    <a href="<?= base_url('post-login-student/marksheet/' . $id) ?>" class="btn btn-main btn-sm">View</a>
 
                                 <?php endif; ?>
 

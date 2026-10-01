@@ -15,6 +15,7 @@ $routes->set404Override(function () {
 $routes->get('/', 'Web\DashboardController::pre_login');
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 $routes->get('forgot-password', 'Web\DashboardController::forgot_password');
+$routes->post('forgot-password', 'Web\DashboardController::forgot_password_form');
 // ── Public Fee Receipt (no login required) ──────────────────
 $routes->get('fees/receipt/(:num)', 'Web\FeesModulePages\FeesModuleController::feeReceipt/$1');
 // Also support query string: /fees/receipt?payment_id=6
@@ -31,16 +32,19 @@ $routes->post('api/login', 'Web\Auth::index');
 // For student type
 $routes->group('post-login-student', function ($routes) {
     $routes->get('(:any)', 'Web\PostLoginController::student_post_login');
-    $routes->get('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('dashboard', 'Web\StudentModulePages\StudentModuleController::dashboard');
     $routes->post('profile', 'Web\StudentModulePages\StudentModuleController::profile');
     $routes->post('attendance', 'Web\StudentModulePages\StudentModuleController::attendance');
     $routes->post('assignments', 'Web\StudentModulePages\StudentModuleController::assignments');
     $routes->post('assignment/(:num)', 'Web\StudentModulePages\StudentModuleController::assignment/$1');
+    $routes->post('assignment-submit/(:num)', 'Web\StudentModulePages\StudentModuleController::assignment_submit/$1');
     $routes->post('fees', 'Web\StudentModulePages\StudentModuleController::fees');
     $routes->post('marksheets', 'Web\StudentModulePages\StudentModuleController::marksheets');
     $routes->post('marksheet/(:num)', 'Web\StudentModulePages\StudentModuleController::marksheet/$1');
     $routes->post('documents', 'Web\StudentModulePages\StudentModuleController::document_list');
+    $routes->post('documents/upload', 'Web\StudentModulePages\StudentModuleController::document_upload');
+    $routes->post('subjects', 'Web\StudentModulePages\StudentModuleController::subjects');
+    $routes->post('schedule', 'Web\StudentModulePages\StudentModuleController::schedule');
 });
 
 // For Employee type
@@ -119,7 +123,6 @@ $routes->group('post-login-employee', function ($routes) {
         $routes->post('dashboard', 'Web\EmployeeModulePages\EmployeeModuleController::dashboard');
         $routes->post('list', 'Web\EmployeeModulePages\EmployeeModuleController::list');
         $routes->post('profile', 'Web\EmployeeModulePages\EmployeeModuleController::employee_profile');
-        $routes->post('add-edit', 'Web\EmployeeModulePages\EmployeeModuleController::add_edit');
     });
 
     $routes->group('academic', function ($routes) {
@@ -131,14 +134,14 @@ $routes->group('post-login-employee', function ($routes) {
         $routes->post('delete-syllabus', 'Web\AcademicModulePages\SyllabusModuleController::deleteSyllabus');
         $routes->post('create-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::add_edit_class_routine');
         $routes->post('class-routine', 'Web\AcademicModulePages\SyllabusModuleController::class_routine');
+        $routes->post('get-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::getClassRoutine');
+        $routes->post('save-class-routine', 'Web\AcademicModulePages\SyllabusModuleController::saveClassRoutine');
     });
 
     $routes->group('attendance', function ($routes) {
-        $routes->post('list', 'Web\AttendanceModulePages\AttendanceModuleController::list');
         $routes->post('get-attendance-list', 'Web\AttendanceModulePages\AttendanceModuleController::getAttendanceList');
         $routes->post('mark-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::addAttendance');
         $routes->post('edit-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::editAttendance');
-        $routes->post('delete-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::deleteAttendance');
     });
 
     $routes->group('fees', function ($routes) {
@@ -202,12 +205,6 @@ $routes->group('post-login-employee', function ($routes) {
     $routes->post('get-subject-list', 'Web\AdminModulePages\AdminModuleController::getSubjectList');
 
 
-
-    $routes->post('student-details', 'Web\AttendanceModulePages\AttendanceModuleController::student_details');
-
-    $routes->post('student-report', 'Web\StudentModulePages\StudentModuleController::student_report');
-
-    $routes->post('report-card', 'Web\StudentModulePages\StudentModuleController::report_card');
 
 
     // ========================================

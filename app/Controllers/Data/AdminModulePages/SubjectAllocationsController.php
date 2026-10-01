@@ -20,9 +20,9 @@ class SubjectAllocationsController extends BaseController
      */
     public function getSubjectAllocationList($postData)
     {
-        $draw   = intval($postData['draw']);
-        $start  = intval($postData['start']);
-        $length = intval($postData['length']);
+        $draw   = intval($postData['draw'] ?? 1);
+        $start  = intval($postData['start'] ?? 0);
+        $length = intval($postData['length'] ?? 10);
         $searchValue = $postData['search']['value'] ?? '';
 
         $builder = $this->subjectAllocationsModel->builder()

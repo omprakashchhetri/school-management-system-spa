@@ -8,7 +8,7 @@
     </div>
     <div class="auth-right py-40 px-24 flex-center flex-column">
         <div class="auth-right__inner mx-auto w-100">
-            <a href="index.html" class="auth-right__logo max-w-100 mx-auto mb-15 d-block">
+            <a href="<?= base_url() ?>" class="auth-right__logo max-w-100 mx-auto mb-15 d-block">
                 <img src="<?=base_url()?>assets/images/logo/logo-sm.png" alt="">
             </a>
             <h2 class="text-center mb-8">Welcome to Back! &#128075;</h2>
@@ -33,10 +33,10 @@
                     </div>
                 </div>
                 <div class="mb-24">
-                    <label for="email" class="form-id-label form-label mb-8 h6">Student Id</label>
+                    <label for="email" class="form-id-label form-label mb-8 h6">Email or Contact Number</label>
                     <div class="position-relative">
                         <input type="text" name="email" class="form-control py-11 ps-40" id="email"
-                            placeholder="Type your username" required>
+                            placeholder="Enter your email or contact number" required>
                         <span class="position-absolute top-50 translate-middle-y ms-16 text-gray-600 d-flex"><i
                                 class="ph ph-user"></i></span>
                     </div>
@@ -62,8 +62,6 @@
                         class="text-main-600 hover-text-decoration-underline text-15 fw-medium">Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-main rounded-pill w-100">Sign In</button>
-
-                <div id="response" style="margin-top:20px; color:blue;"></div>
 
                 <div class="divider my-32 position-relative text-center">
                     <span class="divider__text text-gray-600 text-13 fw-medium px-26 bg-white"></span>

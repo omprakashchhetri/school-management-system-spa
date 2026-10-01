@@ -5,7 +5,6 @@ use CodeIgniter\Model;
 
 class EmployeesModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'employees';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

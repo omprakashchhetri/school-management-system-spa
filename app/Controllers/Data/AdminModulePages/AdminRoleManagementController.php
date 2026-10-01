@@ -123,7 +123,11 @@ class AdminRoleManagementController extends BaseController
             // Update role permissions
             if (!empty($toolPermissions)) {
                 foreach ($toolPermissions as $toolId => $permissions) {
-                    // Check if a record already exists for this role-tool
+                    // $toolId here is actually the role_permissions row's own id
+                    // (see role-tool-management.php's data-tool-permission-id,
+                    // sourced from $tool['id'] where $tool iterates the
+                    // role_permissions rows returned by getOne(), not the
+                    // tools table) — find it directly by primary key.
                     $existing = $this->rolePermissionsModel
                         ->where('role_id', $roleId)
                         ->where('id', $toolId)

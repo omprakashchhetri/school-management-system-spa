@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class SubjectAllocationsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'subject_allocations';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers\Web\AdminModulePages;
+use CodeIgniter\HTTP\ResponseInterface;
 use App\Controllers\BaseController;
 use App\Controllers\Data\AdminModulePages\AdminRoleManagementController;
 use App\Controllers\Data\AdminModulePages\ClassesController;
@@ -35,7 +36,12 @@ class AdminModuleController extends BaseController
         $this->subjectAllocationsController = new SubjectAllocationsController();
         $this->admissionController = new AdmissionController();
     }
+
     public function roleManagement() {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         // $adminRoleManagement = new AdminRoleManagementController();
         $sortOption = $this->request->getGet('sortOption');
         if($sortOption != "" && isset($sortOption)){
@@ -53,6 +59,10 @@ class AdminModuleController extends BaseController
     }
 
     public function roleToolManagement($roleId) {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $roleToolManagementData = $this->adminRoleManagementController->getOne($roleId);
         $passToView = [
             'roleDetails' => $roleToolManagementData,
@@ -65,8 +75,12 @@ class AdminModuleController extends BaseController
     }
 
     
-    public function class_list(): string
+    public function class_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $classesData = $this->classesController->getAll();
         $passToView = [
             'classesDetails' => $classesData,
@@ -77,8 +91,12 @@ class AdminModuleController extends BaseController
         ;
     }
 
-    public function class_teacher_list(): string
+    public function class_teacher_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $classesData = $this->classesController->getAll();
         $sectionList = $this->sectionsController->getAll();
         $employeeList = $this->classTeacherManagementController->getAllEmployees();
@@ -93,8 +111,12 @@ class AdminModuleController extends BaseController
         ;
     }
     
-    public function subject_list(): string
+    public function subject_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $subjectsData = $this->subjectsController->getAll();
         $passToView = [
             'subjectsDetails' => $subjectsData,
@@ -105,8 +127,12 @@ class AdminModuleController extends BaseController
         ;
     }
 
-    public function subject_allocation(): string
+    public function subject_allocation(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $classesData = $this->classesController->getAll();
         $sectionList = $this->sectionsController->getAll();
         $employeeList = $this->classTeacherManagementController->getAllEmployees();
@@ -123,8 +149,12 @@ class AdminModuleController extends BaseController
         ;
     }
 
-    public function section_list(): string
+    public function section_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $sectionList = $this->sectionsController->getAll();
         $passToView = [
             'sections' => $sectionList,
@@ -135,20 +165,30 @@ class AdminModuleController extends BaseController
         ;
     }
 
-    public function payment_gateways(): string
+    public function payment_gateways(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         return view('templates/sidebar')
             .  view('templates/topbar')
-            .  view('pages/admin-module-pages/subject-allocation')            
+            .  view('pages/admin-module-pages/payment-gateways')
         ;
     }
 
     public function employee_details($employeeId)
     {
-        
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $employeeData = $this->employeeManagementController->getEmployeeDetails($employeeId);
         if (!$employeeData) {
-            return redirect()->to('admin/employee-list')->with('error', 'Employee not found');
+            // A redirect() doesn't survive the AJAX fragment round-trip here
+            // (see requireAdminPage() for why) — render the employee list
+            // directly instead, same as a successful redirect would show.
+            return $this->employee_list();
         }
             
         $classesData = $this->classesController->getAll();
@@ -161,10 +201,12 @@ class AdminModuleController extends BaseController
             'sections' => $sectionList,
             'teachers' => $employeeList,
             'subjects' => $subjectsData,
-            'employeeDetails' => $employeeData, 
-            'roleDetails' => $roleDetails
+            'employeeDetails' => $employeeData,
+            'roleDetails' => $roleDetails,
+            'canManage' => $this->isAdminOrSelf($employeeId),
+            'isAdmin' => $this->isAdmin(),
         ];
-        
+
         return view('templates/sidebar')
             . view('templates/topbar')
             . view('pages/admin-module-pages/employee-details', $passToView);
@@ -173,41 +215,58 @@ class AdminModuleController extends BaseController
     // Edit employee details AJAX function
     public function updateEmployeeDetails() {
         $details = $this->request->getPost();
+
+        if ($resp = $this->requireAdminOrSelf($details['employee_id'] ?? null)) {
+            return $resp;
+        }
+
         return json_encode($this->employeeManagementController->updateEmployeeDetails($details));
     }
 
     // Upload employee images AJAX functions
-   public function uploadEmployeeProfileImage() 
+   public function uploadEmployeeProfileImage()
     {
         $employeeId = $this->request->getPost('employee_id');
-        
+
         if (!$employeeId) {
             return json_encode(['error' => 'Employee ID required']);
         }
-        
+
+        if ($resp = $this->requireAdminOrSelf($employeeId)) {
+            return $resp;
+        }
+
         return json_encode($this->employeeManagementController->uploadEmployeeImage($employeeId, 'profile', $this->request));
     }
 
     // Upload employee cover image AJAX function
-    public function uploadEmployeeCoverImage() 
+    public function uploadEmployeeCoverImage()
     {
         $employeeId = $this->request->getPost('employee_id');
-        
+
         if (!$employeeId) {
             return json_encode(['error' => 'Employee ID required']);
         }
-        
+
+        if ($resp = $this->requireAdminOrSelf($employeeId)) {
+            return $resp;
+        }
+
         return json_encode($this->employeeManagementController->uploadEmployeeImage($employeeId, 'cover', $this->request));
     }
 
-    public function uploadEmployeeDocument() 
+    public function uploadEmployeeDocument()
     {
         $employeeId = $this->request->getPost('employee_id');
         $documentType = $this->request->getPost('document_type');
         $documentName = $this->request->getPost('document_name');
-        
+
         if (!$employeeId) {
             return json_encode(['error' => 'Employee ID required']);
+        }
+
+        if ($resp = $this->requireAdminOrSelf($employeeId)) {
+            return $resp;
         }
 
         if (!$documentType) {
@@ -227,22 +286,31 @@ class AdminModuleController extends BaseController
         return json_encode($this->employeeManagementController->uploadEmployeeDocument($data, $this->request));
     }
 
-    public function deleteEmployeeDocument() 
+    public function deleteEmployeeDocument()
     {
         $documentId = $this->request->getPost('document_id');
-        
+
         if (!$documentId) {
             return json_encode(['error' => 'Document ID required']);
+        }
+
+        $document = model('DocumentsModel')->find($documentId);
+        if ($document && ($resp = $this->requireAdminOrSelf($document['related_teacher']))) {
+            return $resp;
         }
 
         return json_encode($this->employeeManagementController->deleteEmployeeDocument($documentId));
     }
 
-    public function updateDocumentStatus() 
+    public function updateDocumentStatus()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $documentId = $this->request->getPost('document_id');
         $status = $this->request->getPost('status');
-        
+
         if (!$documentId || !$status) {
             return json_encode(['error' => 'Document ID and status required']);
         }
@@ -252,8 +320,13 @@ class AdminModuleController extends BaseController
 
     public function downloadEmployeeDocument($documentId)
     {
+        $document = model('DocumentsModel')->find($documentId);
+        if ($document && !$this->isAdminOrSelf($document['related_teacher'])) {
+            return redirect()->back()->with('error', 'You do not have access to that document.');
+        }
+
         $documentData = $this->employeeManagementController->getDocumentForDownload($documentId);
-        
+
         if (!$documentData) {
             return redirect()->back()->with('error', 'Document or file not found');
         }
@@ -272,96 +345,169 @@ class AdminModuleController extends BaseController
     
     // AJAX Function Starts
     public function deleteRole() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $roleId = $this->request->getPost('id');
         return json_encode($this->adminRoleManagementController->delete($roleId));
     }
 
     public function addRole() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->adminRoleManagementController->add($details));
     }
 
     public function editRole() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->adminRoleManagementController->edit($details['data']));
     }
 
     public function addClass() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->classesController->add($details));
     }
 
     public function deleteClass() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $classId = $this->request->getPost('id');
         return json_encode($this->classesController->delete($classId));
     }
 
     public function editClass() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->classesController->edit($details));
     }
-    
+
     public function addSection() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->sectionsController->add($details));
     }
 
     public function editSection() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->sectionsController->edit($details));
     }
 
     public function deleteSection() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $sectionId = $this->request->getPost('id');
         return json_encode($this->sectionsController->delete($sectionId));
     }
 
-    public function getSubjectList() {        
+    public function getSubjectList() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         return json_encode($this->subjectsController->getAll());
     }
 
     public function addSubject() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->subjectsController->add($details));
     }
 
     public function editSubject() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->subjectsController->edit($details));
     }
 
     public function deleteSubject() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->subjectsController->delete($SubjectId));
     }
-    
-    
+
+
     public function getClassTeacherList(){
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $postData = $this->request->getPost();
         $classTeacherData = $this->classTeacherManagementController->getAll($postData);
         return $classTeacherData;
     }
 
     public function addClassTeacher() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->classTeachersController->add($details));
     }
 
     public function editClassTeacher() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->classTeachersController->edit($details));
     }
 
     public function deleteClassTeacher() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->classTeachersController->delete($SubjectId));
     }
 
-    public function employee_list(): string
+    public function employee_list(): string|ResponseInterface
     {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $roles = $this->adminRoleManagementController->getListOfRoles();
         $passToView = [
             'roles' => $roles,
+            'isAdmin' => $this->isAdmin(),
         ];
         return view('templates/sidebar')
             .  view('templates/topbar')
@@ -372,43 +518,71 @@ class AdminModuleController extends BaseController
     public function getEmployeeList()
     {
         $postData = $this->request->getPost();
-        $classTeacherData = $this->employeeManagementController->getEmployeeList($postData);
+        $classTeacherData = $this->employeeManagementController->getEmployeeList($postData, $this->isAdmin());
         return $classTeacherData;
     }
 
     public function addEmployee() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->employeeManagementController->addEmployee($details));
     }
 
     public function editEmployee() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->employeeManagementController->editEmployee($details));
     }
 
     public function deleteEmployee() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->employeeManagementController->deleteEmployee($SubjectId));
     }
 
     public function getSubjectAllocationList()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $postData = $this->request->getPost();
         $classTeacherData = $this->subjectAllocationsController->getSubjectAllocationList($postData);
         return $classTeacherData;
     }
 
     public function addSubjectAllocation() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->subjectAllocationsController->add($details));
     }
 
     public function editSubjectAllocation() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->subjectAllocationsController->edit($details));
     }
 
     public function deleteSubjectAllocation() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $SubjectId = $this->request->getPost('id');
         return json_encode($this->subjectAllocationsController->delete($SubjectId));
     }
@@ -427,6 +601,10 @@ class AdminModuleController extends BaseController
      * Display admission form
      */
     public function createAdmission() {
+        if ($resp = $this->requireAdminPage()) {
+            return $resp;
+        }
+
         $passToView = [
             'title' => 'Student Admission',
         ];
@@ -439,8 +617,12 @@ class AdminModuleController extends BaseController
      * Add new student admission
      */
     public function addStudent() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         log_message('debug', '=== STUDENT ADMISSION START ===');
-        
+
         $details = $this->request->getPost();
         log_message('debug', 'POST Data: ' . print_r($details, true));
         
@@ -521,14 +703,18 @@ class AdminModuleController extends BaseController
     /**
      * Upload student profile image (separate AJAX endpoint)
      */
-    public function uploadStudentProfileImage() 
+    public function uploadStudentProfileImage()
     {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $studentId = $this->request->getPost('student_id');
-        
+
         if (!$studentId) {
             return json_encode(['error' => 'Student ID required']);
         }
-        
+
         return json_encode($this->admissionController->uploadStudentProfileImage($studentId, $this->request));
     }
 
@@ -536,6 +722,10 @@ class AdminModuleController extends BaseController
      * Get all students
      */
     public function getStudents() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         return json_encode($this->admissionController->getAll());
     }
 
@@ -543,6 +733,10 @@ class AdminModuleController extends BaseController
      * Edit student
      */
     public function editStudent() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $details = $this->request->getPost();
         return json_encode($this->admissionController->edit($details));
     }
@@ -551,6 +745,10 @@ class AdminModuleController extends BaseController
      * Delete student
      */
     public function deleteStudent() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $id = $this->request->getPost('id');
         return json_encode($this->admissionController->delete($id));
     }
@@ -559,14 +757,21 @@ class AdminModuleController extends BaseController
      * Get classes for dropdown
      */
     public function getClasses() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         return json_encode($this->classesController->getAll());
     }
 
     /**
      * Get sections by class for dropdown
      */
-    public function getSections() {        
-        
+    public function getSections() {
+        if ($resp = $this->requireAdmin()) {
+            return $resp;
+        }
+
         $sections = $this->sectionsController->getAll();
 
         return json_encode(array_values($sections));

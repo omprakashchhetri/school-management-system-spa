@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class SyllabusModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'syllabus';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

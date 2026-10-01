@@ -72,6 +72,7 @@
     <div id="app"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+    <script src="<?= base_url('assets/plugins/sweetalert/sweetalert2@11.js') ?>"></script>
     <script src="<?=base_url('assets/js/pre-login.js')?>"></script>
 </body>
 

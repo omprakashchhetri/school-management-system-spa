@@ -44,14 +44,14 @@ class ExaminationModuleController extends BaseController
     {
         // Validate exam ID
         if (!$id || !is_numeric($id)) {
-            return redirect()->to('examination/exam-list')->with('error', 'Invalid exam ID');
+            return redirect()->to('post-login-employee/examination/exam-list')->with('error', 'Invalid exam ID');
         }
 
         // Get exam basic info to check if exists
         $exam = model('ExamsModel')->where('deleted_at', null)->find($id);
         
         if (!$exam) {
-            return redirect()->to('examination/exam-list')->with('error', 'Exam not found');
+            return redirect()->to('post-login-employee/examination/exam-list')->with('error', 'Exam not found');
         }
 
         // Pass exam data to view (detailed data will be loaded via AJAX)
@@ -75,7 +75,7 @@ class ExaminationModuleController extends BaseController
         $exam = model('ExamsModel')->where('deleted_at', null)->find($id);
         
         if (!$exam) {
-            return redirect()->to('examination/exam-list')->with('error', 'Exam not found');
+            return redirect()->to('post-login-employee/examination/exam-list')->with('error', 'Exam not found');
         }
 
         $classes = $this->classesController->getAll();

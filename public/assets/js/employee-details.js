@@ -25,6 +25,20 @@ $(document).ready(function () {
   $(document).off("click", "#updateSubjectAllocationBtn");
   $(document).off("click", ".delete-subject-allocation-js");
 
+  // Dropdowns inside the (horizontally scrollable) documents table get
+  // clipped invisible by that scroll container even though Bootstrap still
+  // toggles them open — force Popper's "fixed" strategy so they render
+  // above the clipping container instead of inside it.
+  document.querySelectorAll('[data-bs-toggle="dropdown"][data-bs-strategy="fixed"]').forEach(function (el) {
+    if (!bootstrap.Dropdown.getInstance(el)) {
+      new bootstrap.Dropdown(el, {
+        popperConfig: function (defaultConfig) {
+          return Object.assign({}, defaultConfig, { strategy: "fixed" });
+        },
+      });
+    }
+  });
+
   // Profile Image Upload
   $("#profileImageUpload").on("change", function (e) {
     const file = e.target.files[0];
@@ -472,9 +486,11 @@ $(document).ready(function () {
   });
 
   // Delete Document (using event delegation)
+  // The admin page renders documents as <tr data-document-id>, the
+  // employee profile page as <div data-document-id> cards — match both.
   $(document).on("click", ".delete-document-js", function () {
     const documentId = $(this).data("document-id");
-    const row = $('tr[data-document-id="' + documentId + '"]');
+    const row = $('[data-document-id="' + documentId + '"]');
 
     Swal.fire({
       title: "Are you sure?",
@@ -501,7 +517,7 @@ $(document).ready(function () {
               }).then(() => {
                 row.fadeOut(300, function () {
                   $(this).remove();
-                  if ($("#documentsTable tbody tr").length === 0) {
+                  if ($("[data-document-id]").length === 0) {
                     navigateTo(route, false);
                   }
                 });

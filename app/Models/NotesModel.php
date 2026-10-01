@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class NotesModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'notes';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

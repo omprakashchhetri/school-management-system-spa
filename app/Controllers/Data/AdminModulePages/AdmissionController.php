@@ -75,8 +75,8 @@ class AdmissionController extends BaseController
         // Generate roll number instead (if you want a custom student identifier)
         $data['roll_no'] = $this->generateStudentId();
         
-        // Hash the temporary password
-        $data['password'] = 'student@123';
+        // Temporary password, hashed for storage
+        $data['password'] = password_hash('student@123', PASSWORD_DEFAULT);
         
         // Set default values for required fields if not provided
         $data['father_name'] = $data['father_name'] ?? '';

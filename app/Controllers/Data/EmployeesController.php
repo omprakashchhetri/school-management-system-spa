@@ -15,19 +15,18 @@ class EmployeesController extends BaseController
         $email = $employeeDetailsFromRequest['email'];
         $password = $employeeDetailsFromRequest['password'];
     
-        // Find employee by email OR contact number AND password
+        // Find employee by email OR contact number
         $employeeDetails = $this->employeesModel
             ->groupStart()
                 ->where('email1', $email)
                 ->orWhere('contact_number1', $email)
             ->groupEnd()
-            ->where('password', $password) // ⚠️ should be hashed in production
             ->first();
-    
-        if (!$employeeDetails) {
+
+        if (!$employeeDetails || !$this->verifyAndUpgradePassword($password, $employeeDetails, $this->employeesModel)) {
             return json_encode([
                 'status'  => 0,
-                'message' => 'Account Not Found',
+                'message' => 'Invalid email/contact number or password.',
             ]);
         }
     

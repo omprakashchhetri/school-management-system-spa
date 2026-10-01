@@ -76,9 +76,7 @@ $sd = $studentData; // shorthand
         <ul class="flex-align gap-4">
             <li><a href="dashboard" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a></li>
             <li><span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span></li>
-            <li><a href="profile" class="text-gray-200 fw-normal text-15 hover-text-main-600">Students</a></li>
-            <li><span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span></li>
-            <li><span class="text-main-600 fw-normal text-15">Student Details</span></li>
+            <li><span class="text-main-600 fw-normal text-15">My Profile</span></li>
         </ul>
     </div>
 
@@ -372,12 +370,16 @@ $sd = $studentData; // shorthand
                                     <?= date('d M Y', strtotime($fee['created_at'])) ?>
                                 </td>
                                 <td>
-                                    <?php if (strtolower($status) === 'paid'): ?>
-                                        <button class="btn btn-info btn-sm py-4 px-10">
+                                    <?php if ($status === 'paid' && !empty($fee['payment_id'])): ?>
+                                        <a href="<?= base_url('fees/receipt/' . $fee['payment_id']) ?>" target="_blank"
+                                            class="btn btn-info btn-sm py-4 px-10">
                                             <i class="ph ph-download me-4"></i>Receipt
-                                        </button>
+                                        </a>
+                                    <?php elseif ($status === 'paid'): ?>
+                                        <span class="text-13 text-gray-400">Paid</span>
                                     <?php else: ?>
-                                        <button class="btn btn-main btn-sm py-4 px-10">
+                                        <button type="button" class="btn btn-main btn-sm py-4 px-10" disabled
+                                            title="Online payment isn't available yet — please pay at the school office.">
                                             <i class="ph ph-credit-card me-4"></i>Pay Now
                                         </button>
                                     <?php endif; ?>
@@ -606,17 +608,20 @@ $sd = $studentData; // shorthand
                                 </td>
                                 <td>
                                     <?php if ($asn['status'] === 'submitted'): ?>
-                                        <button class="btn btn-info py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-eye me-4"></i>View
-                                        </button>
+                                        </a>
                                     <?php elseif ($asn['status'] === 'overdue'): ?>
-                                        <button class="btn btn-danger py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-danger py-4 px-10 text-13">
                                             <i class="ph ph-upload me-4"></i>Submit Now
-                                        </button>
+                                        </a>
                                     <?php else: ?>
-                                        <button class="btn btn-main py-4 px-10 text-13">
+                                        <a href="<?= base_url('post-login-student/assignment/' . $asn['id']) ?>"
+                                            class="btn btn-main py-4 px-10 text-13">
                                             <i class="ph ph-upload me-4"></i>Submit
-                                        </button>
+                                        </a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -667,9 +672,10 @@ $sd = $studentData; // shorthand
                                         </span>
                                         <?php endif; ?>
                                     </div>
-                                    <button class="btn btn-outline-main rounded-pill py-6 px-12 text-13">
-                                        <i class="ph ph-download me-6"></i>Download Marksheet
-                                    </button>
+                                    <a href="<?= base_url('post-login-student/marksheet/' . $examId) ?>"
+                                        class="btn btn-outline-main rounded-pill py-6 px-12 text-13">
+                                        <i class="ph ph-eye me-6"></i>View Marksheet
+                                    </a>
                                 </div>
                             </div>
 
@@ -807,8 +813,6 @@ $sd = $studentData; // shorthand
 
 </div><!-- /.dashboard-body -->
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(function () {
     // ── Cover image preview ────────────────────────────────────────────────

@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class SchedulesModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'schedules';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

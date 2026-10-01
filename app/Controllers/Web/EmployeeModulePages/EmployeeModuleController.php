@@ -18,30 +18,32 @@ class EmployeeModuleController extends BaseController
     }
 
     public function dashboard() {
-         
-        // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+
+        if (!isset($this->request->user->id)) {
+            return redirect()->to('/pre-login');
+        }
+
+        $dashboardData = $this->employeeManagementController->getEmployeeDashboard($this->request->user->id);
+
         return view('templates/sidebar-employee')
             .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-dashboard')
+            .  view('pages/employee-module-pages/employee-dashboard', $dashboardData)
         ;
     }
     
     public function list() {
-         
-        // return view('pages/admin-module-pages/role-tool-management', ['roleToolManagement' => $roleToolManagement]);
+
+        $roles = $this->adminRoleManagementController->getListOfRoles();
+
         return view('templates/sidebar-employee')
             .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-list')
+            .  view('pages/employee-module-pages/employee-list', [
+                'roles' => $roles,
+                'isAdmin' => $this->isAdmin(),
+            ])
         ;
     }
 
-    public function employee_add_edit() {
-        return view('templates/sidebar-employee')
-            .  view('templates/topbar')
-            .  view('pages/employee-module-pages/employee-list')
-        ;
-    }
-    
     public function employee_profile()
     {
         // Get employee ID from the authenticated user object
@@ -50,7 +52,7 @@ class EmployeeModuleController extends BaseController
         $employeeData = $this->employeeManagementController->getEmployeeDetails($employeeId);
         
         if (!$employeeData) {
-            return redirect()->to('employee/list')->with('error', 'Employee not found');
+            return redirect()->to('post-login-employee/employee/list')->with('error', 'Employee not found');
         }
         
         $roleDetails = $this->adminRoleManagementController->getOne($employeeData['employee']['role_id']);

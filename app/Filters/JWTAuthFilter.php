@@ -41,7 +41,7 @@ class JWTAuthFilter implements FilterInterface
         $uri = service('uri');
         $segment1 = $uri->getSegment(1);
 
-        $skipRoutes = ['api', 'pre-login', 'login', 'forgot-password', 'privacy-policy'];
+        $skipRoutes = ['api', 'pre-login', 'login', 'forgot-password', 'privacy-policy', 'fees'];
         if (in_array($segment1, $skipRoutes, true)) {
             return;
         }

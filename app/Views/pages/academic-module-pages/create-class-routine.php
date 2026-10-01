@@ -4,7 +4,7 @@
         <div class="breadcrumb mb-24">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="index.html" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
+                    <a href="/post-login-employee/admin/dashboard" class="text-gray-200 fw-normal text-15 hover-text-main-600">Home</a>
                 </li>
                 <li>
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
@@ -18,7 +18,7 @@
 
         <!-- Breadcrumb Right Start -->
         <div class="flex-align gap-8 flex-wrap">
-            <button class="btn btn-main text-sm btn-sm px-24 py-12 rounded-8" id="saveRoutineBtn">
+            <button class="btn btn-main text-sm btn-sm px-24 py-12 rounded-8" id="saveRoutineBtn" disabled>
                 <i class="ph ph-floppy-disk me-8"></i>
                 Save Routine
             </button>
@@ -37,16 +37,22 @@
                         <span class="text-lg"><i class="ph ph-chalkboard-teacher"></i></span>
                         <select class="form-control ps-8 pe-20 py-16 border-0 text-inherit rounded-4" id="classSelect">
                             <option value="" selected disabled>Choose Class</option>
-                            <option value="1">Class 1</option>
-                            <option value="2">Class 2</option>
-                            <option value="3">Class 3</option>
-                            <option value="4">Class 4</option>
-                            <option value="5">Class 5</option>
-                            <option value="6">Class 6</option>
-                            <option value="7">Class 7</option>
-                            <option value="8">Class 8</option>
-                            <option value="9">Class 9</option>
-                            <option value="10">Class 10</option>
+                            <?php foreach ($classes as $class): ?>
+                            <option value="<?= $class['id'] ?>"><?= esc($class['class_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-gray-900">Select Section</label>
+                    <div
+                        class="flex-align text-gray-500 text-13 border border-gray-100 rounded-4 ps-20 focus-border-main-600 bg-white">
+                        <span class="text-lg"><i class="ph ph-users-three"></i></span>
+                        <select class="form-control ps-8 pe-20 py-16 border-0 text-inherit rounded-4" id="sectionSelect">
+                            <option value="" selected disabled>Choose Section</option>
+                            <?php foreach ($sections as $section): ?>
+                            <option value="<?= $section['id'] ?>"><?= esc($section['section_label']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -135,7 +141,6 @@
                         <option value="" selected disabled>Export</option>
                         <option value="csv">CSV</option>
                         <option value="json">JSON</option>
-                        <option value="pdf">PDF</option>
                     </select>
                 </div>
             </div>
@@ -161,104 +166,84 @@
         </div>
     </div>
     <!-- Routine Table Section End -->
-
-    <!-- Subject List Card Start -->
-    <div class="card mt-24">
-        <div class="card-header">
-            <h6 class="text-lg mb-0">Available Subjects</h6>
-        </div>
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-12">
-                    <div class="flex-align flex-wrap gap-8" id="subjectBadges">
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Mathematics</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">English</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Science</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Social Studies</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Hindi</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Computer Science</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Physical Education</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Art & Craft</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Music</span>
-                        <span class="badge bg-main-50 text-main-600 py-8 px-16 rounded-pill">Drawing</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Subject List Card End -->
 </div>
 
+<script id="routineSubjectsData" type="application/json"><?= json_encode($subjects) ?></script>
+<script id="routineTeachersData" type="application/json"><?= json_encode(array_map(fn($t) => ['id' => $t['id'], 'name' => trim($t['firstname'] . ' ' . $t['lastname'])], $teachers)) ?></script>
+
 <script>
-$(document).ready(function() {
-    // Global variables - Fixed subject list
-    const subjects = ['Mathematics', 'English', 'Science', 'Social Studies', 'Hindi', 'Computer Science',
-        'Physical Education', 'Art & Craft', 'Music', 'Drawing'
-    ];
-    let routine = {};
+$(function () {
+    const subjects = JSON.parse(document.getElementById('routineSubjectsData').textContent);
+    const teachers = JSON.parse(document.getElementById('routineTeachersData').textContent);
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const baseUrl = jQuery('#globalBaseUrl').val();
 
-    // Generate routine structure
-    $('#generateRoutineBtn').on('click', function() {
-        const classSelect = $('#classSelect').val();
-        const periodCount = parseInt($('#periodCount').val());
-        const periodDuration = parseInt($('#periodDuration').val());
-        const lunchBreak = $('#lunchBreak').val();
-        const lunchDuration = parseInt($('#lunchDuration').val());
-        const startTime = $('#startTime').val();
+    function subjectOptions(selectedId) {
+        let html = '<option value="">Subject</option>';
+        subjects.forEach(s => {
+            html += `<option value="${s.id}" ${String(s.id) === String(selectedId) ? 'selected' : ''}>${s.subject_name}</option>`;
+        });
+        return html;
+    }
 
-        if (!classSelect || !periodCount) {
-            alert('Please select class and number of periods');
-            return;
-        }
+    function teacherOptions(selectedId) {
+        let html = '<option value="">Teacher</option>';
+        teachers.forEach(t => {
+            html += `<option value="${t.id}" ${String(t.id) === String(selectedId) ? 'selected' : ''}>${t.name}</option>`;
+        });
+        return html;
+    }
 
-        generateRoutineTable(periodCount, periodDuration, lunchBreak, lunchDuration, startTime);
-        $('#clearRoutineBtn').prop('disabled', false);
-    });
+    function addMinutes(time, minutes) {
+        const [hours, mins] = time.split(':').map(Number);
+        const totalMinutes = hours * 60 + mins + minutes;
+        const newHours = Math.floor(totalMinutes / 60) % 24;
+        const newMins = totalMinutes % 60;
+        return `${String(newHours).padStart(2, '0')}:${String(newMins).padStart(2, '0')}`;
+    }
 
-    // Generate routine table
-    function generateRoutineTable(periodCount, periodDuration, lunchBreak, lunchDuration, startTime) {
-        let tableHTML = '<table class="table table-striped dataTable" id="routineTable"><thead><tr>';
+    function cellHtml(day, period, subjectId, teacherId) {
+        return `
+            <div class="period-cell" data-day="${day}" data-period="${period}">
+                <select class="form-control py-6 px-8 border border-gray-100 rounded-4 text-11 subject-select mb-4">
+                    ${subjectOptions(subjectId)}
+                </select>
+                <select class="form-control py-6 px-8 border border-gray-100 rounded-4 text-11 teacher-select">
+                    ${teacherOptions(teacherId)}
+                </select>
+            </div>
+        `;
+    }
+
+    function generateRoutineTable(periodCount, periodDuration, lunchBreak, lunchDuration, startTime, existingGrid) {
+        existingGrid = existingGrid || {};
+        let tableHTML = '<table class="table table-striped" id="routineTable"><thead><tr>';
         tableHTML += '<th class="h6 text-gray-300">Day</th>';
 
-        // Calculate time for each period
         let currentTime = startTime;
         for (let i = 1; i <= periodCount; i++) {
             const endTime = addMinutes(currentTime, periodDuration);
-            tableHTML +=
-                `<th class="h6 text-gray-300">Period ${i}<br><small class="text-gray-200">${currentTime} - ${endTime}</small></th>`;
+            tableHTML += `<th class="h6 text-gray-300">Period ${i}<br><small class="text-gray-200">${currentTime} - ${endTime}</small></th>`;
             currentTime = endTime;
 
-            // Add lunch break column if applicable
             if (lunchBreak && parseInt(lunchBreak) === i) {
                 const lunchEnd = addMinutes(currentTime, lunchDuration);
-                tableHTML +=
-                    `<th class="h6 text-gray-300 bg-warning-50">Lunch Break<br><small class="text-gray-200">${currentTime} - ${lunchEnd}</small></th>`;
+                tableHTML += `<th class="h6 text-gray-300 bg-warning-50">Lunch Break<br><small class="text-gray-200">${currentTime} - ${lunchEnd}</small></th>`;
                 currentTime = lunchEnd;
             }
         }
 
         tableHTML += '</tr></thead><tbody>';
 
-        // Generate rows for each day
-        $.each(days, function(index, day) {
+        days.forEach(day => {
             tableHTML += `<tr><td><span class="h6 mb-0 fw-medium text-gray-300">${day}</span></td>`;
 
             for (let i = 1; i <= periodCount; i++) {
-                tableHTML += `
-                    <td>
-                        <div class="period-cell" data-day="${day}" data-period="${i}">
-                            <button class="btn btn-sm btn-outline-main w-100 py-5 px-5 text-10 add-period-btn">
-                                <i class="ph ph-plus me-4"></i> Add Subject
-                            </button>
-                        </div>
-                    </td>
-                `;
+                const existing = (existingGrid[day] || {})[i];
+                tableHTML += `<td>${cellHtml(day, i, existing ? existing.subject_id : '', existing ? existing.teacher_id : '')}</td>`;
 
-                // Add lunch break cell if applicable
                 if (lunchBreak && parseInt(lunchBreak) === i) {
-                    tableHTML +=
-                        '<td class="bg-warning-50 text-center"><span class="badge bg-warning-600 text-white py-8 px-16">Lunch</span></td>';
+                    tableHTML += '<td class="bg-warning-50 text-center"><span class="badge bg-warning-600 text-white py-8 px-16">Lunch</span></td>';
                 }
             }
 
@@ -268,63 +253,57 @@ $(document).ready(function() {
         tableHTML += '</tbody></table>';
 
         $('#routineTableContainer').html(tableHTML);
+        $('#clearRoutineBtn, #saveRoutineBtn').prop('disabled', false);
         updateRoutineStats();
     }
 
-    // Add subject to period - Using event delegation
-    $(document).on('click', '.add-period-btn', function() {
-        const $cell = $(this).closest('.period-cell');
-        const day = $cell.data('day');
-        const period = $cell.data('period');
-
-        const selectHTML = `
-            <div class="flex-align gap-4">
-                <select class="form-control py-8 px-12 border border-gray-100 rounded-4 text-12 subject-select" style="max-width: 110px;">
-                    <option value="" selected>Select Subject</option>
-                    ${subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('')}
-                </select>
-                <button class="btn btn-sm btn-danger-50 text-danger-600 delete-period-btn p-5" title="Remove">
-                    <i class="ph ph-trash"></i>
-                </button>
-            </div>
-        `;
-
-        $cell.html(selectHTML);
-    });
-
-    // Delete subject from period - Using event delegation
-    $(document).on('click', '.delete-period-btn', function() {
-        const $cell = $(this).closest('.period-cell');
-        const day = $cell.data('day');
-        const period = $cell.data('period');
-
-        const addBtnHTML = `
-            <button class="btn btn-sm btn-outline-main w-100 py-5 px-5 text-10 add-period-btn">
-                <i class="ph ph-plus me-4"></i> Add Subject
-            </button>
-        `;
-
-        $cell.html(addBtnHTML);
-    });
-
-    // Add minutes to time string
-    function addMinutes(time, minutes) {
-        const [hours, mins] = time.split(':').map(Number);
-        const totalMinutes = hours * 60 + mins + minutes;
-        const newHours = Math.floor(totalMinutes / 60) % 24;
-        const newMins = totalMinutes % 60;
-        return `${String(newHours).padStart(2, '0')}:${String(newMins).padStart(2, '0')}`;
-    }
-
-    // Update routine statistics
     function updateRoutineStats() {
         const periodCount = $('#periodCount').val();
-        $('#routineStats').text(
-            `${days.length} days × ${periodCount} periods = ${days.length * periodCount} total slots`);
+        $('#routineStats').text(`${days.length} days x ${periodCount} periods = ${days.length * periodCount} total slots`);
     }
 
-    // Clear routine
-    $('#clearRoutineBtn').on('click', function() {
+    $('#generateRoutineBtn').on('click', function () {
+        const classId = $('#classSelect').val();
+        const sectionId = $('#sectionSelect').val();
+        const periodCount = parseInt($('#periodCount').val());
+        const periodDuration = parseInt($('#periodDuration').val());
+        const lunchBreak = $('#lunchBreak').val();
+        const lunchDuration = parseInt($('#lunchDuration').val());
+        const startTime = $('#startTime').val();
+
+        if (!classId || !sectionId || !periodCount) {
+            alert('Please select class, section, and number of periods');
+            return;
+        }
+
+        // Prefill with any existing routine already saved for this class+section.
+        $.ajax({
+            url: baseUrl + 'post-login-employee/academic/get-class-routine',
+            type: 'POST',
+            data: { class_id: classId, section_id: sectionId },
+            success: function (res) {
+                res = JSON.parse(res);
+                const existingGrid = {};
+                if (res.has_routine) {
+                    Object.keys(res.grid || {}).forEach(day => {
+                        existingGrid[day] = {};
+                        Object.keys(res.grid[day]).forEach(period => {
+                            existingGrid[day][period] = {
+                                subject_id: res.grid[day][period].subject_id,
+                                teacher_id: res.grid[day][period].teacher_id,
+                            };
+                        });
+                    });
+                }
+                generateRoutineTable(periodCount, periodDuration, lunchBreak, lunchDuration, startTime, existingGrid);
+            },
+            error: function () {
+                generateRoutineTable(periodCount, periodDuration, lunchBreak, lunchDuration, startTime, {});
+            }
+        });
+    });
+
+    $('#clearRoutineBtn').on('click', function () {
         if (confirm('Are you sure you want to clear the entire routine?')) {
             $('#routineTableContainer').html(`
                 <div class="text-center py-5">
@@ -332,49 +311,95 @@ $(document).ready(function() {
                     <p class="text-gray-400 mt-3">Please configure the settings above and click "Generate Routine Structure" to create your routine.</p>
                 </div>
             `);
-            $('#clearRoutineBtn').prop('disabled', true);
+            $('#clearRoutineBtn, #saveRoutineBtn').prop('disabled', true);
             $('#routineStats').text('Ready to build routine');
         }
     });
 
-    // Save routine
-    $('#saveRoutineBtn').on('click', function() {
-        const routineData = {};
-        let hasData = false;
+    $('#saveRoutineBtn').on('click', function () {
+        const classId = $('#classSelect').val();
+        const sectionId = $('#sectionSelect').val();
 
-        $('.period-cell').each(function() {
+        const entries = [];
+        $('.period-cell').each(function () {
             const $cell = $(this);
-            const day = $cell.data('day');
-            const period = $cell.data('period');
-            const $select = $cell.find('.subject-select');
-
-            if ($select.length > 0) {
-                const subject = $select.val();
-
-                if (!routineData[day]) {
-                    routineData[day] = {};
-                }
-                routineData[day][`period_${period}`] = subject || 'Empty';
-                hasData = true;
+            const subject = $cell.find('.subject-select').val();
+            const teacher = $cell.find('.teacher-select').val();
+            if (subject && teacher) {
+                entries.push({ day: $cell.data('day'), period: $cell.data('period'), subject, teacher });
             }
         });
 
-        if (!hasData) {
-            alert('Please generate a routine first!');
+        if (entries.length === 0) {
+            alert('Fill in at least one period (subject + teacher) before saving.');
             return;
         }
 
-        console.log('Routine Data:', routineData);
-        alert('Routine saved successfully! Check console for data.');
+        $('.preloader').show();
+        $.ajax({
+            url: baseUrl + 'post-login-employee/academic/save-class-routine',
+            type: 'POST',
+            data: {
+                class_id: classId,
+                section_id: sectionId,
+                period_config: {
+                    period_count: $('#periodCount').val(),
+                    period_duration: $('#periodDuration').val(),
+                    lunch_after: $('#lunchBreak').val(),
+                    lunch_duration: $('#lunchDuration').val(),
+                    start_time: $('#startTime').val(),
+                },
+                entries: entries,
+            },
+            success: function (res) {
+                res = JSON.parse(res);
+                alert(res.message || res.error);
+            },
+            error: function () {
+                alert('Failed to save routine.');
+            },
+            complete: function () {
+                $('.preloader').hide();
+            }
+        });
     });
 
-    // Export functionality
-    $('#exportOptions').on('change', function() {
+    $('#exportOptions').on('change', function () {
         const format = $(this).val();
-        if (format) {
-            alert(`Exporting routine as ${format.toUpperCase()}...`);
-            $(this).val('');
+        if (!format) return;
+
+        const classId = $('#classSelect option:selected').text();
+        const sectionId = $('#sectionSelect option:selected').text();
+        const rows = [];
+        $('#routineTable tbody tr').each(function () {
+            const day = $(this).find('td').first().text().trim();
+            $(this).find('.period-cell').each(function () {
+                const subject = $(this).find('.subject-select option:selected').text();
+                const teacher = $(this).find('.teacher-select option:selected').text();
+                if (subject && subject !== 'Subject') {
+                    rows.push({ day, period: $(this).data('period'), subject, teacher });
+                }
+            });
+        });
+
+        let blob, filename;
+        if (format === 'json') {
+            blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+            filename = `routine-${classId}-${sectionId}.json`;
+        } else {
+            const header = 'Day,Period,Subject,Teacher\n';
+            const csv = rows.map(r => `${r.day},${r.period},${r.subject},${r.teacher}`).join('\n');
+            blob = new Blob([header + csv], { type: 'text/csv' });
+            filename = `routine-${classId}-${sectionId}.csv`;
         }
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        $(this).val('');
     });
 });
 </script>

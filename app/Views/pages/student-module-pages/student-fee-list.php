@@ -26,7 +26,7 @@ $currentFilter = $request->getGet('fee_status') ?? 'all';
         <div class="breadcrumb mb-0">
             <ul class="flex-align gap-4">
                 <li>
-                    <a href="<?= base_url('student/dashboard') ?>"
+                    <a href="<?= base_url('post-login-student/dashboard') ?>"
                        class="text-gray-200 fw-normal text-15 hover-text-main-600">
                         Home
                     </a>
@@ -167,12 +167,16 @@ $currentFilter = $request->getGet('fee_status') ?? 'all';
 
                                 <!-- Action -->
                                 <td>
-                                    <?php if ($status === 'paid'): ?>
-                                        <button class="btn btn-info py-4 px-10 text-13">
+                                    <?php if ($status === 'paid' && !empty($row['payment_id'])): ?>
+                                        <a href="<?= base_url('fees/receipt/' . $row['payment_id']) ?>" target="_blank"
+                                            class="btn btn-info py-4 px-10 text-13">
                                             <i class="ph ph-download me-4"></i>Receipt
-                                        </button>
+                                        </a>
+                                    <?php elseif ($status === 'paid'): ?>
+                                        <span class="text-13 text-gray-400">Paid</span>
                                     <?php else: ?>
-                                        <button class="btn btn-main py-4 px-10 text-13">
+                                        <button type="button" class="btn btn-main py-4 px-10 text-13" disabled
+                                            title="Online payment isn't available yet — please pay at the school office.">
                                             <i class="ph ph-credit-card me-4"></i>Pay Now
                                         </button>
                                     <?php endif; ?>

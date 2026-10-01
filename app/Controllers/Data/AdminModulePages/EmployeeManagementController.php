@@ -10,7 +10,6 @@ class EmployeeManagementController extends BaseController
     protected $subjectAllocationsModel;
     protected $classTeachersModel;
     protected $documentsModel;
-    protected $attendanceRecordsModel;
     protected $classesModel;
     protected $sectionsModel;
     protected $subjectsModel;
@@ -21,18 +20,17 @@ class EmployeeManagementController extends BaseController
         $this->subjectAllocationsModel = model('SubjectAllocationsModel');
         $this->classTeachersModel = model('ClassTeachersModel');
         $this->documentsModel = model('DocumentsModel');
-        $this->attendanceRecordsModel = model('AttendanceRecordsModel');
         $this->classesModel = model('ClassesModel');
         $this->sectionsModel = model('SectionsModel');
         $this->subjectsModel = model('SubjectsModel');
         $this->rolesModel = model('RolesModel');
     }
 
-    public function getEmployeeList($postData)
+    public function getEmployeeList($postData, $isAdmin = false)
     {
-        $draw   = intval($postData['draw']);
-        $start  = intval($postData['start']);
-        $length = intval($postData['length']);
+        $draw   = intval($postData['draw'] ?? 1);
+        $start  = intval($postData['start'] ?? 0);
+        $length = intval($postData['length'] ?? 10);
         $searchValue = $postData['search']['value'] ?? '';
 
         $builder = $this->employeeModel->builder()
@@ -87,36 +85,36 @@ class EmployeeManagementController extends BaseController
         $data = [];
         foreach ($records as $row) {
             $fullName = trim($row->firstname . ' ' . $row->lastname);
-            $photo = !empty($row->profile_image) 
-                ? base_url('uploads/employees/'.$row->profile_image) 
+            $photo = !empty($row->profile_image)
+                ? base_url('uploads/employees/'.$row->profile_image)
                 : base_url('assets/images/thumbs/student-img1.png');
 
             $data[] = [
-                'checkbox'   => '<input type="checkbox" value="'.$row->id.'" class="form-check-input">',
-                'name'       => '<div class="flex-align gap-8 nav_js" data-route="admin/employee-details/'.$row->id.'">
-                                    <img src="'.$photo.'" alt="" class="w-40 h-40 rounded-circle" />
-                                    <span class="h6 mb-0 fw-medium text-gray-300">'.$fullName.'</span>
+                'checkbox'   => '<input type="checkbox" value="'.esc($row->id, 'attr').'" class="form-check-input">',
+                'name'       => '<div class="flex-align gap-8 nav_js" data-route="admin/employee-details/'.esc($row->id, 'attr').'">
+                                    <img src="'.esc($photo, 'attr').'" alt="" class="w-40 h-40 rounded-circle" />
+                                    <span class="h6 mb-0 fw-medium text-gray-300">'.esc($fullName).'</span>
                                 </div>',
-                'email'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->email1.'</span>',
-                'phone'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->contact_number1.'</span>',
-                'role'       => '<span class="h6 mb-0 fw-medium text-gray-300">'.$row->role_name.'</span>',
+                'email'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->email1).'</span>',
+                'phone'      => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->contact_number1).'</span>',
+                'role'       => '<span class="h6 mb-0 fw-medium text-gray-300">'.esc($row->role_name).'</span>',
                 'created_at' => '<span class="h6 mb-0 fw-medium text-gray-300">'.date("M d, Y", strtotime($row->created_at)).'</span>',
-                'actions'    => '<button 
-                                    data-id="'.$row->id.'" 
-                                    data-firstname="'.$row->firstname.'" 
-                                    data-lastname="'.$row->lastname.'" 
-                                    data-email="'.$row->email1.'" 
-                                    data-phone="'.$row->contact_number1.'" 
-                                    data-role="'.$row->role_id.'" 
+                'actions'    => $isAdmin ? '<button
+                                    data-id="'.esc($row->id, 'attr').'"
+                                    data-firstname="'.esc($row->firstname, 'attr').'"
+                                    data-lastname="'.esc($row->lastname, 'attr').'"
+                                    data-email="'.esc($row->email1, 'attr').'"
+                                    data-phone="'.esc($row->contact_number1, 'attr').'"
+                                    data-role="'.esc($row->role_id, 'attr').'"
                                     class="edit-employee-js bg-warning-50 text-warning-600 py-2 px-14 rounded-pill">
                                         Edit
                                     </button>
-                                    <button data-id="'.$row->id.'" 
+                                    <button data-id="'.esc($row->id, 'attr').'"
                                     class="delete-employee-js bg-danger-50 text-danger-600 py-2 px-14 rounded-pill">
                                         Delete
-                                    </button>'
+                                    </button>' : '<span class="text-gray-400 text-13">&mdash;</span>'
             ];
-            
+
         }
 
         return service('response')->setJSON([
@@ -218,35 +216,120 @@ class EmployeeManagementController extends BaseController
             ->get()
             ->getResultArray();
 
-        // Get recent attendance records (last 30 days)
-        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        $attendanceRecords = $this->attendanceRecordsModel->builder()
-            ->select('attendance_records.*, c.class_name, s.section_label')
-            ->join('classes c', 'c.id = attendance_records.class_id', 'left')
-            ->join('sections s', 's.id = attendance_records.section_id', 'left')
-            ->where('attendance_records.taken_by', $employeeId)
-            ->where('attendance_records.date >=', $thirtyDaysAgo)
-            ->where('attendance_records.deleted_at', null)
-            ->orderBy('attendance_records.date', 'DESC')
-            ->limit(10)
-            ->get()
-            ->getResultArray();
-
-        // Calculate attendance statistics (mock for now - you can enhance this)
-        $attendanceStats = [
-            'present_days' => 22,
-            'absent_days' => 2,
-            'late_arrivals' => 1,
-            'attendance_rate' => 92
-        ];
-
         return [
             'employee' => $employee,
             'subject_allocations' => $subjectAllocations,
             'class_teacher_assignments' => $classTeacherAssignments,
             'documents' => $documents,
-            'attendance_records' => $attendanceRecords,
-            'attendance_stats' => $attendanceStats
+        ];
+    }
+
+    public function getEmployeeDashboard($employeeId)
+    {
+        $today = date('l');
+
+        $schedulesModel = model('SchedulesModel');
+        $todaySchedule = $schedulesModel->builder()
+            ->select('schedules.day, pts.label, pts.start_time, pts.end_time, sub.subject_name, c.class_name, s.section_label')
+            ->join('period_time_slots pts', 'pts.id = schedules.related_period', 'left')
+            ->join('subjects sub', 'sub.id = schedules.related_subject', 'left')
+            ->join('classes c', 'c.id = schedules.related_class', 'left')
+            ->join('sections s', 's.id = schedules.related_section', 'left')
+            ->where('schedules.related_teacher', $employeeId)
+            ->where('schedules.day', $today)
+            ->where('schedules.deleted_at', null)
+            ->orderBy('pts.start_time', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $now = date('H:i:s');
+        foreach ($todaySchedule as &$period) {
+            if (empty($period['start_time']) || empty($period['end_time'])) {
+                $period['status'] = 'Upcoming';
+            } elseif ($now > $period['end_time']) {
+                $period['status'] = 'Completed';
+            } elseif ($now >= $period['start_time']) {
+                $period['status'] = 'In Progress';
+            } else {
+                $period['status'] = 'Upcoming';
+            }
+        }
+        unset($period);
+
+        $subjectAllocations = $this->subjectAllocationsModel->builder()
+            ->select('subject_allocations.*, c.class_name, s.section_label, sub.subject_name')
+            ->join('classes c', 'c.id = subject_allocations.class', 'left')
+            ->join('sections s', 's.id = subject_allocations.section', 'left')
+            ->join('subjects sub', 'sub.id = subject_allocations.subject', 'left')
+            ->where('subject_allocations.teacher', $employeeId)
+            ->where('subject_allocations.deleted_at', null)
+            ->get()
+            ->getResultArray();
+
+        $studentsModel = model('StudentsModel');
+        $assignedClasses = [];
+        $subjectSummary = [];
+
+        foreach ($subjectAllocations as $alloc) {
+            $assignedClasses[$alloc['class'] . '-' . $alloc['section']] = true;
+
+            $subjectName = $alloc['subject_name'] ?? 'Unknown Subject';
+            if (!isset($subjectSummary[$subjectName])) {
+                $subjectSummary[$subjectName] = [
+                    'subject_name' => $subjectName,
+                    'classes' => [],
+                    'student_count' => 0,
+                    'periods_per_week' => 0,
+                ];
+            }
+
+            $classLabel = trim(($alloc['class_name'] ?? '') . ' ' . ($alloc['section_label'] ?? ''));
+            if ($classLabel !== '' && !in_array($classLabel, $subjectSummary[$subjectName]['classes'], true)) {
+                $subjectSummary[$subjectName]['classes'][] = $classLabel;
+            }
+
+            $subjectSummary[$subjectName]['student_count'] += $studentsModel->builder()
+                ->where('related_class', $alloc['class'])
+                ->where('related_section', $alloc['section'])
+                ->where('deleted_at', null)
+                ->countAllResults();
+
+            $subjectSummary[$subjectName]['periods_per_week'] += $schedulesModel->builder()
+                ->where('related_teacher', $employeeId)
+                ->where('related_subject', $alloc['subject'])
+                ->where('related_class', $alloc['class'])
+                ->where('related_section', $alloc['section'])
+                ->where('deleted_at', null)
+                ->countAllResults();
+        }
+
+        // "My Attendance" reflects app-level teacher_attendance records (punch-in/out);
+        // there's no UI yet to create them, so this is null (not a fabricated number)
+        // until that data actually exists for this employee.
+        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
+        $attendanceRows = model('TeacherAttendanceModel')->builder()
+            ->where('teacher_id', $employeeId)
+            ->where('date >=', $thirtyDaysAgo)
+            ->get()
+            ->getResultArray();
+        $totalDays = count($attendanceRows);
+        $presentDays = count(array_filter($attendanceRows, fn ($r) => strtolower($r['status']) === 'present'));
+        $attendanceRate = $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 1) : null;
+
+        $pendingDocuments = $this->documentsModel->builder()
+            ->where('related_teacher', $employeeId)
+            ->where('status', 'pending')
+            ->where('deleted_at', null)
+            ->countAllResults();
+
+        return [
+            'today' => $today,
+            'today_schedule' => $todaySchedule,
+            'classes_today_count' => count($todaySchedule),
+            'assigned_classes_count' => count($assignedClasses),
+            'subject_summary' => array_values($subjectSummary),
+            'attendance_rate' => $attendanceRate,
+            'pending_documents_count' => $pendingDocuments,
         ];
     }
 
@@ -293,8 +376,10 @@ class EmployeeManagementController extends BaseController
         return ['error' => 'Failed to update employee details'];
     }
 
-    public function uploadEmployeeImage($employeeId, $imageType = 'profile', $request)
+    public function uploadEmployeeImage($employeeId, $imageType = 'profile', $request = null)
     {
+        $request ??= service('request');
+
         $employee = $this->employeeModel->find($employeeId);
         if (!$employee) {
             return ['error' => 'Employee not found'];

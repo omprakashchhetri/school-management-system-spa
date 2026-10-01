@@ -1,0 +1,69 @@
+#--------------------------------------------------------------------
+# Copy this file to .env and adjust values for your local machine.
+# This file (`env`) is committed as the template; `.env` is gitignored
+# and never should be committed.
+#--------------------------------------------------------------------
+
+#--------------------------------------------------------------------
+# ENVIRONMENT
+#--------------------------------------------------------------------
+
+CI_ENVIRONMENT = development
+
+#--------------------------------------------------------------------
+# APP
+#--------------------------------------------------------------------
+
+app.baseURL = 'http://localhost:8080/'
+
+#--------------------------------------------------------------------
+# DATABASE
+#--------------------------------------------------------------------
+# Match these to a local MySQL/MariaDB instance. After creating the
+# database, run:
+#   php spark migrate
+#   php spark db:seed DatabaseSeeder
+
+database.default.hostname = 127.0.0.1
+database.default.database = school_management_system
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+database.default.port = 3306
+
+#--------------------------------------------------------------------
+# APP-SPECIFIC SETTINGS
+#--------------------------------------------------------------------
+# JWT_SECRET is required — every authenticated request is verified
+# against it (app/Filters/JWTAuthFilter.php, app/Libraries/JwtHandler.php).
+# Generate one locally, e.g.: php -r "echo bin2hex(random_bytes(32));"
+# Never reuse a production secret in a local/dev environment.
+
+JWT_SECRET = change-this-to-a-random-string-for-local-dev
+
+# Used by AdminRoleManagementController for list pagination.
+PAGINATION_LIMIT = 10
+
+#--------------------------------------------------------------------
+# TEST DATABASE (used by `vendor/bin/phpunit` DB-backed tests)
+#--------------------------------------------------------------------
+# The schema uses MySQL-specific DDL (current_timestamp(), ENGINE=InnoDB,
+# ON UPDATE CURRENT_TIMESTAMP), so the test connection must be MySQLi
+# too — CodeIgniter's own SQLite3 default for the "tests" group can't
+# run app/Database/Migrations/2026-09-24-000000_InitialSchema.php.
+# Create the database first: CREATE DATABASE school_management_system_test;
+
+database.tests.hostname = 127.0.0.1
+database.tests.database = school_management_system_test
+database.tests.username = root
+database.tests.password =
+database.tests.DBDriver = MySQLi
+database.tests.port = 3306
+# CodeIgniter's own "tests" group defaults DBPrefix to "db_" precisely to
+# catch code that isn't prefix-safe. Our migration uses raw CREATE TABLE
+# SQL to mirror production exactly, which does NOT get auto-prefixed —
+# only CodeIgniter's query builder/Forge calls do. Leaving DBPrefix set
+# would make the migration create unprefixed tables while seeders/Forge
+# look for "db_"-prefixed ones. Production has no prefix either, so this
+# just matches that.
+database.tests.DBPrefix =

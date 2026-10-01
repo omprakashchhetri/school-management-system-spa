@@ -9,7 +9,6 @@ use CodeIgniter\Model;
  */
 class AttendanceRecordsModel extends Model
 {
-    protected $DBGroup = 'default';
     protected $table = 'attendance_records';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;

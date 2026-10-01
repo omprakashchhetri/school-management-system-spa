@@ -16,9 +16,9 @@ class SyllabusManagementController extends BaseController
 
     public function getSyllabusList(array $postData)
     {
-        $draw = intval($postData['draw']);
-        $start = intval($postData['start']);
-        $length = intval($postData['length']);
+        $draw = intval($postData['draw'] ?? 1);
+        $start = intval($postData['start'] ?? 0);
+        $length = intval($postData['length'] ?? 10);
         $searchValue = $postData['search']['value'] ?? '';
 
         /* -------------------------------------------------
