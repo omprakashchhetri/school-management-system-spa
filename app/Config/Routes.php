@@ -139,11 +139,9 @@ $routes->group('post-login-employee', function ($routes) {
     });
 
     $routes->group('attendance', function ($routes) {
-        $routes->post('list', 'Web\AttendanceModulePages\AttendanceModuleController::list');
         $routes->post('get-attendance-list', 'Web\AttendanceModulePages\AttendanceModuleController::getAttendanceList');
         $routes->post('mark-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::addAttendance');
         $routes->post('edit-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::editAttendance');
-        $routes->post('delete-attendance', 'Web\AttendanceModulePages\AttendanceModuleController::deleteAttendance');
     });
 
     $routes->group('fees', function ($routes) {
@@ -207,8 +205,6 @@ $routes->group('post-login-employee', function ($routes) {
     $routes->post('get-subject-list', 'Web\AdminModulePages\AdminModuleController::getSubjectList');
 
 
-
-    $routes->post('student-details', 'Web\AttendanceModulePages\AttendanceModuleController::student_details');
 
 
     // ========================================

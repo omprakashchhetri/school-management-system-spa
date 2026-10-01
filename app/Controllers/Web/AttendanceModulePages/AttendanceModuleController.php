@@ -45,11 +45,4 @@ class AttendanceModuleController extends BaseController
         ;
     }
 
-    public function student_details() {
-       
-        return view('templates/sidebar-attendance')
-            .  view('templates/topbar')
-            .  view('pages/student-module-pages/student-details')
-        ;
-    }
 }
