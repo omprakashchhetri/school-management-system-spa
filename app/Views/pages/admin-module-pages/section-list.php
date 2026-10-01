@@ -10,7 +10,7 @@
                     <span class="text-gray-500 fw-normal d-flex"><i class="ph ph-caret-right"></i></span>
                 </li>
                 <li>
-                    <span class="text-main-600 fw-normal text-15">Class List</span>
+                    <span class="text-main-600 fw-normal text-15">Section List</span>
                 </li>
             </ul>
         </div>
