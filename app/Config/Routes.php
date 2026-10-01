@@ -15,6 +15,7 @@ $routes->set404Override(function () {
 $routes->get('/', 'Web\DashboardController::pre_login');
 $routes->get('pre-login', 'Web\DashboardController::pre_login');
 $routes->get('forgot-password', 'Web\DashboardController::forgot_password');
+$routes->post('forgot-password', 'Web\DashboardController::forgot_password_form');
 // ── Public Fee Receipt (no login required) ──────────────────
 $routes->get('fees/receipt/(:num)', 'Web\FeesModulePages\FeesModuleController::feeReceipt/$1');
 // Also support query string: /fees/receipt?payment_id=6

@@ -7,10 +7,6 @@ use App\Controllers\BaseController;
 class SISController extends BaseController
 {
     protected $employeeModel;
-    protected $subjectAllocationsModel;
-    protected $classTeachersModel;
-    protected $documentsModel;
-    protected $attendanceRecordsModel;
     protected $classesModel;
     protected $sectionsModel;
     protected $subjectsModel;
@@ -19,10 +15,6 @@ class SISController extends BaseController
 
     public function __construct(){
         $this->employeeModel = model('EmployeesModel');
-        $this->subjectAllocationsModel = model('SubjectAllocationsModel');
-        $this->classTeachersModel = model('ClassTeachersModel');
-        $this->documentsModel = model('DocumentsModel');
-        $this->attendanceRecordsModel = model('AttendanceRecordsModel');
         $this->classesModel = model('ClassesModel');
         $this->sectionsModel = model('SectionsModel');
         $this->subjectsModel = model('SubjectsModel');
@@ -163,95 +155,6 @@ class SISController extends BaseController
         ]);
 
         return ['message' => 'Employee deleted successfully'];
-    }
-
-    public function getEmployeeDetails($employeeId) 
-    {
-        // Get basic employee details
-        $employee = $this->employeeModel
-            ->select('employees.*, r.role_name')
-            ->join('roles r', 'r.id = employees.role_id', 'left')
-            ->where('employees.id', $employeeId)
-            ->where('employees.deleted_at', null)
-            ->first();
-
-        if (!$employee) {
-            return null;
-        }
-
-        // Exclude sensitive information
-        unset($employee['password']);
-        unset($employee['issued_jwt_token']);
-
-        // Get subject allocations with details
-        $subjectAllocations = $this->subjectAllocationsModel->builder()
-            ->select('subject_allocations.*, c.class_name, s.section_label, sub.subject_name')
-            ->join('classes c', 'c.id = subject_allocations.class', 'left')
-            ->join('sections s', 's.id = subject_allocations.section', 'left')
-            ->join('subjects sub', 'sub.id = subject_allocations.subject', 'left')
-            ->where('subject_allocations.teacher', $employeeId)
-            ->where('subject_allocations.deleted_at', null)
-            ->get()
-            ->getResultArray();
-
-        // Get class teacher assignments
-        $classTeacherAssignments = $this->classTeachersModel->builder()
-            ->select('class_teachers.*, c.class_name, s.section_label')
-            ->join('classes c', 'c.id = class_teachers.class', 'left')
-            ->join('sections s', 's.id = class_teachers.section', 'left')
-            ->where('class_teachers.teacher', $employeeId)
-            ->where('class_teachers.deleted_at', null)
-            ->get()
-            ->getResultArray();
-
-        // Count students in each class teacher assignment
-        $studentsModel = model('StudentsModel');
-        foreach ($classTeacherAssignments as &$assignment) {
-            $studentCount = $studentsModel->builder()
-                ->where('related_class', $assignment['class'])
-                ->where('related_section', $assignment['section'])
-                ->where('deleted_at', null)
-                ->countAllResults();
-            $assignment['student_count'] = $studentCount;
-        }
-
-        // Get documents
-        $documents = $this->documentsModel->builder()
-            ->where('related_teacher', $employeeId)
-            ->where('deleted_at', null)
-            ->get()
-            ->getResultArray();
-
-        // Get recent attendance records (last 30 days)
-        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        $attendanceRecords = $this->attendanceRecordsModel->builder()
-            ->select('attendance_records.*, c.class_name, s.section_label')
-            ->join('classes c', 'c.id = attendance_records.class_id', 'left')
-            ->join('sections s', 's.id = attendance_records.section_id', 'left')
-            ->where('attendance_records.taken_by', $employeeId)
-            ->where('attendance_records.date >=', $thirtyDaysAgo)
-            ->where('attendance_records.deleted_at', null)
-            ->orderBy('attendance_records.date', 'DESC')
-            ->limit(10)
-            ->get()
-            ->getResultArray();
-
-        // Calculate attendance statistics (mock for now - you can enhance this)
-        $attendanceStats = [
-            'present_days' => 22,
-            'absent_days' => 2,
-            'late_arrivals' => 1,
-            'attendance_rate' => 92
-        ];
-
-        return [
-            'employee' => $employee,
-            'subject_allocations' => $subjectAllocations,
-            'class_teacher_assignments' => $classTeacherAssignments,
-            'documents' => $documents,
-            'attendance_records' => $attendanceRecords,
-            'attendance_stats' => $attendanceStats
-        ];
     }
 
     public function updateEmployeeDetails($data): array

@@ -156,8 +156,7 @@ class StudentModuleController extends BaseController
         // ── Documents ─────────────────────────────────────────────────────
         $documents = $this->studentsController->getStudentDocuments($studentId, 10);
 
-        return view('templates/header')
-            . view('templates/sidebar')
+        return view('templates/sidebar')
             . view('templates/topbar')
             . view('pages/student-module-pages/student-details', [
                 'studentData' => $studentData,

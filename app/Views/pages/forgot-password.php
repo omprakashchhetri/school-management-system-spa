@@ -15,7 +15,10 @@
             <p class="text-gray-600 text-15 mb-32">Lost your password? Please enter your email address. You will receive
                 a link to create a new password via email.</p>
 
-            <form action="forgot-password.html#">
+            <form id="forgotPasswordForm">
+                <div class="alert alert-info d-none" id="forgotPasswordNotice">
+                    Self-service password reset isn't set up yet. Please contact your school administrator to reset your password.
+                </div>
                 <div class="mb-24">
                     <label for="email" class="form-label mb-8 h6">Email </label>
                     <div class="position-relative">
@@ -27,7 +30,7 @@
                 </div>
                 <button type="submit" class="btn btn-main rounded-pill w-100">Send Reset Link</button>
 
-                <a href="sign-in.html" class="my-32 text-main-600 flex-align gap-8 justify-content-center"> <i
+                <a href="<?= base_url('pre-login') ?>" class="my-32 text-main-600 flex-align gap-8 justify-content-center"> <i
                         class="ph ph-arrow-left d-flex"></i> Back To Login</a>
 
                 <ul class="flex-align gap-10 flex-wrap justify-content-center">
@@ -81,3 +84,11 @@
 <!-- main js -->
 <script src="<?=base_url()?>assets/js/main.js"></script>
 <script src="<?=base_url()?>assets/js/login.js"></script>
+<script>
+jQuery(function ($) {
+    $('#forgotPasswordForm').on('submit', function (e) {
+        e.preventDefault();
+        $('#forgotPasswordNotice').removeClass('d-none');
+    });
+});
+</script>

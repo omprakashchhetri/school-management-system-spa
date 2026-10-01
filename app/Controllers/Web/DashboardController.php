@@ -47,6 +47,11 @@ class DashboardController extends BaseController
     public function forgot_password(): string{
         return view('portal/forgot-password');
     }
+
+    public function forgot_password_form(): string
+    {
+        return view('pages/forgot-password');
+    }
     
     public function student_list(): string|ResponseInterface
     {

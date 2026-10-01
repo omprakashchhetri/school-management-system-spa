@@ -10,7 +10,7 @@ jQuery(document).ready(async function () {
     Cookies.remove("loginType");
   };
 
-  const loadLogin = () => {
+  const loadForgotPassword = () => {
     jQuery.ajax({
       url: baseUrl + "forgot-password",
       type: "POST",
@@ -25,23 +25,21 @@ jQuery(document).ready(async function () {
   const loginType = getItem("loginType");
 
   if (!token || !loginType) {
-    loadLogin();
+    loadForgotPassword();
     return;
   }
 
   let dashboardUrl = "";
 
-  // if (loginType === "student") {
-  //   dashboardUrl = baseUrl + "post-login-student/dashboard";
-  // }
-  // else if (loginType === "employee") {
-  //   dashboardUrl = baseUrl + "post-login-employee/admin/dashboard";
-  // }
-  // else {
-  //   clearAuth();
-  //   loadLogin();
-  //   return;
-  // }
+  if (loginType === "student") {
+    dashboardUrl = baseUrl + "post-login-student/dashboard";
+  } else if (loginType === "employee") {
+    dashboardUrl = baseUrl + "post-login-employee/admin/view-modules";
+  } else {
+    clearAuth();
+    loadForgotPassword();
+    return;
+  }
 
   try {
     const res = await jQuery.ajax({
@@ -54,13 +52,13 @@ jQuery(document).ready(async function () {
 
     if (res?.error) {
       clearAuth();
-      loadLogin();
+      loadForgotPassword();
       return;
     }
-    window.location.href(dashboardUrl);
+    window.location.href = dashboardUrl;
   } catch (err) {
     console.error("Auth check failed:", err);
     clearAuth();
-    loadLogin();
+    loadForgotPassword();
   }
 });
