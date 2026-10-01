@@ -44,6 +44,26 @@ about since the pattern can recur):
 - A stray `document.addEventListener("backbutton", ...)` registered *inside*
   a chart-rendering function, so a new listener piled up every time that
   chart's route loaded, without ever being removed.
+- A page's header view (the one carrying the jQuery/Bootstrap `<script>`
+  tags) got re-embedded into a per-route AJAX fragment instead of being
+  rendered only once on the true initial page load. Since `navigateTo()`
+  injects fragments via jQuery `.html()` (which executes embedded
+  `<script>` tags), this re-ran Bootstrap's bundle on every navigation,
+  stacking up extra delegated dropdown click listeners — a dropdown would
+  work right after a fresh page load and then stop responding (or
+  intermittently work) after further navigation, depending on whether the
+  accumulated listener count was even or odd. Fixed in both the student
+  portal (topbar profile dropdown) and the employee portal (document
+  approval dropdown); if a toggle/dropdown "breaks after navigating" rather
+  than being broken from the start, check for a duplicated header include
+  before anything else.
+- A DataTable (`responsive: true`) initialized while its Bootstrap tab/pill
+  pane was still `display:none` measured a near-zero container width and
+  locked it in, collapsing the page layout the moment the tab was opened.
+  The router's global `shown.bs.tab` handler now re-adjusts/recalcs any
+  DataTable inside a pane as soon as it's shown — covers this automatically
+  for new DataTable+tabs pages, but worth knowing if a table/layout looks
+  broken only on a non-default tab.
 
 If you add a new page fragment that needs `navigateTo(...)` as a global
 (some do, e.g. `exam-details.php`, `employee-details.js`), it's exposed on
@@ -108,6 +128,20 @@ these accounts with a published password.
 - Every route is behind the global `jwt` filter except the explicit
   skip-list in `JWTAuthFilter`. If you add a new route that should be
   public, add its first URI segment there rather than disabling the filter.
+- The JWT filter only verifies "is this a valid employee/student token" —
+  it does not check the employee's role. All three employee logins (Admin,
+  Teacher, Accountant) share the same `post-login-employee/*` route tree and
+  AJAX endpoints, so any authenticated employee can reach any
+  `AdminModuleController` action unless the controller itself checks the
+  role. Use `BaseController::isAdmin()` / `isAdminOrSelf($employeeId)` /
+  `requireAdmin()` / `requireAdminOrSelf($employeeId)` for that — the
+  latter two return a 403 JSON response you can `return` directly from an
+  AJAX action. Employee-management CRUD, role management, and document
+  approval (Verify/Reject) are Admin-only; profile/document self-service
+  actions are Admin-or-self. Note this currently covers those specific
+  actions, not full-page view-level access — e.g. the Admin Dashboard
+  itself and its full sidebar are still reachable by any employee via
+  direct URL.
 
 ## Running the test suite
 
